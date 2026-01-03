@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>x64</Platforms>
+      </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MozaHotkey.Core\MozaHotkey.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\lib\MozaSDK\MOZA_SDK.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>MOZA_SDK.dll</Link>
+    </Content>
+    <Content Include="..\..\lib\MozaSDK\MOZA_API_C.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>MOZA_API_C.dll</Link>
+    </Content>
+  </ItemGroup>
+
+</Project>

@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# External SDK libraries (download from https://mozaracing.com/pages/sdk)
+lib/
+
 # User-specific files
 *.rsuser
 *.suo
