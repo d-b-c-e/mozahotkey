@@ -36,11 +36,23 @@ MozaHotkey/
 │   │       ├── AppSettings.cs     # JSON-based settings storage
 │   │       └── HotkeyBinding.cs   # Hotkey binding model
 │   │
-│   └── MozaHotkey.App/            # WinForms application
-│       ├── MainForm.cs            # Main window with action list
-│       ├── HotkeyDialog.cs        # Hotkey capture dialog
-│       ├── GlobalHotkeyManager.cs # Windows API hotkey registration
-│       └── Program.cs             # Entry point with single-instance check
+│   ├── MozaHotkey.App/            # WinForms application
+│   │   ├── MainForm.cs            # Main window with action list
+│   │   ├── HotkeyDialog.cs        # Hotkey capture dialog
+│   │   ├── GlobalHotkeyManager.cs # Windows API hotkey registration
+│   │   └── Program.cs             # Entry point with single-instance check
+│   │
+│   └── MozaHotkey.StreamDeck/     # Stream Deck plugin
+│       ├── manifest.json          # Plugin metadata and action definitions
+│       ├── Program.cs             # Entry point with SharpDeck
+│       ├── MozaDeviceManager.cs   # Singleton device lifecycle
+│       ├── PluginSettings.cs      # Global increment settings
+│       ├── Actions/               # Stream Deck action handlers
+│       ├── PropertyInspector/     # HTML settings UI
+│       └── Images/                # Icon PNG files (72x72)
+│
+├── scripts/
+│   └── deploy-streamdeck.ps1      # Deploy plugin to Stream Deck
 │
 └── lib/
     └── MozaSDK/                   # Moza SDK DLLs (not in repo, download separately)
@@ -79,3 +91,42 @@ All getter functions use `ref ERRORCODE` parameter.
 ## Settings Location
 
 Settings are stored in: `%LOCALAPPDATA%\MozaHotkey\settings.json`
+
+## Stream Deck Plugin
+
+The Stream Deck plugin provides direct control of Moza wheel settings from Stream Deck buttons.
+
+### Build and Deploy
+
+```powershell
+# Deploy to Stream Deck (closes/reopens Stream Deck)
+.\scripts\deploy-streamdeck.ps1 -KillStreamDeck
+
+# Build only (without deploying)
+dotnet build src/MozaHotkey.StreamDeck
+```
+
+### Plugin Location
+
+Installed to: `%APPDATA%\Elgato\StreamDeck\Plugins\com.mozahotkey.streamdeck.sdPlugin\`
+
+### Available Actions
+
+| Action | Description | Configurable |
+|--------|-------------|--------------|
+| FFB Strength | Increase/decrease FFB | Direction (+ or -) |
+| Wheel Rotation | Increase/decrease rotation | Direction (+ or -) |
+| Set Rotation | Set specific rotation | Degrees (270-1800) |
+| Damping | Increase/decrease damping | Direction (+ or -) |
+| Road Sensitivity | Adjust road feel | Direction (+ or -) |
+| Max Torque | Adjust torque limit | Direction (+ or -) |
+| Center Wheel | Centers the wheel | None |
+| Settings | Configure increments | All increment values |
+
+### Icon Requirements
+
+Add PNG icons (72x72 or 144x144 for @2x) to `src/MozaHotkey.StreamDeck/Images/`:
+- pluginIcon.png, categoryIcon.png
+- ffbIcon.png, rotationIcon.png, setRotationIcon.png
+- dampingIcon.png, roadIcon.png, torqueIcon.png
+- centerIcon.png, settingsIcon.png

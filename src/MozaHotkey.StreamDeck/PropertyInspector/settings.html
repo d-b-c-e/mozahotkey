@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>MozaHotkey Settings</title>
+    <link rel="stylesheet" href="sdpi.css">
+</head>
+<body>
+    <div class="sdpi-wrapper">
+        <h1>Increment Values</h1>
+
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">FFB</div>
+            <input type="number" class="sdpi-item-value" id="ffbIncrement" min="1" max="25" value="5" onchange="onSettingChanged()">
+        </div>
+
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Rotation</div>
+            <input type="number" class="sdpi-item-value" id="rotationIncrement" min="10" max="360" step="10" value="90" onchange="onSettingChanged()">
+        </div>
+
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Damping</div>
+            <input type="number" class="sdpi-item-value" id="dampingIncrement" min="1" max="25" value="5" onchange="onSettingChanged()">
+        </div>
+
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Road Sens.</div>
+            <input type="number" class="sdpi-item-value" id="roadSensitivityIncrement" min="1" max="5" value="1" onchange="onSettingChanged()">
+        </div>
+
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Max Torque</div>
+            <input type="number" class="sdpi-item-value" id="maxTorqueIncrement" min="1" max="25" value="5" onchange="onSettingChanged()">
+        </div>
+
+        <div class="info">
+            These values define how much each button press or dial tick adjusts the wheel settings.
+            <br><br>
+            <strong>Recommended values:</strong>
+            <ul style="margin: 4px 0; padding-left: 16px;">
+                <li>FFB: 5 (for fine control)</li>
+                <li>Rotation: 90° (standard increments)</li>
+                <li>Damping: 5</li>
+                <li>Road Sens: 1 (range is 0-10)</li>
+                <li>Max Torque: 5</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="pi.js"></script>
+    <script>
+        function onSettingsLoaded(settings) {
+            document.getElementById('ffbIncrement').value = getSetting('FfbIncrement', 5);
+            document.getElementById('rotationIncrement').value = getSetting('RotationIncrement', 90);
+            document.getElementById('dampingIncrement').value = getSetting('DampingIncrement', 5);
+            document.getElementById('roadSensitivityIncrement').value = getSetting('RoadSensitivityIncrement', 1);
+            document.getElementById('maxTorqueIncrement').value = getSetting('MaxTorqueIncrement', 5);
+        }
+
+        function onSettingChanged() {
+            setSetting('FfbIncrement', parseInt(document.getElementById('ffbIncrement').value) || 5);
+            setSetting('RotationIncrement', parseInt(document.getElementById('rotationIncrement').value) || 90);
+            setSetting('DampingIncrement', parseInt(document.getElementById('dampingIncrement').value) || 5);
+            setSetting('RoadSensitivityIncrement', parseInt(document.getElementById('roadSensitivityIncrement').value) || 1);
+            setSetting('MaxTorqueIncrement', parseInt(document.getElementById('maxTorqueIncrement').value) || 5);
+        }
+    </script>
+</body>
+</html>
