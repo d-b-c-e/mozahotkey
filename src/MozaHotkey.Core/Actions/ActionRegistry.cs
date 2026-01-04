@@ -29,6 +29,24 @@ public static class ActionRegistry
         _actions.Add(new SetRotationAction(900));
         _actions.Add(new SetRotationAction(1080));
 
+        // Damping Actions
+        _actions.Add(new IncreaseDampingAction(5));
+        _actions.Add(new DecreaseDampingAction(5));
+        _actions.Add(new IncreaseDampingAction(10));
+        _actions.Add(new DecreaseDampingAction(10));
+
+        // Road Sensitivity Actions (range 0-10, so smaller increments)
+        _actions.Add(new IncreaseRoadSensitivityAction(1));
+        _actions.Add(new DecreaseRoadSensitivityAction(1));
+        _actions.Add(new IncreaseRoadSensitivityAction(2));
+        _actions.Add(new DecreaseRoadSensitivityAction(2));
+
+        // Max Torque Actions
+        _actions.Add(new IncreaseMaxTorqueAction(5));
+        _actions.Add(new DecreaseMaxTorqueAction(5));
+        _actions.Add(new IncreaseMaxTorqueAction(10));
+        _actions.Add(new DecreaseMaxTorqueAction(10));
+
         // Utility
         _actions.Add(new CenterWheelAction());
     }

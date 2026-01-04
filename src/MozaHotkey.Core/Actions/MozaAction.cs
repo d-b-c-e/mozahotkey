@@ -138,3 +138,123 @@ public class CenterWheelAction : MozaAction
         return "Wheel Centered";
     }
 }
+
+/// <summary>
+/// Action that increases damping by a specified amount.
+/// </summary>
+public class IncreaseDampingAction : MozaAction
+{
+    private readonly int _amount;
+
+    public IncreaseDampingAction(int amount = 5)
+        : base($"damping_increase_{amount}", $"Increase Damping +{amount}", $"Increases damping (road feel) by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustDamping(_amount);
+        return $"Damping: {newValue}%";
+    }
+}
+
+/// <summary>
+/// Action that decreases damping by a specified amount.
+/// </summary>
+public class DecreaseDampingAction : MozaAction
+{
+    private readonly int _amount;
+
+    public DecreaseDampingAction(int amount = 5)
+        : base($"damping_decrease_{amount}", $"Decrease Damping -{amount}", $"Decreases damping (road feel) by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustDamping(-_amount);
+        return $"Damping: {newValue}%";
+    }
+}
+
+/// <summary>
+/// Action that increases road sensitivity by a specified amount.
+/// </summary>
+public class IncreaseRoadSensitivityAction : MozaAction
+{
+    private readonly int _amount;
+
+    public IncreaseRoadSensitivityAction(int amount = 1)
+        : base($"road_sensitivity_increase_{amount}", $"Increase Road Sens +{amount}", $"Increases road sensitivity by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustRoadSensitivity(_amount);
+        return $"Road Sensitivity: {newValue}";
+    }
+}
+
+/// <summary>
+/// Action that decreases road sensitivity by a specified amount.
+/// </summary>
+public class DecreaseRoadSensitivityAction : MozaAction
+{
+    private readonly int _amount;
+
+    public DecreaseRoadSensitivityAction(int amount = 1)
+        : base($"road_sensitivity_decrease_{amount}", $"Decrease Road Sens -{amount}", $"Decreases road sensitivity by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustRoadSensitivity(-_amount);
+        return $"Road Sensitivity: {newValue}";
+    }
+}
+
+/// <summary>
+/// Action that increases max torque by a specified amount.
+/// </summary>
+public class IncreaseMaxTorqueAction : MozaAction
+{
+    private readonly int _amount;
+
+    public IncreaseMaxTorqueAction(int amount = 5)
+        : base($"max_torque_increase_{amount}", $"Increase Max Torque +{amount}", $"Increases max torque limit by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustMaxTorque(_amount);
+        return $"Max Torque: {newValue}%";
+    }
+}
+
+/// <summary>
+/// Action that decreases max torque by a specified amount.
+/// </summary>
+public class DecreaseMaxTorqueAction : MozaAction
+{
+    private readonly int _amount;
+
+    public DecreaseMaxTorqueAction(int amount = 5)
+        : base($"max_torque_decrease_{amount}", $"Decrease Max Torque -{amount}", $"Decreases max torque limit by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustMaxTorque(-_amount);
+        return $"Max Torque: {newValue}%";
+    }
+}

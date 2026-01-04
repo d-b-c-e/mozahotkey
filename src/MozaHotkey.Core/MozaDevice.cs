@@ -130,6 +130,17 @@ public class MozaDevice : IDisposable
     }
 
     /// <summary>
+    /// Adjusts road sensitivity by a delta value, clamping to valid range.
+    /// </summary>
+    public int AdjustRoadSensitivity(int delta)
+    {
+        var current = GetRoadSensitivity();
+        var newValue = Math.Clamp(current + delta, 0, 10);
+        SetRoadSensitivity(newValue);
+        return newValue;
+    }
+
+    /// <summary>
     /// Gets the max torque limit (50-100).
     /// </summary>
     public int GetMaxTorque()
@@ -153,6 +164,17 @@ public class MozaDevice : IDisposable
     }
 
     /// <summary>
+    /// Adjusts max torque by a delta value, clamping to valid range.
+    /// </summary>
+    public int AdjustMaxTorque(int delta)
+    {
+        var current = GetMaxTorque();
+        var newValue = Math.Clamp(current + delta, 50, 100);
+        SetMaxTorque(newValue);
+        return newValue;
+    }
+
+    /// <summary>
     /// Gets the damping strength (0-100).
     /// </summary>
     public int GetDamping()
@@ -173,6 +195,17 @@ public class MozaDevice : IDisposable
         value = Math.Clamp(value, 0, 100);
         var error = setMotorNaturalDamper(value);
         ThrowIfError(error, "Failed to set damping");
+    }
+
+    /// <summary>
+    /// Adjusts damping by a delta value, clamping to valid range.
+    /// </summary>
+    public int AdjustDamping(int delta)
+    {
+        var current = GetDamping();
+        var newValue = Math.Clamp(current + delta, 0, 100);
+        SetDamping(newValue);
+        return newValue;
     }
 
     /// <summary>
