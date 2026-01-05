@@ -34,8 +34,8 @@ public class PluginSettings
     public int FfbIncrement { get; set; } = 5;
     public int RotationIncrement { get; set; } = 90;
     public int DampingIncrement { get; set; } = 5;
-    public int RoadSensitivityIncrement { get; set; } = 1;
     public int MaxTorqueIncrement { get; set; } = 5;
+    public int DefaultIncrement { get; set; } = 5;
 
     private static PluginSettings Load()
     {

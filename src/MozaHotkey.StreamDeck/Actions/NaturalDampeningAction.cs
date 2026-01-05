@@ -5,8 +5,8 @@ using Newtonsoft.Json.Linq;
 
 namespace MozaHotkey.StreamDeck.Actions;
 
-[PluginActionId("com.mozahotkey.streamdeck.damping")]
-public class DampingAction : KeyAndEncoderBase
+[PluginActionId("com.mozahotkey.streamdeck.naturaldampening")]
+public class NaturalDampeningAction : KeyAndEncoderBase
 {
     private class PluginSettings
     {
@@ -14,13 +14,24 @@ public class DampingAction : KeyAndEncoderBase
 
         [JsonProperty(PropertyName = "direction")]
         public string Direction { get; set; } = "increase";
+
+        [JsonProperty(PropertyName = "incrementValue")]
+        public int IncrementValue { get; set; } = 5;
     }
 
     private PluginSettings settings;
 
-    public DampingAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
+    public NaturalDampeningAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
     {
-        settings = payload.Settings?.ToObject<PluginSettings>() ?? PluginSettings.CreateDefaultSettings();
+        if (payload.Settings == null || payload.Settings.Count == 0)
+        {
+            settings = PluginSettings.CreateDefaultSettings();
+            Connection.SetSettingsAsync(JObject.FromObject(settings));
+        }
+        else
+        {
+            settings = payload.Settings.ToObject<PluginSettings>() ?? PluginSettings.CreateDefaultSettings();
+        }
         InitializeDisplay();
     }
 
@@ -31,33 +42,36 @@ public class DampingAction : KeyAndEncoderBase
             if (MozaDeviceManager.Instance.TryInitialize())
             {
                 var currentValue = MozaDeviceManager.Instance.Device.GetDamping();
-                await Connection.SetTitleAsync($"DAMP\n{currentValue}%");
+                await Connection.SetTitleAsync($"{currentValue}%");
+                await Connection.SetFeedbackAsync(new Dictionary<string, string>
+                {
+                    { "value", $"{currentValue}%" },
+                    { "indicator", currentValue.ToString() }
+                });
+                _initialized = true;
             }
             else
             {
-                await Connection.SetTitleAsync("DAMP\nN/C");
+                await Connection.SetTitleAsync("N/C");
             }
         }
-        catch { await Connection.SetTitleAsync("DAMP\nN/C"); }
+        catch { await Connection.SetTitleAsync("N/C"); }
     }
 
     public override void KeyPressed(KeyPayload payload)
     {
-        var increment = MozaHotkey.StreamDeck.PluginSettings.Instance.DampingIncrement;
         try
         {
             var device = MozaDeviceManager.Instance.Device;
-            var newValue = settings.Direction == "decrease"
-                ? device.AdjustDamping(-increment)
-                : device.AdjustDamping(increment);
-            Connection.SetTitleAsync($"DAMP\n{newValue}%");
-            Connection.ShowOk();
+            var delta = settings.Direction == "decrease" ? -settings.IncrementValue : settings.IncrementValue;
+            var newValue = device.AdjustDamping(delta);
+            Connection.SetTitleAsync($"{newValue}%");
         }
         catch (Exception ex)
         {
-            Connection.SetTitleAsync("DAMP\nError");
+            Connection.SetTitleAsync("Error");
             Connection.ShowAlert();
-            Logger.Instance.LogMessage(TracingLevel.ERROR, $"Damping error: {ex.Message}");
+            Logger.Instance.LogMessage(TracingLevel.ERROR, $"Natural Dampening error: {ex.Message}");
         }
     }
 
@@ -65,12 +79,12 @@ public class DampingAction : KeyAndEncoderBase
 
     public override void DialRotate(DialRotatePayload payload)
     {
-        var increment = MozaHotkey.StreamDeck.PluginSettings.Instance.DampingIncrement;
         try
         {
             var device = MozaDeviceManager.Instance.Device;
-            var newValue = device.AdjustDamping(payload.Ticks * increment);
-            Connection.SetTitleAsync($"DAMP\n{newValue}%");
+            var delta = payload.Ticks * settings.IncrementValue;
+            var newValue = device.AdjustDamping(delta);
+            Connection.SetTitleAsync($"{newValue}%");
             Connection.SetFeedbackAsync(new Dictionary<string, string>
             {
                 { "value", $"{newValue}%" },
@@ -79,7 +93,7 @@ public class DampingAction : KeyAndEncoderBase
         }
         catch (Exception ex)
         {
-            Logger.Instance.LogMessage(TracingLevel.ERROR, $"Damping dial error: {ex.Message}");
+            Logger.Instance.LogMessage(TracingLevel.ERROR, $"Natural Dampening dial error: {ex.Message}");
         }
     }
 
@@ -88,19 +102,31 @@ public class DampingAction : KeyAndEncoderBase
         try
         {
             var currentValue = MozaDeviceManager.Instance.Device.GetDamping();
-            Connection.SetTitleAsync($"DAMP\n{currentValue}%");
+            Connection.SetTitleAsync($"{currentValue}%");
         }
         catch { }
     }
 
+    private bool _initialized = false;
+
     public override void DialUp(DialPayload payload) { }
     public override void TouchPress(TouchpadPressPayload payload) { }
-    public override void OnTick() { }
+
+    public override void OnTick()
+    {
+        if (!_initialized)
+        {
+            InitializeDisplay();
+        }
+    }
+
     public override void Dispose() { }
+
     public override void ReceivedSettings(ReceivedSettingsPayload payload)
     {
         Tools.AutoPopulateSettings(settings, payload.Settings);
         Connection.SetSettingsAsync(JObject.FromObject(settings));
     }
+
     public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload) { }
 }

@@ -20,7 +20,7 @@ public class SetRotationAction : KeypadBase
     public SetRotationAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
     {
         settings = payload.Settings?.ToObject<PluginSettings>() ?? PluginSettings.CreateDefaultSettings();
-        Connection.SetTitleAsync($"SET\n{settings.Degrees}°");
+        Connection.SetTitleAsync($"{settings.Degrees}°");
     }
 
     public override void KeyPressed(KeyPayload payload)
@@ -29,12 +29,12 @@ public class SetRotationAction : KeypadBase
         {
             var device = MozaDeviceManager.Instance.Device;
             device.SetWheelRotation(settings.Degrees);
-            Connection.SetTitleAsync($"SET\n{settings.Degrees}°");
+            Connection.SetTitleAsync($"{settings.Degrees}°");
             Connection.ShowOk();
         }
         catch (Exception ex)
         {
-            Connection.SetTitleAsync("SET\nError");
+            Connection.SetTitleAsync("Error");
             Connection.ShowAlert();
             Logger.Instance.LogMessage(TracingLevel.ERROR, $"SetRotation error: {ex.Message}");
         }
@@ -48,7 +48,7 @@ public class SetRotationAction : KeypadBase
     {
         Tools.AutoPopulateSettings(settings, payload.Settings);
         Connection.SetSettingsAsync(JObject.FromObject(settings));
-        Connection.SetTitleAsync($"SET\n{settings.Degrees}°");
+        Connection.SetTitleAsync($"{settings.Degrees}°");
     }
 
     public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload) { }

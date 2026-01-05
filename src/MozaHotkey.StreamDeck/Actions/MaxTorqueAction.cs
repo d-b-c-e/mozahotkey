@@ -14,13 +14,24 @@ public class MaxTorqueAction : KeyAndEncoderBase
 
         [JsonProperty(PropertyName = "direction")]
         public string Direction { get; set; } = "increase";
+
+        [JsonProperty(PropertyName = "incrementValue")]
+        public int IncrementValue { get; set; } = 5;
     }
 
     private PluginSettings settings;
 
     public MaxTorqueAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
     {
-        settings = payload.Settings?.ToObject<PluginSettings>() ?? PluginSettings.CreateDefaultSettings();
+        if (payload.Settings == null || payload.Settings.Count == 0)
+        {
+            settings = PluginSettings.CreateDefaultSettings();
+            Connection.SetSettingsAsync(JObject.FromObject(settings));
+        }
+        else
+        {
+            settings = payload.Settings.ToObject<PluginSettings>() ?? PluginSettings.CreateDefaultSettings();
+        }
         InitializeDisplay();
     }
 
@@ -31,31 +42,34 @@ public class MaxTorqueAction : KeyAndEncoderBase
             if (MozaDeviceManager.Instance.TryInitialize())
             {
                 var currentValue = MozaDeviceManager.Instance.Device.GetMaxTorque();
-                await Connection.SetTitleAsync($"TORQ\n{currentValue}%");
+                await Connection.SetTitleAsync($"{currentValue}%");
+                await Connection.SetFeedbackAsync(new Dictionary<string, string>
+                {
+                    { "value", $"{currentValue}%" },
+                    { "indicator", ((currentValue - 50) * 2).ToString() }
+                });
+                _initialized = true;
             }
             else
             {
-                await Connection.SetTitleAsync("TORQ\nN/C");
+                await Connection.SetTitleAsync("N/C");
             }
         }
-        catch { await Connection.SetTitleAsync("TORQ\nN/C"); }
+        catch { await Connection.SetTitleAsync("N/C"); }
     }
 
     public override void KeyPressed(KeyPayload payload)
     {
-        var increment = MozaHotkey.StreamDeck.PluginSettings.Instance.MaxTorqueIncrement;
         try
         {
             var device = MozaDeviceManager.Instance.Device;
-            var newValue = settings.Direction == "decrease"
-                ? device.AdjustMaxTorque(-increment)
-                : device.AdjustMaxTorque(increment);
-            Connection.SetTitleAsync($"TORQ\n{newValue}%");
-            Connection.ShowOk();
+            var delta = settings.Direction == "decrease" ? -settings.IncrementValue : settings.IncrementValue;
+            var newValue = device.AdjustMaxTorque(delta);
+            Connection.SetTitleAsync($"{newValue}%");
         }
         catch (Exception ex)
         {
-            Connection.SetTitleAsync("TORQ\nError");
+            Connection.SetTitleAsync("Error");
             Connection.ShowAlert();
             Logger.Instance.LogMessage(TracingLevel.ERROR, $"MaxTorque error: {ex.Message}");
         }
@@ -65,12 +79,12 @@ public class MaxTorqueAction : KeyAndEncoderBase
 
     public override void DialRotate(DialRotatePayload payload)
     {
-        var increment = MozaHotkey.StreamDeck.PluginSettings.Instance.MaxTorqueIncrement;
         try
         {
             var device = MozaDeviceManager.Instance.Device;
-            var newValue = device.AdjustMaxTorque(payload.Ticks * increment);
-            Connection.SetTitleAsync($"TORQ\n{newValue}%");
+            var delta = payload.Ticks * settings.IncrementValue;
+            var newValue = device.AdjustMaxTorque(delta);
+            Connection.SetTitleAsync($"{newValue}%");
             // Max torque is 50-100, scale to 0-100
             Connection.SetFeedbackAsync(new Dictionary<string, string>
             {
@@ -89,19 +103,31 @@ public class MaxTorqueAction : KeyAndEncoderBase
         try
         {
             var currentValue = MozaDeviceManager.Instance.Device.GetMaxTorque();
-            Connection.SetTitleAsync($"TORQ\n{currentValue}%");
+            Connection.SetTitleAsync($"{currentValue}%");
         }
         catch { }
     }
 
+    private bool _initialized = false;
+
     public override void DialUp(DialPayload payload) { }
     public override void TouchPress(TouchpadPressPayload payload) { }
-    public override void OnTick() { }
+
+    public override void OnTick()
+    {
+        if (!_initialized)
+        {
+            InitializeDisplay();
+        }
+    }
+
     public override void Dispose() { }
+
     public override void ReceivedSettings(ReceivedSettingsPayload payload)
     {
         Tools.AutoPopulateSettings(settings, payload.Settings);
         Connection.SetSettingsAsync(JObject.FromObject(settings));
     }
+
     public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload) { }
 }

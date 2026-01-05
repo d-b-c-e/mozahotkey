@@ -232,6 +232,154 @@ public class MozaDevice : IDisposable
     }
 
     /// <summary>
+    /// Adjusts spring strength by a delta value, clamping to valid range.
+    /// </summary>
+    public int AdjustSpringStrength(int delta)
+    {
+        var current = GetSpringStrength();
+        var newValue = Math.Clamp(current + delta, 0, 100);
+        SetSpringStrength(newValue);
+        return newValue;
+    }
+
+    /// <summary>
+    /// Gets the natural friction (0-100).
+    /// </summary>
+    public int GetNaturalFriction()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getMotorNaturalFriction(ref error);
+        ThrowIfError(error, "Failed to get natural friction");
+        return result;
+    }
+
+    /// <summary>
+    /// Sets the natural friction (0-100).
+    /// </summary>
+    public void SetNaturalFriction(int value)
+    {
+        EnsureInitialized();
+        value = Math.Clamp(value, 0, 100);
+        var error = setMotorNaturalFriction(value);
+        ThrowIfError(error, "Failed to set natural friction");
+    }
+
+    /// <summary>
+    /// Adjusts natural friction by a delta value, clamping to valid range.
+    /// </summary>
+    public int AdjustNaturalFriction(int delta)
+    {
+        var current = GetNaturalFriction();
+        var newValue = Math.Clamp(current + delta, 0, 100);
+        SetNaturalFriction(newValue);
+        return newValue;
+    }
+
+    /// <summary>
+    /// Gets the natural inertia (0-100).
+    /// </summary>
+    public int GetNaturalInertia()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getMotorNaturalInertia(ref error);
+        ThrowIfError(error, "Failed to get natural inertia");
+        return result;
+    }
+
+    /// <summary>
+    /// Sets the natural inertia (0-100).
+    /// </summary>
+    public void SetNaturalInertia(int value)
+    {
+        EnsureInitialized();
+        value = Math.Clamp(value, 0, 100);
+        var error = setMotorNaturalInertia(value);
+        ThrowIfError(error, "Failed to set natural inertia");
+    }
+
+    /// <summary>
+    /// Adjusts natural inertia by a delta value, clamping to valid range.
+    /// </summary>
+    public int AdjustNaturalInertia(int delta)
+    {
+        var current = GetNaturalInertia();
+        var newValue = Math.Clamp(current + delta, 0, 100);
+        SetNaturalInertia(newValue);
+        return newValue;
+    }
+
+    /// <summary>
+    /// Gets the steering wheel inertia ratio (100-1550).
+    /// Simulates steering wheels with different weights.
+    /// </summary>
+    public int GetSteeringWheelInertia()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getMotorNaturalInertiaRatio(ref error);
+        ThrowIfError(error, "Failed to get steering wheel inertia");
+        return result;
+    }
+
+    /// <summary>
+    /// Sets the steering wheel inertia ratio (100-1550).
+    /// </summary>
+    public void SetSteeringWheelInertia(int value)
+    {
+        EnsureInitialized();
+        value = Math.Clamp(value, 100, 1550);
+        var error = setMotorNaturalInertiaRatio(value);
+        ThrowIfError(error, "Failed to set steering wheel inertia");
+    }
+
+    /// <summary>
+    /// Adjusts steering wheel inertia by a delta value, clamping to valid range.
+    /// </summary>
+    public int AdjustSteeringWheelInertia(int delta)
+    {
+        var current = GetSteeringWheelInertia();
+        var newValue = Math.Clamp(current + delta, 100, 1550);
+        SetSteeringWheelInertia(newValue);
+        return newValue;
+    }
+
+    /// <summary>
+    /// Gets the maximum wheel speed limit (0-100).
+    /// </summary>
+    public int GetMaxWheelSpeed()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getMotorLimitWheelSpeed(ref error);
+        ThrowIfError(error, "Failed to get max wheel speed");
+        return result;
+    }
+
+    /// <summary>
+    /// Sets the maximum wheel speed limit (0-100).
+    /// </summary>
+    public void SetMaxWheelSpeed(int value)
+    {
+        EnsureInitialized();
+        value = Math.Clamp(value, 0, 100);
+        var error = setMotorLimitWheelSpeed(value);
+        ThrowIfError(error, "Failed to set max wheel speed");
+    }
+
+    /// <summary>
+    /// Adjusts max wheel speed by a delta value, clamping to valid range.
+    /// </summary>
+    public int AdjustMaxWheelSpeed(int delta)
+    {
+        var current = GetMaxWheelSpeed();
+        var newValue = Math.Clamp(current + delta, 0, 100);
+        SetMaxWheelSpeed(newValue);
+        return newValue;
+    }
+
+    /// <summary>
     /// Centers the wheel.
     /// </summary>
     public void CenterWheel()

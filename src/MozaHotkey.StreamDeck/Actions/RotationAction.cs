@@ -5,10 +5,6 @@ using Newtonsoft.Json.Linq;
 
 namespace MozaHotkey.StreamDeck.Actions;
 
-/// <summary>
-/// Stream Deck action for adjusting wheel rotation.
-/// Supports both buttons and dials.
-/// </summary>
 [PluginActionId("com.mozahotkey.streamdeck.rotation")]
 public class RotationAction : KeyAndEncoderBase
 {
@@ -18,6 +14,9 @@ public class RotationAction : KeyAndEncoderBase
 
         [JsonProperty(PropertyName = "direction")]
         public string Direction { get; set; } = "increase";
+
+        [JsonProperty(PropertyName = "incrementValue")]
+        public int IncrementValue { get; set; } = 90;
     }
 
     private PluginSettings settings;
@@ -27,13 +26,12 @@ public class RotationAction : KeyAndEncoderBase
         if (payload.Settings == null || payload.Settings.Count == 0)
         {
             settings = PluginSettings.CreateDefaultSettings();
-            SaveSettings();
+            Connection.SetSettingsAsync(JObject.FromObject(settings));
         }
         else
         {
             settings = payload.Settings.ToObject<PluginSettings>() ?? PluginSettings.CreateDefaultSettings();
         }
-
         InitializeDisplay();
     }
 
@@ -44,43 +42,38 @@ public class RotationAction : KeyAndEncoderBase
             if (MozaDeviceManager.Instance.TryInitialize())
             {
                 var (_, currentValue) = MozaDeviceManager.Instance.Device.GetWheelRotation();
-                await Connection.SetTitleAsync($"ROT\n{currentValue}°");
+                await Connection.SetTitleAsync($"{currentValue}°");
+                var indicatorValue = (currentValue - 90) * 100 / (2700 - 90);
+                await Connection.SetFeedbackAsync(new Dictionary<string, string>
+                {
+                    { "value", $"{currentValue}°" },
+                    { "indicator", indicatorValue.ToString() }
+                });
+                _initialized = true;
             }
             else
             {
-                await Connection.SetTitleAsync("ROT\nN/C");
+                await Connection.SetTitleAsync("N/C");
             }
         }
         catch
         {
-            await Connection.SetTitleAsync("ROT\nN/C");
+            await Connection.SetTitleAsync("N/C");
         }
     }
 
     public override void KeyPressed(KeyPayload payload)
     {
-        var increment = MozaHotkey.StreamDeck.PluginSettings.Instance.RotationIncrement;
-
         try
         {
             var device = MozaDeviceManager.Instance.Device;
-            int newValue;
-
-            if (settings.Direction == "decrease")
-            {
-                newValue = device.AdjustWheelRotation(-increment);
-            }
-            else
-            {
-                newValue = device.AdjustWheelRotation(increment);
-            }
-
-            Connection.SetTitleAsync($"ROT\n{newValue}°");
-            Connection.ShowOk();
+            var delta = settings.Direction == "decrease" ? -settings.IncrementValue : settings.IncrementValue;
+            var newValue = device.AdjustWheelRotation(delta);
+            Connection.SetTitleAsync($"{newValue}°");
         }
         catch (Exception ex)
         {
-            Connection.SetTitleAsync("ROT\nError");
+            Connection.SetTitleAsync("Error");
             Connection.ShowAlert();
             Logger.Instance.LogMessage(TracingLevel.ERROR, $"Rotation action error: {ex.Message}");
         }
@@ -90,16 +83,13 @@ public class RotationAction : KeyAndEncoderBase
 
     public override void DialRotate(DialRotatePayload payload)
     {
-        var increment = MozaHotkey.StreamDeck.PluginSettings.Instance.RotationIncrement;
-        var ticks = payload.Ticks;
-
         try
         {
             var device = MozaDeviceManager.Instance.Device;
-            var delta = ticks * increment;
+            var delta = payload.Ticks * settings.IncrementValue;
             var newValue = device.AdjustWheelRotation(delta);
 
-            Connection.SetTitleAsync($"ROT\n{newValue}°");
+            Connection.SetTitleAsync($"{newValue}°");
             // Scale 90-2700 to 0-100 for indicator
             var indicatorValue = (newValue - 90) * 100 / (2700 - 90);
             Connection.SetFeedbackAsync(new Dictionary<string, string>
@@ -110,7 +100,7 @@ public class RotationAction : KeyAndEncoderBase
         }
         catch (Exception ex)
         {
-            Connection.SetTitleAsync("ROT\nError");
+            Connection.SetTitleAsync("Error");
             Logger.Instance.LogMessage(TracingLevel.ERROR, $"Rotation dial error: {ex.Message}");
         }
     }
@@ -119,31 +109,35 @@ public class RotationAction : KeyAndEncoderBase
     {
         try
         {
-            var device = MozaDeviceManager.Instance.Device;
-            var (_, currentValue) = device.GetWheelRotation();
-            Connection.SetTitleAsync($"ROT\n{currentValue}°");
+            var (_, currentValue) = MozaDeviceManager.Instance.Device.GetWheelRotation();
+            Connection.SetTitleAsync($"{currentValue}°");
         }
         catch
         {
-            Connection.SetTitleAsync("ROT\nError");
+            Connection.SetTitleAsync("Error");
         }
     }
 
+    private bool _initialized = false;
+
     public override void DialUp(DialPayload payload) { }
     public override void TouchPress(TouchpadPressPayload payload) { }
-    public override void OnTick() { }
+
+    public override void OnTick()
+    {
+        if (!_initialized)
+        {
+            InitializeDisplay();
+        }
+    }
+
     public override void Dispose() { }
 
     public override void ReceivedSettings(ReceivedSettingsPayload payload)
     {
         Tools.AutoPopulateSettings(settings, payload.Settings);
-        SaveSettings();
+        Connection.SetSettingsAsync(JObject.FromObject(settings));
     }
 
     public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload) { }
-
-    private void SaveSettings()
-    {
-        Connection.SetSettingsAsync(JObject.FromObject(settings));
-    }
 }

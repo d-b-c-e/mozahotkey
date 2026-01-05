@@ -7,7 +7,7 @@ public class CenterWheelAction : KeypadBase
 {
     public CenterWheelAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
     {
-        Connection.SetTitleAsync("CENTER\nWheel");
+        Connection.SetTitleAsync("Ready");
     }
 
     public override void KeyPressed(KeyPayload payload)
@@ -16,12 +16,12 @@ public class CenterWheelAction : KeypadBase
         {
             var device = MozaDeviceManager.Instance.Device;
             device.CenterWheel();
-            Connection.SetTitleAsync("CENTER\n✓");
+            Connection.SetTitleAsync("Done");
             Connection.ShowOk();
         }
         catch (Exception ex)
         {
-            Connection.SetTitleAsync("CENTER\nError");
+            Connection.SetTitleAsync("Error");
             Connection.ShowAlert();
             Logger.Instance.LogMessage(TracingLevel.ERROR, $"CenterWheel error: {ex.Message}");
         }

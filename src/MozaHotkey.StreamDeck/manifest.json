@@ -27,7 +27,7 @@
             "States": [
                 {
                     "Image": "Images/ffbIcon",
-                    "TitleAlignment": "middle"
+                    "TitleAlignment": "bottom"
                 }
             ],
             "Controllers": ["Keypad", "Encoder"],
@@ -48,7 +48,7 @@
             "States": [
                 {
                     "Image": "Images/rotationIcon",
-                    "TitleAlignment": "middle"
+                    "TitleAlignment": "bottom"
                 }
             ],
             "Controllers": ["Keypad", "Encoder"],
@@ -69,49 +69,28 @@
             "States": [
                 {
                     "Image": "Images/setRotationIcon",
-                    "TitleAlignment": "middle"
+                    "TitleAlignment": "bottom"
                 }
             ],
             "Controllers": ["Keypad"],
             "PropertyInspectorPath": "PropertyInspector/setRotation.html"
         },
         {
-            "UUID": "com.mozahotkey.streamdeck.damping",
-            "Name": "Damping",
-            "Tooltip": "Adjust damping (road feel). Use button or dial.",
+            "UUID": "com.mozahotkey.streamdeck.naturaldampening",
+            "Name": "Natural Dampening",
+            "Tooltip": "Adjust natural dampening. Use button or dial.",
             "Icon": "Images/dampingIcon",
             "States": [
                 {
                     "Image": "Images/dampingIcon",
-                    "TitleAlignment": "middle"
+                    "TitleAlignment": "bottom"
                 }
             ],
             "Controllers": ["Keypad", "Encoder"],
             "Encoder": {
                 "layout": "$B1",
                 "TriggerDescription": {
-                    "Rotate": "Adjust damping",
-                    "Push": "Show current"
-                }
-            },
-            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
-        },
-        {
-            "UUID": "com.mozahotkey.streamdeck.roadsensitivity",
-            "Name": "Road Sensitivity",
-            "Tooltip": "Adjust road sensitivity. Use button or dial.",
-            "Icon": "Images/roadIcon",
-            "States": [
-                {
-                    "Image": "Images/roadIcon",
-                    "TitleAlignment": "middle"
-                }
-            ],
-            "Controllers": ["Keypad", "Encoder"],
-            "Encoder": {
-                "layout": "$B1",
-                "TriggerDescription": {
-                    "Rotate": "Adjust sensitivity",
+                    "Rotate": "Adjust dampening",
                     "Push": "Show current"
                 }
             },
@@ -125,7 +104,7 @@
             "States": [
                 {
                     "Image": "Images/torqueIcon",
-                    "TitleAlignment": "middle"
+                    "TitleAlignment": "bottom"
                 }
             ],
             "Controllers": ["Keypad", "Encoder"],
@@ -139,6 +118,111 @@
             "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
         },
         {
+            "UUID": "com.mozahotkey.streamdeck.steeringwheelinertia",
+            "Name": "Steering Wheel Inertia",
+            "Tooltip": "Adjust steering wheel inertia (simulates wheel weight). Use button or dial.",
+            "Icon": "Images/swInertiaIcon",
+            "States": [
+                {
+                    "Image": "Images/swInertiaIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "$B1",
+                "TriggerDescription": {
+                    "Rotate": "Adjust inertia",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.maxwheelspeed",
+            "Name": "Maximum Wheel Speed",
+            "Tooltip": "Adjust maximum wheel speed limit. Use button or dial.",
+            "Icon": "Images/speedIcon",
+            "States": [
+                {
+                    "Image": "Images/speedIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "$B1",
+                "TriggerDescription": {
+                    "Rotate": "Adjust speed",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.naturalfriction",
+            "Name": "Natural Friction",
+            "Tooltip": "Adjust natural friction. Use button or dial.",
+            "Icon": "Images/frictionIcon",
+            "States": [
+                {
+                    "Image": "Images/frictionIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "$B1",
+                "TriggerDescription": {
+                    "Rotate": "Adjust friction",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.naturalinertia",
+            "Name": "Natural Inertia",
+            "Tooltip": "Adjust natural inertia. Use button or dial.",
+            "Icon": "Images/inertiaIcon",
+            "States": [
+                {
+                    "Image": "Images/inertiaIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "$B1",
+                "TriggerDescription": {
+                    "Rotate": "Adjust inertia",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.springstrength",
+            "Name": "Wheel Spring Strength",
+            "Tooltip": "Adjust wheel spring/center force strength. Use button or dial.",
+            "Icon": "Images/springIcon",
+            "States": [
+                {
+                    "Image": "Images/springIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "$B1",
+                "TriggerDescription": {
+                    "Rotate": "Adjust spring",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
             "UUID": "com.mozahotkey.streamdeck.centerwheel",
             "Name": "Center Wheel",
             "Tooltip": "Center the steering wheel",
@@ -146,24 +230,10 @@
             "States": [
                 {
                     "Image": "Images/centerIcon",
-                    "TitleAlignment": "middle"
+                    "TitleAlignment": "bottom"
                 }
             ],
             "Controllers": ["Keypad"]
-        },
-        {
-            "UUID": "com.mozahotkey.streamdeck.settings",
-            "Name": "Settings",
-            "Tooltip": "Configure global increment values for all actions",
-            "Icon": "Images/settingsIcon",
-            "States": [
-                {
-                    "Image": "Images/settingsIcon",
-                    "TitleAlignment": "middle"
-                }
-            ],
-            "Controllers": ["Keypad"],
-            "PropertyInspectorPath": "PropertyInspector/settings.html"
         }
     ]
 }

@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class="sdpi-wrapper">
-        <div class="sdpi-item">
+        <div class="sdpi-item" id="direction-section">
             <div class="sdpi-item-label">Direction</div>
             <select class="sdpi-item-value" id="direction" onchange="onDirectionChanged()">
                 <option value="increase">Increase (+)</option>
@@ -15,22 +15,38 @@
             </select>
         </div>
 
-        <div class="info">
-            <strong>Note:</strong> On buttons, this action will increase or decrease the value by the configured increment.
-            On Stream Deck+ dials, rotating adjusts the value in both directions automatically.
-            <br><br>
-            Configure global increment values in the <strong>Settings</strong> action.
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Increment</div>
+            <input class="sdpi-item-value" type="number" id="incrementValue" min="1" max="100" onchange="onIncrementChanged()" />
+        </div>
+
+        <div class="info" id="button-info">
+            <strong>Tip:</strong> Each button press will change the value by the increment amount in the selected direction.
+        </div>
+
+        <div class="info" id="dial-info" style="display: none;">
+            <strong>Tip:</strong> Rotate the dial to adjust the value. Each tick changes by the increment amount.
         </div>
     </div>
 
     <script src="pi.js"></script>
     <script>
         function onSettingsLoaded(settings) {
-            document.getElementById('direction').value = getSetting('Direction', 'increase');
+            document.getElementById('direction').value = getSetting('direction', 'increase');
+            document.getElementById('incrementValue').value = getSetting('incrementValue', 5);
+
+            // Update info text based on controller type
+            document.getElementById('button-info').style.display = isKeypad() ? 'block' : 'none';
+            document.getElementById('dial-info').style.display = isEncoder() ? 'block' : 'none';
         }
 
         function onDirectionChanged() {
-            setSetting('Direction', document.getElementById('direction').value);
+            setSetting('direction', document.getElementById('direction').value);
+        }
+
+        function onIncrementChanged() {
+            const value = parseInt(document.getElementById('incrementValue').value) || 5;
+            setSetting('incrementValue', value);
         }
     </script>
 </body>

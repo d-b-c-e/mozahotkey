@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-MozaHotkey is a Windows utility that provides global hotkey support for Moza Racing wheel bases. It allows users to adjust FFB strength, wheel rotation, and other settings without alt-tabbing out of their sim racing games.
+MozaHotkey is a Windows utility that provides global hotkey support for Moza Racing wheel bases. It allows users to adjust FFB strength, wheel rotation, and other settings without alt-tabbing out of their sim racing games. It also includes a Stream Deck plugin for direct hardware control.
 
 ## Build Commands
 
@@ -44,15 +44,15 @@ MozaHotkey/
 │   │
 │   └── MozaHotkey.StreamDeck/     # Stream Deck plugin
 │       ├── manifest.json          # Plugin metadata and action definitions
-│       ├── Program.cs             # Entry point with SharpDeck
+│       ├── Program.cs             # Entry point with BarRaider StreamDeck-Tools
 │       ├── MozaDeviceManager.cs   # Singleton device lifecycle
-│       ├── PluginSettings.cs      # Global increment settings
-│       ├── Actions/               # Stream Deck action handlers
-│       ├── PropertyInspector/     # HTML settings UI
+│       ├── Actions/               # Stream Deck action handlers (one per setting)
+│       ├── PropertyInspector/     # HTML/JS settings UI for each action
 │       └── Images/                # Icon PNG files (72x72)
 │
 ├── scripts/
-│   └── deploy-streamdeck.ps1      # Deploy plugin to Stream Deck
+│   ├── deploy-streamdeck.ps1      # Deploy plugin to Stream Deck
+│   └── generate-placeholder-icons.ps1  # Generate placeholder icons
 │
 └── lib/
     └── MozaSDK/                   # Moza SDK DLLs (not in repo, download separately)
@@ -74,10 +74,13 @@ The Moza SDK is required but not included in the repository. To set up:
 |----------|-------------|-------|
 | `setMotorFfbStrength(int)` | Set FFB strength | 0-100 |
 | `setMotorLimitAngle(int, int)` | Set wheel rotation (hardware, game) | 90-2700 |
-| `setMotorRoadSensitivity(int)` | Set road feel sensitivity | 0-10 |
-| `setMotorNaturalDamper(int)` | Set damping strength | 0-100 |
+| `setMotorNaturalDamper(int)` | Set natural dampening | 0-100 |
 | `setMotorSpringStrength(int)` | Set center spring strength | 0-100 |
 | `setMotorPeakTorque(int)` | Set max torque limit | 50-100 |
+| `setMotorNaturalFriction(int)` | Set natural friction | 0-100 |
+| `setMotorNaturalInertia(int)` | Set natural inertia | 0-100 |
+| `setMotorNaturalInertiaRatio(int)` | Set steering wheel inertia (weight simulation) | 100-1550 |
+| `setMotorMaxSpeed(int)` | Set maximum wheel speed | 0-100 |
 
 All getter functions use `ref ERRORCODE` parameter.
 
@@ -94,7 +97,7 @@ Settings are stored in: `%LOCALAPPDATA%\MozaHotkey\settings.json`
 
 ## Stream Deck Plugin
 
-The Stream Deck plugin provides direct control of Moza wheel settings from Stream Deck buttons.
+The Stream Deck plugin provides direct control of Moza wheel settings from Stream Deck buttons and dials (Stream Deck+).
 
 ### Build and Deploy
 
@@ -104,6 +107,9 @@ The Stream Deck plugin provides direct control of Moza wheel settings from Strea
 
 # Build only (without deploying)
 dotnet build src/MozaHotkey.StreamDeck
+
+# Generate placeholder icons
+.\scripts\generate-placeholder-icons.ps1
 ```
 
 ### Plugin Location
@@ -112,21 +118,51 @@ Installed to: `%APPDATA%\Elgato\StreamDeck\Plugins\com.mozahotkey.streamdeck.sdP
 
 ### Available Actions
 
-| Action | Description | Configurable |
-|--------|-------------|--------------|
-| FFB Strength | Increase/decrease FFB | Direction (+ or -) |
-| Wheel Rotation | Increase/decrease rotation | Direction (+ or -) |
-| Set Rotation | Set specific rotation | Degrees (270-1800) |
-| Damping | Increase/decrease damping | Direction (+ or -) |
-| Road Sensitivity | Adjust road feel | Direction (+ or -) |
-| Max Torque | Adjust torque limit | Direction (+ or -) |
-| Center Wheel | Centers the wheel | None |
-| Settings | Configure increments | All increment values |
+| Action | Description | Default Increment | Controllers |
+|--------|-------------|-------------------|-------------|
+| FFB Strength | Adjust Force Feedback strength | 5 | Button, Dial |
+| Wheel Rotation | Adjust wheel rotation angle | 90 | Button, Dial |
+| Set Rotation | Set specific rotation value | N/A | Button only |
+| Natural Dampening | Adjust natural dampening | 5 | Button, Dial |
+| Max Torque | Adjust maximum torque limit | 5 | Button, Dial |
+| Steering Wheel Inertia | Adjust wheel weight simulation (100-1550g) | 50 | Button, Dial |
+| Maximum Wheel Speed | Adjust max wheel rotation speed | 5 | Button, Dial |
+| Natural Friction | Adjust natural friction | 5 | Button, Dial |
+| Natural Inertia | Adjust natural inertia | 5 | Button, Dial |
+| Wheel Spring Strength | Adjust center spring strength | 5 | Button, Dial |
+| Center Wheel | Center the steering wheel | N/A | Button only |
+
+### Per-Action Settings
+
+Each action has its own configurable settings in the Property Inspector:
+- **Direction** (buttons only): Increase or Decrease
+- **Increment Value**: How much to change per press/tick
+
+For dials, direction is determined by rotation direction; only increment is configurable.
+
+### Display Layout
+
+- Icon label (e.g., "FFB", "DAMP") is baked into the icon at the top
+- Current value (e.g., "75%", "540°") displays dynamically at the bottom
+- Dials show value on the LCD touchscreen with indicator bar
 
 ### Icon Requirements
 
-Add PNG icons (72x72 or 144x144 for @2x) to `src/MozaHotkey.StreamDeck/Images/`:
-- pluginIcon.png, categoryIcon.png
+Icons are 72x72 PNG files in `src/MozaHotkey.StreamDeck/Images/`:
+- pluginIcon.png, categoryIcon.png (Moza branding)
 - ffbIcon.png, rotationIcon.png, setRotationIcon.png
-- dampingIcon.png, roadIcon.png, torqueIcon.png
-- centerIcon.png, settingsIcon.png
+- dampingIcon.png, torqueIcon.png, centerIcon.png
+- swInertiaIcon.png, speedIcon.png, frictionIcon.png
+- inertiaIcon.png, springIcon.png
+
+### Action Implementation Pattern
+
+Each action extends `KeyAndEncoderBase` and implements:
+- `InitializeDisplay()`: Reads current value from device, updates button/dial display
+- `OnTick()`: Retries initialization if device wasn't ready at startup
+- `KeyPressed()`: Handles button press (applies direction setting)
+- `DialRotate()`: Handles dial rotation (uses tick count * increment)
+- `DialDown()`: Refreshes current value display when dial is pressed
+- `ReceivedSettings()`: Updates settings from Property Inspector
+
+The `_initialized` flag ensures display updates retry until the Moza device is connected.

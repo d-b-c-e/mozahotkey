@@ -5,8 +5,8 @@ using Newtonsoft.Json.Linq;
 
 namespace MozaHotkey.StreamDeck.Actions;
 
-[PluginActionId("com.mozahotkey.streamdeck.ffb")]
-public class FfbAction : KeyAndEncoderBase
+[PluginActionId("com.mozahotkey.streamdeck.steeringwheelinertia")]
+public class SteeringWheelInertiaAction : KeyAndEncoderBase
 {
     private class PluginSettings
     {
@@ -16,12 +16,12 @@ public class FfbAction : KeyAndEncoderBase
         public string Direction { get; set; } = "increase";
 
         [JsonProperty(PropertyName = "incrementValue")]
-        public int IncrementValue { get; set; } = 5;
+        public int IncrementValue { get; set; } = 50;
     }
 
     private PluginSettings settings;
 
-    public FfbAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
+    public SteeringWheelInertiaAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
     {
         if (payload.Settings == null || payload.Settings.Count == 0)
         {
@@ -41,12 +41,14 @@ public class FfbAction : KeyAndEncoderBase
         {
             if (MozaDeviceManager.Instance.TryInitialize())
             {
-                var currentValue = MozaDeviceManager.Instance.Device.GetFfbStrength();
-                await Connection.SetTitleAsync($"{currentValue}%");
+                var currentValue = MozaDeviceManager.Instance.Device.GetSteeringWheelInertia();
+                await Connection.SetTitleAsync($"{currentValue}g");
+                // Scale 100-1550 to 0-100 for indicator
+                var indicatorValue = (currentValue - 100) * 100 / (1550 - 100);
                 await Connection.SetFeedbackAsync(new Dictionary<string, string>
                 {
-                    { "value", $"{currentValue}%" },
-                    { "indicator", currentValue.ToString() }
+                    { "value", $"{currentValue}g" },
+                    { "indicator", indicatorValue.ToString() }
                 });
                 _initialized = true;
             }
@@ -55,10 +57,7 @@ public class FfbAction : KeyAndEncoderBase
                 await Connection.SetTitleAsync("N/C");
             }
         }
-        catch
-        {
-            await Connection.SetTitleAsync("N/C");
-        }
+        catch { await Connection.SetTitleAsync("N/C"); }
     }
 
     public override void KeyPressed(KeyPayload payload)
@@ -67,14 +66,14 @@ public class FfbAction : KeyAndEncoderBase
         {
             var device = MozaDeviceManager.Instance.Device;
             var delta = settings.Direction == "decrease" ? -settings.IncrementValue : settings.IncrementValue;
-            var newValue = device.AdjustFfbStrength(delta);
-            Connection.SetTitleAsync($"{newValue}%");
+            var newValue = device.AdjustSteeringWheelInertia(delta);
+            Connection.SetTitleAsync($"{newValue}g");
         }
         catch (Exception ex)
         {
             Connection.SetTitleAsync("Error");
             Connection.ShowAlert();
-            Logger.Instance.LogMessage(TracingLevel.ERROR, $"FFB action error: {ex.Message}");
+            Logger.Instance.LogMessage(TracingLevel.ERROR, $"Steering Wheel Inertia error: {ex.Message}");
         }
     }
 
@@ -86,19 +85,19 @@ public class FfbAction : KeyAndEncoderBase
         {
             var device = MozaDeviceManager.Instance.Device;
             var delta = payload.Ticks * settings.IncrementValue;
-            var newValue = device.AdjustFfbStrength(delta);
-
-            Connection.SetTitleAsync($"{newValue}%");
+            var newValue = device.AdjustSteeringWheelInertia(delta);
+            Connection.SetTitleAsync($"{newValue}g");
+            // Scale 100-1550 to 0-100 for indicator
+            var indicatorValue = (newValue - 100) * 100 / (1550 - 100);
             Connection.SetFeedbackAsync(new Dictionary<string, string>
             {
-                { "value", $"{newValue}%" },
-                { "indicator", newValue.ToString() }
+                { "value", $"{newValue}g" },
+                { "indicator", indicatorValue.ToString() }
             });
         }
         catch (Exception ex)
         {
-            Connection.SetTitleAsync("Error");
-            Logger.Instance.LogMessage(TracingLevel.ERROR, $"FFB dial error: {ex.Message}");
+            Logger.Instance.LogMessage(TracingLevel.ERROR, $"Steering Wheel Inertia dial error: {ex.Message}");
         }
     }
 
@@ -106,18 +105,16 @@ public class FfbAction : KeyAndEncoderBase
     {
         try
         {
-            var currentValue = MozaDeviceManager.Instance.Device.GetFfbStrength();
-            Connection.SetTitleAsync($"FFB\n{currentValue}%");
+            var currentValue = MozaDeviceManager.Instance.Device.GetSteeringWheelInertia();
+            Connection.SetTitleAsync($"{currentValue}g");
+            var indicatorValue = (currentValue - 100) * 100 / (1550 - 100);
             Connection.SetFeedbackAsync(new Dictionary<string, string>
             {
-                { "value", $"{currentValue}%" },
-                { "indicator", currentValue.ToString() }
+                { "value", $"{currentValue}g" },
+                { "indicator", indicatorValue.ToString() }
             });
         }
-        catch
-        {
-            Connection.SetTitleAsync("Error");
-        }
+        catch { }
     }
 
     private bool _initialized = false;

@@ -5,8 +5,8 @@ using Newtonsoft.Json.Linq;
 
 namespace MozaHotkey.StreamDeck.Actions;
 
-[PluginActionId("com.mozahotkey.streamdeck.ffb")]
-public class FfbAction : KeyAndEncoderBase
+[PluginActionId("com.mozahotkey.streamdeck.springstrength")]
+public class SpringStrengthAction : KeyAndEncoderBase
 {
     private class PluginSettings
     {
@@ -21,7 +21,7 @@ public class FfbAction : KeyAndEncoderBase
 
     private PluginSettings settings;
 
-    public FfbAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
+    public SpringStrengthAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
     {
         if (payload.Settings == null || payload.Settings.Count == 0)
         {
@@ -41,7 +41,7 @@ public class FfbAction : KeyAndEncoderBase
         {
             if (MozaDeviceManager.Instance.TryInitialize())
             {
-                var currentValue = MozaDeviceManager.Instance.Device.GetFfbStrength();
+                var currentValue = MozaDeviceManager.Instance.Device.GetSpringStrength();
                 await Connection.SetTitleAsync($"{currentValue}%");
                 await Connection.SetFeedbackAsync(new Dictionary<string, string>
                 {
@@ -55,10 +55,7 @@ public class FfbAction : KeyAndEncoderBase
                 await Connection.SetTitleAsync("N/C");
             }
         }
-        catch
-        {
-            await Connection.SetTitleAsync("N/C");
-        }
+        catch { await Connection.SetTitleAsync("N/C"); }
     }
 
     public override void KeyPressed(KeyPayload payload)
@@ -67,14 +64,14 @@ public class FfbAction : KeyAndEncoderBase
         {
             var device = MozaDeviceManager.Instance.Device;
             var delta = settings.Direction == "decrease" ? -settings.IncrementValue : settings.IncrementValue;
-            var newValue = device.AdjustFfbStrength(delta);
+            var newValue = device.AdjustSpringStrength(delta);
             Connection.SetTitleAsync($"{newValue}%");
         }
         catch (Exception ex)
         {
             Connection.SetTitleAsync("Error");
             Connection.ShowAlert();
-            Logger.Instance.LogMessage(TracingLevel.ERROR, $"FFB action error: {ex.Message}");
+            Logger.Instance.LogMessage(TracingLevel.ERROR, $"Spring Strength error: {ex.Message}");
         }
     }
 
@@ -86,8 +83,7 @@ public class FfbAction : KeyAndEncoderBase
         {
             var device = MozaDeviceManager.Instance.Device;
             var delta = payload.Ticks * settings.IncrementValue;
-            var newValue = device.AdjustFfbStrength(delta);
-
+            var newValue = device.AdjustSpringStrength(delta);
             Connection.SetTitleAsync($"{newValue}%");
             Connection.SetFeedbackAsync(new Dictionary<string, string>
             {
@@ -97,8 +93,7 @@ public class FfbAction : KeyAndEncoderBase
         }
         catch (Exception ex)
         {
-            Connection.SetTitleAsync("Error");
-            Logger.Instance.LogMessage(TracingLevel.ERROR, $"FFB dial error: {ex.Message}");
+            Logger.Instance.LogMessage(TracingLevel.ERROR, $"Spring Strength dial error: {ex.Message}");
         }
     }
 
@@ -106,18 +101,10 @@ public class FfbAction : KeyAndEncoderBase
     {
         try
         {
-            var currentValue = MozaDeviceManager.Instance.Device.GetFfbStrength();
-            Connection.SetTitleAsync($"FFB\n{currentValue}%");
-            Connection.SetFeedbackAsync(new Dictionary<string, string>
-            {
-                { "value", $"{currentValue}%" },
-                { "indicator", currentValue.ToString() }
-            });
+            var currentValue = MozaDeviceManager.Instance.Device.GetSpringStrength();
+            Connection.SetTitleAsync($"{currentValue}%");
         }
-        catch
-        {
-            Connection.SetTitleAsync("Error");
-        }
+        catch { }
     }
 
     private bool _initialized = false;
