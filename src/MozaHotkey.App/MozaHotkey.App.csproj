@@ -3,11 +3,19 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
+    <Version>1.0.0</Version>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Platforms>x64</Platforms>
-      </PropertyGroup>
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <PublishSingleFile>false</PublishSingleFile>
+    <AssemblyName>MozaHotkey.App</AssemblyName>
+    <Product>MozaHotkey</Product>
+    <Company>MozaHotkey</Company>
+    <Description>Control Moza Racing wheel base settings via global hotkeys</Description>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MozaHotkey.Core\MozaHotkey.Core.csproj" />

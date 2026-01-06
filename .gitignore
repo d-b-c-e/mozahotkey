@@ -6,6 +6,9 @@
 # Moza SDK is now included in the repository
 # lib/
 
+# Release packages
+releases/
+
 # User-specific files
 *.rsuser
 *.suo
