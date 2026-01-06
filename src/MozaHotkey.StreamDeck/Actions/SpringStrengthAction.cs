@@ -39,6 +39,7 @@ public class SpringStrengthAction : KeyAndEncoderBase
     {
         try
         {
+            UpdateDirectionIcon();
             if (MozaDeviceManager.Instance.TryInitialize())
             {
                 var currentValue = MozaDeviceManager.Instance.Device.GetSpringStrength();
@@ -56,6 +57,12 @@ public class SpringStrengthAction : KeyAndEncoderBase
             }
         }
         catch { await Connection.SetTitleAsync("N/C"); }
+    }
+
+    private void UpdateDirectionIcon()
+    {
+        var iconSuffix = settings.Direction == "increase" ? "Up" : "Down";
+        Connection.SetImageAsync($"Images/springIcon{iconSuffix}.png");
     }
 
     public override void KeyPressed(KeyPayload payload)
@@ -126,6 +133,7 @@ public class SpringStrengthAction : KeyAndEncoderBase
     {
         Tools.AutoPopulateSettings(settings, payload.Settings);
         Connection.SetSettingsAsync(JObject.FromObject(settings));
+        UpdateDirectionIcon();
     }
 
     public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload) { }

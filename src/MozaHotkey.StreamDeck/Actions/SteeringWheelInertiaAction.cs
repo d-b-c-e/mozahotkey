@@ -39,6 +39,7 @@ public class SteeringWheelInertiaAction : KeyAndEncoderBase
     {
         try
         {
+            UpdateDirectionIcon();
             if (MozaDeviceManager.Instance.TryInitialize())
             {
                 var currentValue = MozaDeviceManager.Instance.Device.GetSteeringWheelInertia();
@@ -58,6 +59,12 @@ public class SteeringWheelInertiaAction : KeyAndEncoderBase
             }
         }
         catch { await Connection.SetTitleAsync("N/C"); }
+    }
+
+    private void UpdateDirectionIcon()
+    {
+        var iconSuffix = settings.Direction == "increase" ? "Up" : "Down";
+        Connection.SetImageAsync($"Images/swInertiaIcon{iconSuffix}.png");
     }
 
     public override void KeyPressed(KeyPayload payload)
@@ -136,6 +143,7 @@ public class SteeringWheelInertiaAction : KeyAndEncoderBase
     {
         Tools.AutoPopulateSettings(settings, payload.Settings);
         Connection.SetSettingsAsync(JObject.FromObject(settings));
+        UpdateDirectionIcon();
     }
 
     public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload) { }

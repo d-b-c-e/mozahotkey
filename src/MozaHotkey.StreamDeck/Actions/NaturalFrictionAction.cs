@@ -39,6 +39,7 @@ public class NaturalFrictionAction : KeyAndEncoderBase
     {
         try
         {
+            UpdateDirectionIcon();
             if (MozaDeviceManager.Instance.TryInitialize())
             {
                 var currentValue = MozaDeviceManager.Instance.Device.GetNaturalFriction();
@@ -56,6 +57,12 @@ public class NaturalFrictionAction : KeyAndEncoderBase
             }
         }
         catch { await Connection.SetTitleAsync("N/C"); }
+    }
+
+    private void UpdateDirectionIcon()
+    {
+        var iconSuffix = settings.Direction == "increase" ? "Up" : "Down";
+        Connection.SetImageAsync($"Images/frictionIcon{iconSuffix}.png");
     }
 
     public override void KeyPressed(KeyPayload payload)
@@ -126,6 +133,7 @@ public class NaturalFrictionAction : KeyAndEncoderBase
     {
         Tools.AutoPopulateSettings(settings, payload.Settings);
         Connection.SetSettingsAsync(JObject.FromObject(settings));
+        UpdateDirectionIcon();
     }
 
     public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload) { }

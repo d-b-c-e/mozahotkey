@@ -39,6 +39,7 @@ public class FfbAction : KeyAndEncoderBase
     {
         try
         {
+            UpdateDirectionIcon();
             if (MozaDeviceManager.Instance.TryInitialize())
             {
                 var currentValue = MozaDeviceManager.Instance.Device.GetFfbStrength();
@@ -59,6 +60,12 @@ public class FfbAction : KeyAndEncoderBase
         {
             await Connection.SetTitleAsync("N/C");
         }
+    }
+
+    private void UpdateDirectionIcon()
+    {
+        var iconSuffix = settings.Direction == "increase" ? "Up" : "Down";
+        Connection.SetImageAsync($"Images/ffbIcon{iconSuffix}.png");
     }
 
     public override void KeyPressed(KeyPayload payload)
@@ -139,6 +146,7 @@ public class FfbAction : KeyAndEncoderBase
     {
         Tools.AutoPopulateSettings(settings, payload.Settings);
         Connection.SetSettingsAsync(JObject.FromObject(settings));
+        UpdateDirectionIcon();
     }
 
     public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload) { }

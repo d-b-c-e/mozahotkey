@@ -39,6 +39,7 @@ public class RotationAction : KeyAndEncoderBase
     {
         try
         {
+            UpdateDirectionIcon();
             if (MozaDeviceManager.Instance.TryInitialize())
             {
                 var (_, currentValue) = MozaDeviceManager.Instance.Device.GetWheelRotation();
@@ -60,6 +61,12 @@ public class RotationAction : KeyAndEncoderBase
         {
             await Connection.SetTitleAsync("N/C");
         }
+    }
+
+    private void UpdateDirectionIcon()
+    {
+        var iconSuffix = settings.Direction == "increase" ? "Up" : "Down";
+        Connection.SetImageAsync($"Images/rotationIcon{iconSuffix}.png");
     }
 
     public override void KeyPressed(KeyPayload payload)
@@ -137,6 +144,7 @@ public class RotationAction : KeyAndEncoderBase
     {
         Tools.AutoPopulateSettings(settings, payload.Settings);
         Connection.SetSettingsAsync(JObject.FromObject(settings));
+        UpdateDirectionIcon();
     }
 
     public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload) { }

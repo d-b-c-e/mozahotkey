@@ -1,5 +1,6 @@
 # Generate placeholder icons for Stream Deck plugin
 # Creates simple 72x72 PNG icons with text labels at the top
+# Also generates Up/Down variants with +/- indicators and color tinting
 
 Add-Type -AssemblyName System.Drawing
 
@@ -15,7 +16,54 @@ function New-PlaceholderIcon {
         [string]$Name,
         [string]$Label,
         [string]$BackgroundColor = "#2D2D2D",
-        [string]$TextColor = "#FFFFFF"
+        [string]$TextColor = "#FFFFFF",
+        [switch]$GenerateVariants
+    )
+
+    $size = 72
+
+    # Create base icon
+    CreateIcon -Name $Name -Label $Label -BackgroundColor $BackgroundColor -TextColor $TextColor
+
+    # Create Up/Down variants if requested
+    if ($GenerateVariants) {
+        # Up variant: + symbol below label
+        CreateIcon -Name "${Name}Up" -Label $Label -BackgroundColor $BackgroundColor -TextColor $TextColor -Indicator "+"
+
+        # Down variant: - symbol below label
+        CreateIcon -Name "${Name}Down" -Label $Label -BackgroundColor $BackgroundColor -TextColor $TextColor -Indicator "-"
+    }
+}
+
+function BlendColors {
+    param(
+        [string]$BaseColor,
+        [string]$TintColor,
+        [double]$Amount
+    )
+
+    $base = [System.Drawing.ColorTranslator]::FromHtml($BaseColor)
+    $tint = [System.Drawing.ColorTranslator]::FromHtml($TintColor)
+
+    $r = [int]($base.R * (1 - $Amount) + $tint.R * $Amount)
+    $g = [int]($base.G * (1 - $Amount) + $tint.G * $Amount)
+    $b = [int]($base.B * (1 - $Amount) + $tint.B * $Amount)
+
+    # Clamp values
+    $r = [Math]::Min(255, [Math]::Max(0, $r))
+    $g = [Math]::Min(255, [Math]::Max(0, $g))
+    $b = [Math]::Min(255, [Math]::Max(0, $b))
+
+    return "#{0:X2}{1:X2}{2:X2}" -f $r, $g, $b
+}
+
+function CreateIcon {
+    param(
+        [string]$Name,
+        [string]$Label,
+        [string]$BackgroundColor,
+        [string]$TextColor,
+        [string]$Indicator = $null
     )
 
     $size = 72
@@ -30,9 +78,8 @@ function New-PlaceholderIcon {
     $bgBrush = New-Object System.Drawing.SolidBrush([System.Drawing.ColorTranslator]::FromHtml($BackgroundColor))
     $graphics.FillRectangle($bgBrush, 0, 0, $size, $size)
 
-    # Draw text - smaller font, aligned to top
+    # Draw label text - smaller font, aligned to top
     $textBrush = New-Object System.Drawing.SolidBrush([System.Drawing.ColorTranslator]::FromHtml($TextColor))
-    # Reduced font sizes by 1 point
     $fontSize = if ($Label.Length -le 3) { 17 } elseif ($Label.Length -le 5) { 13 } else { 9 }
     $font = New-Object System.Drawing.Font("Segoe UI", $fontSize, [System.Drawing.FontStyle]::Bold)
 
@@ -44,6 +91,29 @@ function New-PlaceholderIcon {
     $rect = New-Object System.Drawing.RectangleF(0, 8, $size, $size)
     $graphics.DrawString($Label, $font, $textBrush, $rect, $stringFormat)
 
+    # Draw indicator (+/-) centered below the label if specified
+    if ($Indicator) {
+        # Use same font size as label text
+        $indicatorFont = New-Object System.Drawing.Font("Segoe UI", $fontSize, [System.Drawing.FontStyle]::Bold)
+
+        # Same color as label (white)
+        $indicatorBrush = New-Object System.Drawing.SolidBrush([System.Drawing.ColorTranslator]::FromHtml($TextColor))
+
+        # Center horizontally, position below the label
+        $indicatorFormat = New-Object System.Drawing.StringFormat
+        $indicatorFormat.Alignment = [System.Drawing.StringAlignment]::Center
+        $indicatorFormat.LineAlignment = [System.Drawing.StringAlignment]::Near
+
+        # Position below label text (roughly middle of icon)
+        $indicatorY = 28
+        $indicatorRect = New-Object System.Drawing.RectangleF(0, $indicatorY, $size, $size)
+        $graphics.DrawString($Indicator, $indicatorFont, $indicatorBrush, $indicatorRect, $indicatorFormat)
+
+        $indicatorFont.Dispose()
+        $indicatorBrush.Dispose()
+        $indicatorFormat.Dispose()
+    }
+
     # Save
     $filePath = Join-Path $imagesPath "$Name.png"
     $bitmap.Save($filePath, [System.Drawing.Imaging.ImageFormat]::Png)
@@ -52,6 +122,7 @@ function New-PlaceholderIcon {
     $font.Dispose()
     $textBrush.Dispose()
     $bgBrush.Dispose()
+    $stringFormat.Dispose()
     $graphics.Dispose()
     $bitmap.Dispose()
 
@@ -61,24 +132,24 @@ function New-PlaceholderIcon {
 Write-Host "Generating placeholder icons..." -ForegroundColor Cyan
 Write-Host ""
 
-# Plugin and category icons (keep centered for these)
+# Plugin and category icons (no variants needed)
 New-PlaceholderIcon -Name "pluginIcon" -Label "MOZA" -BackgroundColor "#E31837"
 New-PlaceholderIcon -Name "categoryIcon" -Label "MOZA" -BackgroundColor "#E31837"
 
-# Action icons
-New-PlaceholderIcon -Name "ffbIcon" -Label "FFB" -BackgroundColor "#4A90D9"
-New-PlaceholderIcon -Name "rotationIcon" -Label "ROT" -BackgroundColor "#7B68EE"
-New-PlaceholderIcon -Name "setRotationIcon" -Label "SET" -BackgroundColor "#9370DB"
-New-PlaceholderIcon -Name "dampingIcon" -Label "DAMP" -BackgroundColor "#20B2AA"
-New-PlaceholderIcon -Name "torqueIcon" -Label "TRQ" -BackgroundColor "#FF6347"
-New-PlaceholderIcon -Name "centerIcon" -Label "CTR" -BackgroundColor "#FFB347"
+# Action icons with Up/Down variants for adjustable settings
+New-PlaceholderIcon -Name "ffbIcon" -Label "FFB" -BackgroundColor "#4A90D9" -GenerateVariants
+New-PlaceholderIcon -Name "rotationIcon" -Label "ROT" -BackgroundColor "#7B68EE" -GenerateVariants
+New-PlaceholderIcon -Name "dampingIcon" -Label "DAMP" -BackgroundColor "#20B2AA" -GenerateVariants
+New-PlaceholderIcon -Name "torqueIcon" -Label "TRQ" -BackgroundColor "#FF6347" -GenerateVariants
+New-PlaceholderIcon -Name "swInertiaIcon" -Label "SW IN" -BackgroundColor "#6A5ACD" -GenerateVariants
+New-PlaceholderIcon -Name "speedIcon" -Label "SPEED" -BackgroundColor "#FF8C00" -GenerateVariants
+New-PlaceholderIcon -Name "frictionIcon" -Label "FRIC" -BackgroundColor "#CD853F" -GenerateVariants
+New-PlaceholderIcon -Name "inertiaIcon" -Label "INERT" -BackgroundColor "#8B4513" -GenerateVariants
+New-PlaceholderIcon -Name "springIcon" -Label "SPRNG" -BackgroundColor "#32CD32" -GenerateVariants
 
-# New action icons
-New-PlaceholderIcon -Name "swInertiaIcon" -Label "SW IN" -BackgroundColor "#6A5ACD"
-New-PlaceholderIcon -Name "speedIcon" -Label "SPEED" -BackgroundColor "#FF8C00"
-New-PlaceholderIcon -Name "frictionIcon" -Label "FRIC" -BackgroundColor "#CD853F"
-New-PlaceholderIcon -Name "inertiaIcon" -Label "INERT" -BackgroundColor "#8B4513"
-New-PlaceholderIcon -Name "springIcon" -Label "SPRNG" -BackgroundColor "#32CD32"
+# Action icons without variants (no direction setting)
+New-PlaceholderIcon -Name "setRotationIcon" -Label "SET" -BackgroundColor "#9370DB"
+New-PlaceholderIcon -Name "centerIcon" -Label "CTR" -BackgroundColor "#FFB347"
 
 Write-Host ""
 Write-Host "Done! Icons created in: $imagesPath" -ForegroundColor Green
