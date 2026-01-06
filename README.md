@@ -37,17 +37,9 @@ A Windows utility for controlling Moza Racing wheel bases via global hotkeys and
 
 ## Installation
 
-### Moza SDK Setup
-
-The Moza SDK is required but not distributed with this project:
-
-1. Download the SDK from [Moza Racing SDK Page](https://mozaracing.com/pages/sdk)
-2. Extract the following files to `lib/MozaSDK/`:
-   - `SDK_CSharp/AnyCPU/MOZA_API_CSharp.dll`
-   - `SDK_CSharp/x64/MOZA_SDK.dll`
-   - `SDK_CSharp/x64/MOZA_API_C.dll`
-
 ### Building from Source
+
+The Moza SDK is included in this repository, so no additional setup is required.
 
 ```bash
 # Clone the repository
@@ -118,7 +110,6 @@ Settings are saved to: `%LOCALAPPDATA%\MozaHotkey\settings.json`
 ### Build Errors
 
 - Ensure .NET 8.0 SDK is installed
-- Verify Moza SDK DLLs are in `lib/MozaSDK/`
 - Run `dotnet restore` to restore NuGet packages
 
 ## Development
@@ -132,7 +123,7 @@ MozaHotkey/
 │   ├── MozaHotkey.App/         # WinForms hotkey application
 │   └── MozaHotkey.StreamDeck/  # Stream Deck plugin
 ├── scripts/                     # Build and deployment scripts
-└── lib/MozaSDK/                # Moza SDK (not in repo)
+└── lib/MozaSDK/                # Moza SDK (included)
 ```
 
 ### Adding a New Action
@@ -161,10 +152,19 @@ MIT License - see LICENSE file for details.
 
 ## Acknowledgments
 
-- [Moza Racing](https://mozaracing.com/) for the SDK
+- [Moza Racing / Gudsen Technology Co., Ltd](https://mozaracing.com/) for the SDK
 - [BarRaider](https://github.com/BarRaider) for StreamDeck-Tools library
 - The sim racing community for feedback and testing
 
+## Third-Party Licenses
+
+The Moza SDK (`lib/MozaSDK/`) is the property of Gudsen Technology Co., Ltd. The SDK includes components licensed under:
+- OpenSSL License
+- libcoap License
+- nanaCbor License
+
+See `lib/MozaSDK/Licenses/` for full license texts.
+
 ## Disclaimer
 
-This project is not affiliated with, endorsed by, or sponsored by Gudsen Technology Co., Ltd (Moza Racing) or Elgato. Use at your own risk.
+This project is not affiliated with, endorsed by, or sponsored by Gudsen Technology Co., Ltd (Moza Racing) or Elgato. The Moza SDK is included for convenience and remains the property of Gudsen Technology Co., Ltd. Use at your own risk.

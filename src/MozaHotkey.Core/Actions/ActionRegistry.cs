@@ -29,23 +29,47 @@ public static class ActionRegistry
         _actions.Add(new SetRotationAction(900));
         _actions.Add(new SetRotationAction(1080));
 
-        // Damping Actions
+        // Damping Actions (Natural Dampening)
         _actions.Add(new IncreaseDampingAction(5));
         _actions.Add(new DecreaseDampingAction(5));
         _actions.Add(new IncreaseDampingAction(10));
         _actions.Add(new DecreaseDampingAction(10));
-
-        // Road Sensitivity Actions (range 0-10, so smaller increments)
-        _actions.Add(new IncreaseRoadSensitivityAction(1));
-        _actions.Add(new DecreaseRoadSensitivityAction(1));
-        _actions.Add(new IncreaseRoadSensitivityAction(2));
-        _actions.Add(new DecreaseRoadSensitivityAction(2));
 
         // Max Torque Actions
         _actions.Add(new IncreaseMaxTorqueAction(5));
         _actions.Add(new DecreaseMaxTorqueAction(5));
         _actions.Add(new IncreaseMaxTorqueAction(10));
         _actions.Add(new DecreaseMaxTorqueAction(10));
+
+        // Steering Wheel Inertia Actions (range 100-1550g)
+        _actions.Add(new IncreaseSteeringWheelInertiaAction(50));
+        _actions.Add(new DecreaseSteeringWheelInertiaAction(50));
+        _actions.Add(new IncreaseSteeringWheelInertiaAction(100));
+        _actions.Add(new DecreaseSteeringWheelInertiaAction(100));
+
+        // Max Wheel Speed Actions
+        _actions.Add(new IncreaseMaxWheelSpeedAction(5));
+        _actions.Add(new DecreaseMaxWheelSpeedAction(5));
+        _actions.Add(new IncreaseMaxWheelSpeedAction(10));
+        _actions.Add(new DecreaseMaxWheelSpeedAction(10));
+
+        // Natural Friction Actions
+        _actions.Add(new IncreaseNaturalFrictionAction(5));
+        _actions.Add(new DecreaseNaturalFrictionAction(5));
+        _actions.Add(new IncreaseNaturalFrictionAction(10));
+        _actions.Add(new DecreaseNaturalFrictionAction(10));
+
+        // Natural Inertia Actions
+        _actions.Add(new IncreaseNaturalInertiaAction(5));
+        _actions.Add(new DecreaseNaturalInertiaAction(5));
+        _actions.Add(new IncreaseNaturalInertiaAction(10));
+        _actions.Add(new DecreaseNaturalInertiaAction(10));
+
+        // Spring Strength Actions
+        _actions.Add(new IncreaseSpringStrengthAction(5));
+        _actions.Add(new DecreaseSpringStrengthAction(5));
+        _actions.Add(new IncreaseSpringStrengthAction(10));
+        _actions.Add(new DecreaseSpringStrengthAction(10));
 
         // Utility
         _actions.Add(new CenterWheelAction());

@@ -180,42 +180,202 @@ public class DecreaseDampingAction : MozaAction
 }
 
 /// <summary>
-/// Action that increases road sensitivity by a specified amount.
+/// Action that increases steering wheel inertia by a specified amount.
 /// </summary>
-public class IncreaseRoadSensitivityAction : MozaAction
+public class IncreaseSteeringWheelInertiaAction : MozaAction
 {
     private readonly int _amount;
 
-    public IncreaseRoadSensitivityAction(int amount = 1)
-        : base($"road_sensitivity_increase_{amount}", $"Increase Road Sens +{amount}", $"Increases road sensitivity by {amount}")
+    public IncreaseSteeringWheelInertiaAction(int amount = 50)
+        : base($"sw_inertia_increase_{amount}", $"Increase SW Inertia +{amount}", $"Increases steering wheel inertia by {amount}g")
     {
         _amount = amount;
     }
 
     public override string Execute(MozaDevice device)
     {
-        var newValue = device.AdjustRoadSensitivity(_amount);
-        return $"Road Sensitivity: {newValue}";
+        var newValue = device.AdjustSteeringWheelInertia(_amount);
+        return $"SW Inertia: {newValue}g";
     }
 }
 
 /// <summary>
-/// Action that decreases road sensitivity by a specified amount.
+/// Action that decreases steering wheel inertia by a specified amount.
 /// </summary>
-public class DecreaseRoadSensitivityAction : MozaAction
+public class DecreaseSteeringWheelInertiaAction : MozaAction
 {
     private readonly int _amount;
 
-    public DecreaseRoadSensitivityAction(int amount = 1)
-        : base($"road_sensitivity_decrease_{amount}", $"Decrease Road Sens -{amount}", $"Decreases road sensitivity by {amount}")
+    public DecreaseSteeringWheelInertiaAction(int amount = 50)
+        : base($"sw_inertia_decrease_{amount}", $"Decrease SW Inertia -{amount}", $"Decreases steering wheel inertia by {amount}g")
     {
         _amount = amount;
     }
 
     public override string Execute(MozaDevice device)
     {
-        var newValue = device.AdjustRoadSensitivity(-_amount);
-        return $"Road Sensitivity: {newValue}";
+        var newValue = device.AdjustSteeringWheelInertia(-_amount);
+        return $"SW Inertia: {newValue}g";
+    }
+}
+
+/// <summary>
+/// Action that increases max wheel speed by a specified amount.
+/// </summary>
+public class IncreaseMaxWheelSpeedAction : MozaAction
+{
+    private readonly int _amount;
+
+    public IncreaseMaxWheelSpeedAction(int amount = 5)
+        : base($"max_wheel_speed_increase_{amount}", $"Increase Max Speed +{amount}", $"Increases max wheel speed by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustMaxWheelSpeed(_amount);
+        return $"Max Speed: {newValue}%";
+    }
+}
+
+/// <summary>
+/// Action that decreases max wheel speed by a specified amount.
+/// </summary>
+public class DecreaseMaxWheelSpeedAction : MozaAction
+{
+    private readonly int _amount;
+
+    public DecreaseMaxWheelSpeedAction(int amount = 5)
+        : base($"max_wheel_speed_decrease_{amount}", $"Decrease Max Speed -{amount}", $"Decreases max wheel speed by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustMaxWheelSpeed(-_amount);
+        return $"Max Speed: {newValue}%";
+    }
+}
+
+/// <summary>
+/// Action that increases natural friction by a specified amount.
+/// </summary>
+public class IncreaseNaturalFrictionAction : MozaAction
+{
+    private readonly int _amount;
+
+    public IncreaseNaturalFrictionAction(int amount = 5)
+        : base($"natural_friction_increase_{amount}", $"Increase Friction +{amount}", $"Increases natural friction by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustNaturalFriction(_amount);
+        return $"Friction: {newValue}%";
+    }
+}
+
+/// <summary>
+/// Action that decreases natural friction by a specified amount.
+/// </summary>
+public class DecreaseNaturalFrictionAction : MozaAction
+{
+    private readonly int _amount;
+
+    public DecreaseNaturalFrictionAction(int amount = 5)
+        : base($"natural_friction_decrease_{amount}", $"Decrease Friction -{amount}", $"Decreases natural friction by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustNaturalFriction(-_amount);
+        return $"Friction: {newValue}%";
+    }
+}
+
+/// <summary>
+/// Action that increases natural inertia by a specified amount.
+/// </summary>
+public class IncreaseNaturalInertiaAction : MozaAction
+{
+    private readonly int _amount;
+
+    public IncreaseNaturalInertiaAction(int amount = 5)
+        : base($"natural_inertia_increase_{amount}", $"Increase Inertia +{amount}", $"Increases natural inertia by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustNaturalInertia(_amount);
+        return $"Inertia: {newValue}%";
+    }
+}
+
+/// <summary>
+/// Action that decreases natural inertia by a specified amount.
+/// </summary>
+public class DecreaseNaturalInertiaAction : MozaAction
+{
+    private readonly int _amount;
+
+    public DecreaseNaturalInertiaAction(int amount = 5)
+        : base($"natural_inertia_decrease_{amount}", $"Decrease Inertia -{amount}", $"Decreases natural inertia by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustNaturalInertia(-_amount);
+        return $"Inertia: {newValue}%";
+    }
+}
+
+/// <summary>
+/// Action that increases spring strength by a specified amount.
+/// </summary>
+public class IncreaseSpringStrengthAction : MozaAction
+{
+    private readonly int _amount;
+
+    public IncreaseSpringStrengthAction(int amount = 5)
+        : base($"spring_strength_increase_{amount}", $"Increase Spring +{amount}", $"Increases spring strength by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustSpringStrength(_amount);
+        return $"Spring: {newValue}%";
+    }
+}
+
+/// <summary>
+/// Action that decreases spring strength by a specified amount.
+/// </summary>
+public class DecreaseSpringStrengthAction : MozaAction
+{
+    private readonly int _amount;
+
+    public DecreaseSpringStrengthAction(int amount = 5)
+        : base($"spring_strength_decrease_{amount}", $"Decrease Spring -{amount}", $"Decreases spring strength by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustSpringStrength(-_amount);
+        return $"Spring: {newValue}%";
     }
 }
 

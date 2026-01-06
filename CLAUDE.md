@@ -55,18 +55,9 @@ MozaHotkey/
 │   └── generate-placeholder-icons.ps1  # Generate placeholder icons
 │
 └── lib/
-    └── MozaSDK/                   # Moza SDK DLLs (not in repo, download separately)
+    └── MozaSDK/                   # Moza SDK DLLs (included in repo)
+        └── Licenses/              # Third-party license files
 ```
-
-## SDK Setup
-
-The Moza SDK is required but not included in the repository. To set up:
-
-1. Download the SDK from https://mozaracing.com/pages/sdk
-2. Extract the following files to `lib/MozaSDK/`:
-   - `SDK_CSharp/AnyCPU/MOZA_API_CSharp.dll`
-   - `SDK_CSharp/x64/MOZA_SDK.dll`
-   - `SDK_CSharp/x64/MOZA_API_C.dll`
 
 ## Key SDK Functions
 
