@@ -78,23 +78,24 @@ function CreateIcon {
     $bgBrush = New-Object System.Drawing.SolidBrush([System.Drawing.ColorTranslator]::FromHtml($BackgroundColor))
     $graphics.FillRectangle($bgBrush, 0, 0, $size, $size)
 
-    # Draw label text - smaller font, aligned to top
+    # Draw label text - fixed font size for consistency
     $textBrush = New-Object System.Drawing.SolidBrush([System.Drawing.ColorTranslator]::FromHtml($TextColor))
-    $fontSize = if ($Label.Length -le 3) { 17 } elseif ($Label.Length -le 5) { 13 } else { 9 }
+    $fontSize = 8
     $font = New-Object System.Drawing.Font("Segoe UI", $fontSize, [System.Drawing.FontStyle]::Bold)
 
     $stringFormat = New-Object System.Drawing.StringFormat
     $stringFormat.Alignment = [System.Drawing.StringAlignment]::Center
     $stringFormat.LineAlignment = [System.Drawing.StringAlignment]::Near  # Top alignment
 
-    # Rectangle with padding from top (8px from top)
-    $rect = New-Object System.Drawing.RectangleF(0, 8, $size, $size)
+    # Rectangle with padding from top
+    $topPadding = if ($Indicator) { 4 } else { 8 }
+    $rect = New-Object System.Drawing.RectangleF(0, $topPadding, $size, $size)
     $graphics.DrawString($Label, $font, $textBrush, $rect, $stringFormat)
 
     # Draw indicator (+/-) centered below the label if specified
     if ($Indicator) {
-        # Use same font size as label text
-        $indicatorFont = New-Object System.Drawing.Font("Segoe UI", $fontSize, [System.Drawing.FontStyle]::Bold)
+        # Larger font for visibility
+        $indicatorFont = New-Object System.Drawing.Font("Segoe UI", 16, [System.Drawing.FontStyle]::Bold)
 
         # Same color as label (white)
         $indicatorBrush = New-Object System.Drawing.SolidBrush([System.Drawing.ColorTranslator]::FromHtml($TextColor))
@@ -104,7 +105,7 @@ function CreateIcon {
         $indicatorFormat.Alignment = [System.Drawing.StringAlignment]::Center
         $indicatorFormat.LineAlignment = [System.Drawing.StringAlignment]::Near
 
-        # Position below label text (roughly middle of icon)
+        # Fixed position - centered vertically below label text
         $indicatorY = 28
         $indicatorRect = New-Object System.Drawing.RectangleF(0, $indicatorY, $size, $size)
         $graphics.DrawString($Indicator, $indicatorFont, $indicatorBrush, $indicatorRect, $indicatorFormat)
@@ -137,19 +138,19 @@ New-PlaceholderIcon -Name "pluginIcon" -Label "MOZA" -BackgroundColor "#E31837"
 New-PlaceholderIcon -Name "categoryIcon" -Label "MOZA" -BackgroundColor "#E31837"
 
 # Action icons with Up/Down variants for adjustable settings
-New-PlaceholderIcon -Name "ffbIcon" -Label "FFB" -BackgroundColor "#4A90D9" -GenerateVariants
-New-PlaceholderIcon -Name "rotationIcon" -Label "ROT" -BackgroundColor "#7B68EE" -GenerateVariants
-New-PlaceholderIcon -Name "dampingIcon" -Label "DAMP" -BackgroundColor "#20B2AA" -GenerateVariants
-New-PlaceholderIcon -Name "torqueIcon" -Label "TRQ" -BackgroundColor "#FF6347" -GenerateVariants
-New-PlaceholderIcon -Name "swInertiaIcon" -Label "SW IN" -BackgroundColor "#6A5ACD" -GenerateVariants
-New-PlaceholderIcon -Name "speedIcon" -Label "SPEED" -BackgroundColor "#FF8C00" -GenerateVariants
-New-PlaceholderIcon -Name "frictionIcon" -Label "FRIC" -BackgroundColor "#CD853F" -GenerateVariants
-New-PlaceholderIcon -Name "inertiaIcon" -Label "INERT" -BackgroundColor "#8B4513" -GenerateVariants
-New-PlaceholderIcon -Name "springIcon" -Label "SPRNG" -BackgroundColor "#32CD32" -GenerateVariants
+New-PlaceholderIcon -Name "ffbIcon" -Label "FFB`nStrength" -BackgroundColor "#4A90D9" -GenerateVariants
+New-PlaceholderIcon -Name "rotationIcon" -Label "Wheel`nRotation" -BackgroundColor "#7B68EE" -GenerateVariants
+New-PlaceholderIcon -Name "dampingIcon" -Label "Natural`nDampening" -BackgroundColor "#20B2AA" -GenerateVariants
+New-PlaceholderIcon -Name "torqueIcon" -Label "Max`nTorque" -BackgroundColor "#FF6347" -GenerateVariants
+New-PlaceholderIcon -Name "swInertiaIcon" -Label "Wheel`nInertia" -BackgroundColor "#6A5ACD" -GenerateVariants
+New-PlaceholderIcon -Name "speedIcon" -Label "Max`nSpeed" -BackgroundColor "#FF8C00" -GenerateVariants
+New-PlaceholderIcon -Name "frictionIcon" -Label "Natural`nFriction" -BackgroundColor "#CD853F" -GenerateVariants
+New-PlaceholderIcon -Name "inertiaIcon" -Label "Natural`nInertia" -BackgroundColor "#8B4513" -GenerateVariants
+New-PlaceholderIcon -Name "springIcon" -Label "Spring`nStrength" -BackgroundColor "#32CD32" -GenerateVariants
 
 # Action icons without variants (no direction setting)
-New-PlaceholderIcon -Name "setRotationIcon" -Label "SET" -BackgroundColor "#9370DB"
-New-PlaceholderIcon -Name "centerIcon" -Label "CTR" -BackgroundColor "#FFB347"
+New-PlaceholderIcon -Name "setRotationIcon" -Label "Set`nRotation" -BackgroundColor "#9370DB"
+New-PlaceholderIcon -Name "centerIcon" -Label "Center`nWheel" -BackgroundColor "#FFB347"
 
 Write-Host ""
 Write-Host "Done! Icons created in: $imagesPath" -ForegroundColor Green
