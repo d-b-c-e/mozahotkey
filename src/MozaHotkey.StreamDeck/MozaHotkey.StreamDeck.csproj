@@ -34,6 +34,7 @@
   <ItemGroup>
     <None Include="manifest.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Images\**" CopyToOutputDirectory="PreserveNewest" LinkBase="Images" />
+    <None Include="Layouts\**" CopyToOutputDirectory="PreserveNewest" LinkBase="Layouts" />
     <None Include="PropertyInspector\**" CopyToOutputDirectory="PreserveNewest" LinkBase="PropertyInspector" />
   </ItemGroup>
 

@@ -32,7 +32,7 @@
             ],
             "Controllers": ["Keypad", "Encoder"],
             "Encoder": {
-                "layout": "$B1",
+                "layout": "Layouts/value-bar.json",
                 "TriggerDescription": {
                     "Rotate": "Adjust FFB",
                     "Push": "Show current"
@@ -53,7 +53,7 @@
             ],
             "Controllers": ["Keypad", "Encoder"],
             "Encoder": {
-                "layout": "$B1",
+                "layout": "Layouts/value-bar.json",
                 "TriggerDescription": {
                     "Rotate": "Adjust rotation",
                     "Push": "Show current"
@@ -88,7 +88,7 @@
             ],
             "Controllers": ["Keypad", "Encoder"],
             "Encoder": {
-                "layout": "$B1",
+                "layout": "Layouts/value-bar.json",
                 "TriggerDescription": {
                     "Rotate": "Adjust dampening",
                     "Push": "Show current"
@@ -109,7 +109,7 @@
             ],
             "Controllers": ["Keypad", "Encoder"],
             "Encoder": {
-                "layout": "$B1",
+                "layout": "Layouts/value-bar.json",
                 "TriggerDescription": {
                     "Rotate": "Adjust torque",
                     "Push": "Show current"
@@ -130,7 +130,7 @@
             ],
             "Controllers": ["Keypad", "Encoder"],
             "Encoder": {
-                "layout": "$B1",
+                "layout": "Layouts/value-bar.json",
                 "TriggerDescription": {
                     "Rotate": "Adjust inertia",
                     "Push": "Show current"
@@ -151,7 +151,7 @@
             ],
             "Controllers": ["Keypad", "Encoder"],
             "Encoder": {
-                "layout": "$B1",
+                "layout": "Layouts/value-bar.json",
                 "TriggerDescription": {
                     "Rotate": "Adjust speed",
                     "Push": "Show current"
@@ -172,7 +172,7 @@
             ],
             "Controllers": ["Keypad", "Encoder"],
             "Encoder": {
-                "layout": "$B1",
+                "layout": "Layouts/value-bar.json",
                 "TriggerDescription": {
                     "Rotate": "Adjust friction",
                     "Push": "Show current"
@@ -193,7 +193,7 @@
             ],
             "Controllers": ["Keypad", "Encoder"],
             "Encoder": {
-                "layout": "$B1",
+                "layout": "Layouts/value-bar.json",
                 "TriggerDescription": {
                     "Rotate": "Adjust inertia",
                     "Push": "Show current"
@@ -214,7 +214,7 @@
             ],
             "Controllers": ["Keypad", "Encoder"],
             "Encoder": {
-                "layout": "$B1",
+                "layout": "Layouts/value-bar.json",
                 "TriggerDescription": {
                     "Rotate": "Adjust spring",
                     "Push": "Show current"
