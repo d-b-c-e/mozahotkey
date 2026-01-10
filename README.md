@@ -1,150 +1,114 @@
 # MozaHotkey
 
-A Windows utility for controlling Moza Racing wheel bases via global hotkeys and Stream Deck integration. Adjust FFB strength, wheel rotation, and other settings without alt-tabbing out of your sim racing games.
+A Stream Deck plugin for controlling Moza Racing wheel bases. Adjust FFB strength, wheel rotation, and other settings directly from your Stream Deck without alt-tabbing out of your sim racing games.
+
+## Why I Made This
+
+I created this plugin because as a single monitor user, alt-tabbing in and out of games to Moza Pit House often causes issues for non-borderless windowed games.
+
+I'm also aware there's a mobile app that does much of this, but honestly I dislike all the distractions that come with having my phone out while racing. I just prefer good old fashioned tactile buttons.
+
+Yes I'm also aware Moza Pithouse has some auto-switching profiles now, however it only supports a very small handful of games where I tend to be on the casual side with games unlikely to ever have official support (arcade + simcade).  I like to hop around different games when I play, so I wanted some quick buttons and knobs to adjust particularly FFB Strength and Max Wheel Rotation when I'm hopping between arcade games.  
+
+I thought something like this would already exist but couldn't find anything similar, so I decided to build it myself. Luckily with the advancement of AI coding agents, it took most of the friction out of development and I managed to get the majority of it done in a weekend where it would normally take me weeks to figure all this out on my own.
+
+I hope you find it useful! I might consider deploying it to the Stream Deck Marketplace if feedback is positive and people feel it's mostly feature complete.
 
 ## Features
 
-- **Global Hotkeys**: Bind keyboard shortcuts to adjust wheel settings from anywhere
-- **Stream Deck Plugin**: Full support for Stream Deck buttons and Stream Deck+ dials
-- **Real-time Display**: See current values on your Stream Deck buttons/dials
-- **Per-Action Settings**: Each action has its own configurable increment value
+- **Full Stream Deck Support**: Works with Stream Deck buttons and Stream Deck+ dials
+- **Real-time Display**: Current values shown on buttons and dial LCD screens
+- **Per-Action Settings**: Configure increment values and direction for each button
+- **15 Available Actions**: Control all major wheel base settings
 
-### Supported Settings
+## Available Actions
+
+### Adjustable Settings (Button + Dial)
 
 | Setting | Range | Description |
 |---------|-------|-------------|
 | FFB Strength | 0-100% | Force feedback intensity |
 | Wheel Rotation | 90-2700° | Steering lock angle |
-| Natural Dampening | 0-100% | Simulated steering resistance |
+| Natural Damping | 0-100% | Simulated steering resistance |
 | Max Torque | 50-100% | Maximum torque output limit |
 | Steering Wheel Inertia | 100-1550g | Simulated wheel weight |
 | Maximum Wheel Speed | 0-100% | Wheel rotation speed limit |
 | Natural Friction | 0-100% | Static friction simulation |
 | Natural Inertia | 0-100% | Rotational inertia simulation |
 | Spring Strength | 0-100% | Center spring force |
+| Road Sensitivity | 0-10 | Road feel detail level |
+| Speed Damping | 0-100% | Speed-dependent damping to reduce oscillation |
+
+### Preset & Utility Actions (Button only)
+
+| Action | Description |
+|--------|-------------|
+| Set Rotation | Set wheel rotation to a specific preset value |
+| Center Wheel | Centers the steering wheel |
+| FFB Reverse | Toggles force feedback direction |
+| Stop FFB | Emergency kill switch - stops all force feedback |
 
 ## Requirements
 
 - Windows 10/11 (x64)
-- .NET 8.0 Runtime
+- Elgato Stream Deck software 6.0+
 - Moza Pit House installed (required for SDK communication)
 - Moza Racing wheel base (R5, R9, R12, R16, R21, etc.)
 
-### For Stream Deck Plugin
-
-- Elgato Stream Deck software 6.0+
-- Stream Deck, Stream Deck+, or compatible device
-
 ## Installation
 
-### Building from Source
-
-The Moza SDK is included in this repository, so no additional setup is required.
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/MozaHotkey.git
-cd MozaHotkey
-
-# Build the solution
-dotnet build --configuration Release
-```
-
-### Stream Deck Plugin Installation
-
-```powershell
-# Deploy to Stream Deck (automatically restarts Stream Deck)
-.\scripts\deploy-streamdeck.ps1 -KillStreamDeck
-```
-
-The plugin will be installed to:
-`%APPDATA%\Elgato\StreamDeck\Plugins\com.mozahotkey.streamdeck.sdPlugin\`
+1. Download the latest `.streamDeckPlugin` file from [Releases](https://github.com/d-b-c-e/mozahotkey/releases)
+2. Double-click the file to install
+3. Stream Deck will open and the plugin will be available under "Moza Hotkey"
 
 ## Usage
 
-### Desktop Application
+### Button Configuration
+1. Drag an action to a Stream Deck button
+2. Set **Direction**: Increase or Decrease
+3. Set **Increment**: Amount to change per press
 
-1. Run `MozaHotkey.App.exe`
-2. The app minimizes to the system tray
-3. Right-click the tray icon to configure hotkeys
-4. Assign keyboard shortcuts to actions
-5. Use hotkeys while in-game to adjust settings
+### Dial Configuration (Stream Deck+)
+1. Drag an action to a dial
+2. Set **Increment**: Amount to change per rotation tick
+3. Rotate clockwise to increase, counter-clockwise to decrease
+4. Press the dial to refresh the current value display
 
-Settings are saved to: `%LOCALAPPDATA%\MozaHotkey\settings.json`
-
-### Stream Deck Plugin
-
-1. Open Stream Deck software
-2. Find "Moza Racing" in the action categories
-3. Drag actions to your Stream Deck buttons or dials
-
-**Button Configuration:**
-- **Direction**: Choose Increase or Decrease
-- **Increment**: Amount to change per press
-
-**Dial Configuration (Stream Deck+):**
-- **Increment**: Amount to change per rotation tick
-- Rotate clockwise to increase, counter-clockwise to decrease
-- Press dial to refresh current value display
-
-**Display:**
-- Button shows setting label (icon) at top, current value at bottom
-- Dial LCD shows current value with indicator bar
-- "N/C" indicates device not connected
+### Display
+- Buttons show the setting label at top, current value at bottom
+- Dials show current value on LCD with an indicator bar
+- "N/C" indicates the wheel base is not connected
 
 ## Troubleshooting
 
 ### Device Not Connected (N/C)
-
 1. Ensure Moza Pit House is installed and can see your wheel base
 2. Make sure the wheel base is powered on and connected via USB
 3. Try restarting the Stream Deck software
 4. Check that no other application is exclusively using the Moza SDK
 
 ### Values Not Updating
-
 - The plugin retries connection automatically every second
 - Press a dial or interact with a button to force a refresh
 - Restart Stream Deck if issues persist
 
-### Build Errors
+## Windows App (Optional)
 
-- Ensure .NET 8.0 SDK is installed
-- Run `dotnet restore` to restore NuGet packages
+For users without a Stream Deck, a standalone Windows application is also available that provides global hotkey support for the same wheel base settings. Download `MozaHotkey-Setup` from the releases page if you need keyboard shortcut control.
 
-## Development
+## Building from Source
 
-### Project Structure
+```bash
+# Clone the repository
+git clone https://github.com/d-b-c-e/mozahotkey.git
+cd mozahotkey
 
+# Build the Stream Deck plugin
+.\scripts\build-streamdeck-release.ps1
+
+# Deploy for local testing
+.\scripts\deploy-streamdeck.ps1 -KillStreamDeck
 ```
-MozaHotkey/
-├── src/
-│   ├── MozaHotkey.Core/        # Core library (SDK wrapper)
-│   ├── MozaHotkey.App/         # WinForms hotkey application
-│   └── MozaHotkey.StreamDeck/  # Stream Deck plugin
-├── scripts/                     # Build and deployment scripts
-└── lib/MozaSDK/                # Moza SDK (included)
-```
-
-### Adding a New Action
-
-1. Add SDK wrapper methods to `MozaHotkey.Core/MozaDevice.cs`
-2. Create action class in `MozaHotkey.StreamDeck/Actions/`
-3. Add action definition to `manifest.json`
-4. Create icon in `Images/` folder
-5. Update Property Inspector if needed
-
-See `CLAUDE.md` for detailed architecture documentation.
-
-## Contributing
-
-Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test with actual Moza hardware if possible
-5. Submit a pull request
 
 ## License
 
@@ -156,15 +120,6 @@ MIT License - see LICENSE file for details.
 - [BarRaider](https://github.com/BarRaider) for StreamDeck-Tools library
 - The sim racing community for feedback and testing
 
-## Third-Party Licenses
-
-The Moza SDK (`lib/MozaSDK/`) is the property of Gudsen Technology Co., Ltd. The SDK includes components licensed under:
-- OpenSSL License
-- libcoap License
-- nanaCbor License
-
-See `lib/MozaSDK/Licenses/` for full license texts.
-
 ## Disclaimer
 
-This project is not affiliated with, endorsed by, or sponsored by Gudsen Technology Co., Ltd (Moza Racing) or Elgato. The Moza SDK is included for convenience and remains the property of Gudsen Technology Co., Ltd. Use at your own risk.
+This project is not affiliated with, endorsed by, or sponsored by Gudsen Technology Co., Ltd (Moza Racing) or Elgato. Use at your own risk.

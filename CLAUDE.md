@@ -65,13 +65,18 @@ MozaHotkey/
 |----------|-------------|-------|
 | `setMotorFfbStrength(int)` | Set FFB strength | 0-100 |
 | `setMotorLimitAngle(int, int)` | Set wheel rotation (hardware, game) | 90-2700 |
-| `setMotorNaturalDamper(int)` | Set natural dampening | 0-100 |
+| `setMotorNaturalDamper(int)` | Set natural damping | 0-100 |
 | `setMotorSpringStrength(int)` | Set center spring strength | 0-100 |
 | `setMotorPeakTorque(int)` | Set max torque limit | 50-100 |
 | `setMotorNaturalFriction(int)` | Set natural friction | 0-100 |
 | `setMotorNaturalInertia(int)` | Set natural inertia | 0-100 |
 | `setMotorNaturalInertiaRatio(int)` | Set steering wheel inertia (weight simulation) | 100-1550 |
-| `setMotorMaxSpeed(int)` | Set maximum wheel speed | 0-100 |
+| `setMotorLimitWheelSpeed(int)` | Set maximum wheel speed | 0-100 |
+| `setMotorRoadSensitivity(int)` | Set road sensitivity/feel | 0-10 |
+| `setMotorSpeedDamping(int)` | Set speed-dependent damping | 0-100 |
+| `setMotorFfbReverse(int)` | Set FFB direction (0=normal, 1=reversed) | 0-1 |
+| `stopForceFeedback()` | Emergency stop all force feedback | N/A |
+| `CenterWheel()` | Center the steering wheel | N/A |
 
 All getter functions use `ref ERRORCODE` parameter.
 
@@ -114,13 +119,17 @@ Installed to: `%APPDATA%\Elgato\StreamDeck\Plugins\com.mozahotkey.streamdeck.sdP
 | FFB Strength | Adjust Force Feedback strength | 5 | Button, Dial |
 | Wheel Rotation | Adjust wheel rotation angle | 90 | Button, Dial |
 | Set Rotation | Set specific rotation value | N/A | Button only |
-| Natural Dampening | Adjust natural dampening | 5 | Button, Dial |
+| Natural Damping | Adjust natural damping | 5 | Button, Dial |
 | Max Torque | Adjust maximum torque limit | 5 | Button, Dial |
 | Steering Wheel Inertia | Adjust wheel weight simulation (100-1550g) | 50 | Button, Dial |
 | Maximum Wheel Speed | Adjust max wheel rotation speed | 5 | Button, Dial |
 | Natural Friction | Adjust natural friction | 5 | Button, Dial |
 | Natural Inertia | Adjust natural inertia | 5 | Button, Dial |
 | Wheel Spring Strength | Adjust center spring strength | 5 | Button, Dial |
+| Road Sensitivity | Adjust road feel detail (0-10) | 1 | Button, Dial |
+| Speed Damping | Adjust speed-dependent damping | 5 | Button, Dial |
+| FFB Reverse | Toggle FFB direction | N/A | Button only |
+| Stop FFB | Emergency stop all force feedback | N/A | Button only |
 | Center Wheel | Center the steering wheel | N/A | Button only |
 
 ### Per-Action Settings
@@ -144,7 +153,10 @@ Icons are 72x72 PNG files in `src/MozaHotkey.StreamDeck/Images/`:
 - ffbIcon.png, rotationIcon.png, setRotationIcon.png
 - dampingIcon.png, torqueIcon.png, centerIcon.png
 - swInertiaIcon.png, speedIcon.png, frictionIcon.png
-- inertiaIcon.png, springIcon.png
+- inertiaIcon.png, springIcon.png, roadIcon.png
+- speedDampingIcon.png, reverseIcon.png, stopIcon.png
+
+Adjustable actions also have Up/Down variants (e.g., ffbIconUp.png, ffbIconDown.png) for direction indication.
 
 ### Action Implementation Pattern
 

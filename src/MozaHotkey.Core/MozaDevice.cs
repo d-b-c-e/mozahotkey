@@ -389,6 +389,82 @@ public class MozaDevice : IDisposable
         ThrowIfError(error, "Failed to center wheel");
     }
 
+    /// <summary>
+    /// Gets whether FFB direction is reversed.
+    /// </summary>
+    public bool GetFfbReverse()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getMotorFfbReverse(ref error);
+        ThrowIfError(error, "Failed to get FFB reverse");
+        return result != 0;
+    }
+
+    /// <summary>
+    /// Sets whether FFB direction is reversed.
+    /// </summary>
+    public void SetFfbReverse(bool reversed)
+    {
+        EnsureInitialized();
+        var error = setMotorFfbReverse(reversed ? 1 : 0);
+        ThrowIfError(error, "Failed to set FFB reverse");
+    }
+
+    /// <summary>
+    /// Toggles FFB direction reverse and returns the new state.
+    /// </summary>
+    public bool ToggleFfbReverse()
+    {
+        var current = GetFfbReverse();
+        SetFfbReverse(!current);
+        return !current;
+    }
+
+    /// <summary>
+    /// Gets the speed damping value (0-100).
+    /// </summary>
+    public int GetSpeedDamping()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getMotorSpeedDamping(ref error);
+        ThrowIfError(error, "Failed to get speed damping");
+        return result;
+    }
+
+    /// <summary>
+    /// Sets the speed damping value (0-100).
+    /// </summary>
+    public void SetSpeedDamping(int value)
+    {
+        EnsureInitialized();
+        value = Math.Clamp(value, 0, 100);
+        var error = setMotorSpeedDamping(value);
+        ThrowIfError(error, "Failed to set speed damping");
+    }
+
+    /// <summary>
+    /// Adjusts speed damping by a delta value, clamping to valid range.
+    /// </summary>
+    public int AdjustSpeedDamping(int delta)
+    {
+        var current = GetSpeedDamping();
+        var newValue = Math.Clamp(current + delta, 0, 100);
+        SetSpeedDamping(newValue);
+        return newValue;
+    }
+
+    /// <summary>
+    /// Stops all force feedback immediately.
+    /// </summary>
+    public void StopForceFeedback()
+    {
+        EnsureInitialized();
+        var error = stopForceFeedback();
+        ThrowIfError(error, "Failed to stop force feedback");
+    }
+
     private void EnsureInitialized()
     {
         if (!_initialized)

@@ -1,6 +1,6 @@
 {
     "Name": "Moza Hotkey",
-    "Version": "1.0.0-alpha",
+    "Version": "0.8.0-alpha",
     "Author": "github.com/d-b-c-e",
     "Description": "Control your Moza wheel base settings directly from Stream Deck. Adjust FFB, rotation, damping, and more without leaving your game.",
     "Category": "Moza Hotkey",
@@ -77,8 +77,8 @@
         },
         {
             "UUID": "com.mozahotkey.streamdeck.naturaldampening",
-            "Name": "Natural Dampening",
-            "Tooltip": "Adjust natural dampening. Use button or dial.",
+            "Name": "Natural Damping",
+            "Tooltip": "Adjust natural damping. Use button or dial.",
             "Icon": "Images/dampingIcon",
             "States": [
                 {
@@ -90,7 +90,7 @@
             "Encoder": {
                 "layout": "Layouts/value-bar.json",
                 "TriggerDescription": {
-                    "Rotate": "Adjust dampening",
+                    "Rotate": "Adjust damping",
                     "Push": "Show current"
                 }
             },
@@ -221,6 +221,74 @@
                 }
             },
             "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.roadsensitivity",
+            "Name": "Road Sensitivity",
+            "Tooltip": "Adjust road feel detail level (0-10). Use button or dial.",
+            "Icon": "Images/roadIcon",
+            "States": [
+                {
+                    "Image": "Images/roadIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust sensitivity",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.speeddamping",
+            "Name": "Speed Damping",
+            "Tooltip": "Adjust speed-dependent damping to reduce oscillation at high speeds. Use button or dial.",
+            "Icon": "Images/speedDampingIcon",
+            "States": [
+                {
+                    "Image": "Images/speedDampingIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust damping",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.ffbreverse",
+            "Name": "FFB Reverse",
+            "Tooltip": "Toggle Force Feedback direction. Useful when switching between games.",
+            "Icon": "Images/reverseIcon",
+            "States": [
+                {
+                    "Image": "Images/reverseIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.stopffb",
+            "Name": "Stop FFB",
+            "Tooltip": "Emergency stop - immediately kills all force feedback",
+            "Icon": "Images/stopIcon",
+            "States": [
+                {
+                    "Image": "Images/stopIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
         },
         {
             "UUID": "com.mozahotkey.streamdeck.centerwheel",

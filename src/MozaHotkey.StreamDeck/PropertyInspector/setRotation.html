@@ -38,11 +38,11 @@
     <script src="pi.js"></script>
     <script>
         function onSettingsLoaded(settings) {
-            document.getElementById('degrees').value = getSetting('Degrees', 540);
+            document.getElementById('degrees').value = getSetting('degrees', 540);
         }
 
         function onDegreesChanged() {
-            setSetting('Degrees', parseInt(document.getElementById('degrees').value));
+            setSetting('degrees', parseInt(document.getElementById('degrees').value));
         }
     </script>
 </body>

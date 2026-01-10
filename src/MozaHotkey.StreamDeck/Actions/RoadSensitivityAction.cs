@@ -5,8 +5,8 @@ using Newtonsoft.Json.Linq;
 
 namespace MozaHotkey.StreamDeck.Actions;
 
-[PluginActionId("com.mozahotkey.streamdeck.naturaldampening")]
-public class NaturalDampeningAction : KeyAndEncoderBase
+[PluginActionId("com.mozahotkey.streamdeck.roadsensitivity")]
+public class RoadSensitivityAction : KeyAndEncoderBase
 {
     private class PluginSettings
     {
@@ -16,12 +16,13 @@ public class NaturalDampeningAction : KeyAndEncoderBase
         public string Direction { get; set; } = "increase";
 
         [JsonProperty(PropertyName = "incrementValue")]
-        public int IncrementValue { get; set; } = 5;
+        public int IncrementValue { get; set; } = 1;
     }
 
     private PluginSettings settings;
+    private bool _initialized = false;
 
-    public NaturalDampeningAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
+    public RoadSensitivityAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
     {
         if (payload.Settings == null || payload.Settings.Count == 0)
         {
@@ -42,12 +43,12 @@ public class NaturalDampeningAction : KeyAndEncoderBase
             UpdateDirectionIcon();
             if (MozaDeviceManager.Instance.TryInitialize())
             {
-                var currentValue = MozaDeviceManager.Instance.Device.GetDamping();
-                await Connection.SetTitleAsync($"{currentValue}%");
+                var currentValue = MozaDeviceManager.Instance.Device.GetRoadSensitivity();
+                await Connection.SetTitleAsync($"{currentValue}");
                 await Connection.SetFeedbackAsync(new Dictionary<string, string>
                 {
-                    { "value", $"{currentValue}%" },
-                    { "indicator", currentValue.ToString() }
+                    { "value", $"{currentValue}/10" },
+                    { "indicator", (currentValue * 10).ToString() }
                 });
                 _initialized = true;
             }
@@ -62,7 +63,7 @@ public class NaturalDampeningAction : KeyAndEncoderBase
     private void UpdateDirectionIcon()
     {
         var iconSuffix = settings.Direction == "increase" ? "Up" : "Down";
-        Connection.SetImageAsync($"Images/dampingIcon{iconSuffix}.png");
+        Connection.SetImageAsync($"Images/roadIcon{iconSuffix}.png");
     }
 
     public override void KeyPressed(KeyPayload payload)
@@ -71,14 +72,14 @@ public class NaturalDampeningAction : KeyAndEncoderBase
         {
             var device = MozaDeviceManager.Instance.Device;
             var delta = settings.Direction == "decrease" ? -settings.IncrementValue : settings.IncrementValue;
-            var newValue = device.AdjustDamping(delta);
-            Connection.SetTitleAsync($"{newValue}%");
+            var newValue = device.AdjustRoadSensitivity(delta);
+            Connection.SetTitleAsync($"{newValue}");
         }
         catch (Exception ex)
         {
             Connection.SetTitleAsync("Error");
             Connection.ShowAlert();
-            Logger.Instance.LogMessage(TracingLevel.ERROR, $"Natural Dampening error: {ex.Message}");
+            Logger.Instance.LogMessage(TracingLevel.ERROR, $"Road Sensitivity error: {ex.Message}");
         }
     }
 
@@ -90,17 +91,17 @@ public class NaturalDampeningAction : KeyAndEncoderBase
         {
             var device = MozaDeviceManager.Instance.Device;
             var delta = payload.Ticks * settings.IncrementValue;
-            var newValue = device.AdjustDamping(delta);
-            Connection.SetTitleAsync($"{newValue}%");
+            var newValue = device.AdjustRoadSensitivity(delta);
+            Connection.SetTitleAsync($"{newValue}");
             Connection.SetFeedbackAsync(new Dictionary<string, string>
             {
-                { "value", $"{newValue}%" },
-                { "indicator", newValue.ToString() }
+                { "value", $"{newValue}/10" },
+                { "indicator", (newValue * 10).ToString() }
             });
         }
         catch (Exception ex)
         {
-            Logger.Instance.LogMessage(TracingLevel.ERROR, $"Natural Dampening dial error: {ex.Message}");
+            Logger.Instance.LogMessage(TracingLevel.ERROR, $"Road Sensitivity dial error: {ex.Message}");
         }
     }
 
@@ -108,13 +109,11 @@ public class NaturalDampeningAction : KeyAndEncoderBase
     {
         try
         {
-            var currentValue = MozaDeviceManager.Instance.Device.GetDamping();
-            Connection.SetTitleAsync($"{currentValue}%");
+            var currentValue = MozaDeviceManager.Instance.Device.GetRoadSensitivity();
+            Connection.SetTitleAsync($"{currentValue}");
         }
         catch { }
     }
-
-    private bool _initialized = false;
 
     public override void DialUp(DialPayload payload) { }
     public override void TouchPress(TouchpadPressPayload payload) { }

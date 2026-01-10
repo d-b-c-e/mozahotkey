@@ -71,8 +71,22 @@ public static class ActionRegistry
         _actions.Add(new IncreaseSpringStrengthAction(10));
         _actions.Add(new DecreaseSpringStrengthAction(10));
 
+        // Road Sensitivity Actions (0-10)
+        _actions.Add(new IncreaseRoadSensitivityAction(1));
+        _actions.Add(new DecreaseRoadSensitivityAction(1));
+        _actions.Add(new IncreaseRoadSensitivityAction(2));
+        _actions.Add(new DecreaseRoadSensitivityAction(2));
+
+        // Speed Damping Actions
+        _actions.Add(new IncreaseSpeedDampingAction(5));
+        _actions.Add(new DecreaseSpeedDampingAction(5));
+        _actions.Add(new IncreaseSpeedDampingAction(10));
+        _actions.Add(new DecreaseSpeedDampingAction(10));
+
         // Utility
         _actions.Add(new CenterWheelAction());
+        _actions.Add(new ToggleFfbReverseAction());
+        _actions.Add(new StopFfbAction());
     }
 
     /// <summary>

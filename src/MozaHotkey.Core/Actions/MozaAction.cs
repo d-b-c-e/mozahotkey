@@ -418,3 +418,117 @@ public class DecreaseMaxTorqueAction : MozaAction
         return $"Max Torque: {newValue}%";
     }
 }
+
+/// <summary>
+/// Action that increases road sensitivity by a specified amount.
+/// </summary>
+public class IncreaseRoadSensitivityAction : MozaAction
+{
+    private readonly int _amount;
+
+    public IncreaseRoadSensitivityAction(int amount = 1)
+        : base($"road_sensitivity_increase_{amount}", $"Increase Road Sens +{amount}", $"Increases road sensitivity by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustRoadSensitivity(_amount);
+        return $"Road Sens: {newValue}/10";
+    }
+}
+
+/// <summary>
+/// Action that decreases road sensitivity by a specified amount.
+/// </summary>
+public class DecreaseRoadSensitivityAction : MozaAction
+{
+    private readonly int _amount;
+
+    public DecreaseRoadSensitivityAction(int amount = 1)
+        : base($"road_sensitivity_decrease_{amount}", $"Decrease Road Sens -{amount}", $"Decreases road sensitivity by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustRoadSensitivity(-_amount);
+        return $"Road Sens: {newValue}/10";
+    }
+}
+
+/// <summary>
+/// Action that increases speed damping by a specified amount.
+/// </summary>
+public class IncreaseSpeedDampingAction : MozaAction
+{
+    private readonly int _amount;
+
+    public IncreaseSpeedDampingAction(int amount = 5)
+        : base($"speed_damping_increase_{amount}", $"Increase Speed Damp +{amount}", $"Increases speed damping by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustSpeedDamping(_amount);
+        return $"Speed Damp: {newValue}%";
+    }
+}
+
+/// <summary>
+/// Action that decreases speed damping by a specified amount.
+/// </summary>
+public class DecreaseSpeedDampingAction : MozaAction
+{
+    private readonly int _amount;
+
+    public DecreaseSpeedDampingAction(int amount = 5)
+        : base($"speed_damping_decrease_{amount}", $"Decrease Speed Damp -{amount}", $"Decreases speed damping by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustSpeedDamping(-_amount);
+        return $"Speed Damp: {newValue}%";
+    }
+}
+
+/// <summary>
+/// Action that toggles FFB reverse.
+/// </summary>
+public class ToggleFfbReverseAction : MozaAction
+{
+    public ToggleFfbReverseAction()
+        : base("ffb_reverse_toggle", "Toggle FFB Reverse", "Toggles Force Feedback direction")
+    {
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newState = device.ToggleFfbReverse();
+        return newState ? "FFB: Reversed" : "FFB: Normal";
+    }
+}
+
+/// <summary>
+/// Action that stops all force feedback.
+/// </summary>
+public class StopFfbAction : MozaAction
+{
+    public StopFfbAction()
+        : base("stop_ffb", "Stop FFB", "Emergency stop - kills all force feedback")
+    {
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        device.StopForceFeedback();
+        return "FFB Stopped";
+    }
+}

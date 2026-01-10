@@ -140,17 +140,21 @@ New-PlaceholderIcon -Name "categoryIcon" -Label "MOZA" -BackgroundColor "#E31837
 # Action icons with Up/Down variants for adjustable settings
 New-PlaceholderIcon -Name "ffbIcon" -Label "FFB`nStrength" -BackgroundColor "#4A90D9" -GenerateVariants
 New-PlaceholderIcon -Name "rotationIcon" -Label "Wheel`nRotation" -BackgroundColor "#7B68EE" -GenerateVariants
-New-PlaceholderIcon -Name "dampingIcon" -Label "Natural`nDampening" -BackgroundColor "#20B2AA" -GenerateVariants
+New-PlaceholderIcon -Name "dampingIcon" -Label "Natural`nDamping" -BackgroundColor "#20B2AA" -GenerateVariants
 New-PlaceholderIcon -Name "torqueIcon" -Label "Max`nTorque" -BackgroundColor "#FF6347" -GenerateVariants
 New-PlaceholderIcon -Name "swInertiaIcon" -Label "Wheel`nInertia" -BackgroundColor "#6A5ACD" -GenerateVariants
 New-PlaceholderIcon -Name "speedIcon" -Label "Max`nSpeed" -BackgroundColor "#FF8C00" -GenerateVariants
 New-PlaceholderIcon -Name "frictionIcon" -Label "Natural`nFriction" -BackgroundColor "#CD853F" -GenerateVariants
 New-PlaceholderIcon -Name "inertiaIcon" -Label "Natural`nInertia" -BackgroundColor "#8B4513" -GenerateVariants
 New-PlaceholderIcon -Name "springIcon" -Label "Spring`nStrength" -BackgroundColor "#32CD32" -GenerateVariants
+New-PlaceholderIcon -Name "roadIcon" -Label "Road`nSensitivity" -BackgroundColor "#4682B4" -GenerateVariants
+New-PlaceholderIcon -Name "speedDampingIcon" -Label "Speed`nDamping" -BackgroundColor "#2E8B57" -GenerateVariants
 
 # Action icons without variants (no direction setting)
 New-PlaceholderIcon -Name "setRotationIcon" -Label "Set`nRotation" -BackgroundColor "#9370DB"
 New-PlaceholderIcon -Name "centerIcon" -Label "Center`nWheel" -BackgroundColor "#FFB347"
+New-PlaceholderIcon -Name "reverseIcon" -Label "FFB`nReverse" -BackgroundColor "#DC143C"
+New-PlaceholderIcon -Name "stopIcon" -Label "STOP`nFFB" -BackgroundColor "#B22222"
 
 Write-Host ""
 Write-Host "Done! Icons created in: $imagesPath" -ForegroundColor Green

@@ -2,7 +2,7 @@
 ; Creates a Windows installer with .NET 8 dependency checking
 
 #define MyAppName "MozaHotkey"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "0.8.0-alpha"
 #define MyAppPublisher "MozaHotkey"
 #define MyAppURL "https://github.com/d-b-c-e/mozahotkey"
 #define MyAppExeName "MozaHotkey.App.exe"
