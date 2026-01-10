@@ -2,6 +2,18 @@
 
 A Stream Deck plugin for controlling Moza Racing wheel bases. Adjust FFB strength, wheel rotation, and other settings directly from your Stream Deck without alt-tabbing out of your sim racing games.
 
+## Quick Start
+
+**[Download from Releases](https://github.com/d-b-c-e/mozahotkey/releases)**
+
+1. Download the `.streamDeckPlugin` file from the latest release
+2. Double-click to install
+3. Done! Find "Moza Hotkey" in your Stream Deck actions
+
+*Requires: Windows 10/11, Stream Deck software 6.0+, and Moza Pit House installed*
+
+---
+
 ## Why I Made This
 
 I created this plugin because as a single monitor user, alt-tabbing in and out of games to Moza Pit House often causes issues for non-borderless windowed games.
