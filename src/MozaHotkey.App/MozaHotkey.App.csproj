@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Version>0.8.0-alpha</Version>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <PublishSingleFile>false</PublishSingleFile>
+    <AssemblyName>MozaHotkey.App</AssemblyName>
+    <Product>MozaHotkey</Product>
+    <Company>MozaHotkey</Company>
+    <Description>Control Moza Racing wheel base settings via global hotkeys</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MozaHotkey.Core\MozaHotkey.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\lib\MozaSDK\MOZA_SDK.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>MOZA_SDK.dll</Link>
+    </Content>
+    <Content Include="..\..\lib\MozaSDK\MOZA_API_C.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>MOZA_API_C.dll</Link>
+    </Content>
+  </ItemGroup>
+
+</Project>

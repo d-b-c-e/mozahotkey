@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="MOZA_API_CSharp">
+      <HintPath>..\..\lib\MozaSDK\MOZA_API_CSharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="..\..\lib\MozaSDK\MOZA_SDK.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>MOZA_SDK.dll</Link>
+    </None>
+    <None Update="..\..\lib\MozaSDK\MOZA_API_C.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>MOZA_API_C.dll</Link>
+    </None>
+  </ItemGroup>
+
+</Project>

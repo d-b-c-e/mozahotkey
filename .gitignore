@@ -3,6 +3,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Moza SDK is now included in the repository
+# lib/
+
+# Release packages
+releases/
+
 # User-specific files
 *.rsuser
 *.suo

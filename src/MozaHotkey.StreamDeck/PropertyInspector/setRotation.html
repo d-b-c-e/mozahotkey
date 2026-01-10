@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Set Rotation Settings</title>
+    <link rel="stylesheet" href="sdpi.css">
+</head>
+<body>
+    <div class="sdpi-wrapper">
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Rotation</div>
+            <select class="sdpi-item-value" id="degrees" onchange="onDegreesChanged()">
+                <option value="270">270°</option>
+                <option value="360">360°</option>
+                <option value="540">540° (Default)</option>
+                <option value="720">720°</option>
+                <option value="900">900°</option>
+                <option value="1080">1080°</option>
+                <option value="1440">1440°</option>
+                <option value="1800">1800°</option>
+                <option value="2520">2520°</option>
+            </select>
+        </div>
+
+        <div class="info">
+            Sets wheel rotation to the selected preset value when the button is pressed.
+            <br><br>
+            Common values:
+            <ul style="margin: 4px 0; padding-left: 16px;">
+                <li>270° - Formula/Open wheel</li>
+                <li>540° - Rally/Drift</li>
+                <li>720° - GT cars</li>
+                <li>900° - Road cars</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="pi.js"></script>
+    <script>
+        function onSettingsLoaded(settings) {
+            document.getElementById('degrees').value = getSetting('degrees', 540);
+        }
+
+        function onDegreesChanged() {
+            setSetting('degrees', parseInt(document.getElementById('degrees').value));
+        }
+    </script>
+</body>
+</html>
