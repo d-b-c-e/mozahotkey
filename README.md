@@ -2,6 +2,8 @@
 
 A Stream Deck plugin for controlling Moza Racing wheel bases. Adjust FFB strength, wheel rotation, and other settings directly from your Stream Deck without alt-tabbing out of your sim racing games.
 
+![MozaHotkey Stream Deck Plugin](docs/mozahotkey_screenshot1.png)
+
 ## Quick Start
 
 **[Download from Releases](https://github.com/d-b-c-e/mozahotkey/releases)**
@@ -32,7 +34,7 @@ I hope you find it useful! I might consider deploying it to the Stream Deck Mark
 - **Full Stream Deck Support**: Works with Stream Deck buttons and Stream Deck+ dials
 - **Real-time Display**: Current values shown on buttons and dial LCD screens
 - **Per-Action Settings**: Configure increment values and direction for each button
-- **15 Available Actions**: Control all major wheel base settings
+- **19 Available Actions**: Control all major wheel base and pedal settings
 
 ## Available Actions
 
@@ -56,10 +58,14 @@ I hope you find it useful! I might consider deploying it to the Stream Deck Mark
 
 | Action | Description |
 |--------|-------------|
-| Set Rotation | Set wheel rotation to a specific preset value |
+| Set Rotation | Set wheel rotation to a specific preset value (180-2520) |
 | Center Wheel | Centers the steering wheel |
 | FFB Reverse | Toggles force feedback direction |
 | Stop FFB | Emergency kill switch - stops all force feedback |
+| Throttle Reverse | Toggles throttle pedal output direction |
+| Brake Reverse | Toggles brake pedal output direction |
+| Clutch Reverse | Toggles clutch pedal output direction |
+| Handbrake Mode | Toggles handbrake between axis and button mode |
 
 ## Requirements
 
@@ -73,6 +79,15 @@ I hope you find it useful! I might consider deploying it to the Stream Deck Mark
 1. Download the latest `.streamDeckPlugin` file from [Releases](https://github.com/d-b-c-e/mozahotkey/releases)
 2. Double-click the file to install
 3. Stream Deck will open and the plugin will be available under "Moza Hotkey"
+
+## Uninstallation
+
+1. Close the Stream Deck application
+2. Delete the plugin folder:
+   ```
+   %APPDATA%\Elgato\StreamDeck\Plugins\com.mozahotkey.streamdeck.sdPlugin
+   ```
+3. Restart Stream Deck
 
 ## Usage
 

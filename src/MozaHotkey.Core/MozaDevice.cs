@@ -465,6 +465,135 @@ public class MozaDevice : IDisposable
         ThrowIfError(error, "Failed to stop force feedback");
     }
 
+    /// <summary>
+    /// Gets whether throttle pedal output is reversed.
+    /// </summary>
+    public bool GetThrottleReverse()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getPedalAccOutDir(ref error);
+        ThrowIfError(error, "Failed to get throttle reverse");
+        return result != 0;
+    }
+
+    /// <summary>
+    /// Sets whether throttle pedal output is reversed.
+    /// </summary>
+    public void SetThrottleReverse(bool reversed)
+    {
+        EnsureInitialized();
+        var error = setPedalAccOutDir(reversed ? 1 : 0);
+        ThrowIfError(error, "Failed to set throttle reverse");
+    }
+
+    /// <summary>
+    /// Toggles throttle pedal reverse and returns the new state.
+    /// </summary>
+    public bool ToggleThrottleReverse()
+    {
+        var current = GetThrottleReverse();
+        SetThrottleReverse(!current);
+        return !current;
+    }
+
+    /// <summary>
+    /// Gets whether brake pedal output is reversed.
+    /// </summary>
+    public bool GetBrakeReverse()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getPedalBrakeOutDir(ref error);
+        ThrowIfError(error, "Failed to get brake reverse");
+        return result != 0;
+    }
+
+    /// <summary>
+    /// Sets whether brake pedal output is reversed.
+    /// </summary>
+    public void SetBrakeReverse(bool reversed)
+    {
+        EnsureInitialized();
+        var error = setPedalBrakeOutDir(reversed ? 1 : 0);
+        ThrowIfError(error, "Failed to set brake reverse");
+    }
+
+    /// <summary>
+    /// Toggles brake pedal reverse and returns the new state.
+    /// </summary>
+    public bool ToggleBrakeReverse()
+    {
+        var current = GetBrakeReverse();
+        SetBrakeReverse(!current);
+        return !current;
+    }
+
+    /// <summary>
+    /// Gets whether clutch pedal output is reversed.
+    /// </summary>
+    public bool GetClutchReverse()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getPedalClutchOutDir(ref error);
+        ThrowIfError(error, "Failed to get clutch reverse");
+        return result != 0;
+    }
+
+    /// <summary>
+    /// Sets whether clutch pedal output is reversed.
+    /// </summary>
+    public void SetClutchReverse(bool reversed)
+    {
+        EnsureInitialized();
+        var error = setPedalClutchOutDir(reversed ? 1 : 0);
+        ThrowIfError(error, "Failed to set clutch reverse");
+    }
+
+    /// <summary>
+    /// Toggles clutch pedal reverse and returns the new state.
+    /// </summary>
+    public bool ToggleClutchReverse()
+    {
+        var current = GetClutchReverse();
+        SetClutchReverse(!current);
+        return !current;
+    }
+
+    /// <summary>
+    /// Gets the handbrake application mode (0 = axis, 1 = button).
+    /// </summary>
+    public int GetHandbrakeMode()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getHandbrakeApplicationMode(ref error);
+        ThrowIfError(error, "Failed to get handbrake mode");
+        return result;
+    }
+
+    /// <summary>
+    /// Sets the handbrake application mode (0 = axis, 1 = button).
+    /// </summary>
+    public void SetHandbrakeMode(int mode)
+    {
+        EnsureInitialized();
+        var error = setHandbrakeApplicationMode(mode);
+        ThrowIfError(error, "Failed to set handbrake mode");
+    }
+
+    /// <summary>
+    /// Toggles handbrake between axis and button mode. Returns new mode (0 = axis, 1 = button).
+    /// </summary>
+    public int ToggleHandbrakeMode()
+    {
+        var current = GetHandbrakeMode();
+        var newMode = current == 0 ? 1 : 0;
+        SetHandbrakeMode(newMode);
+        return newMode;
+    }
+
     private void EnsureInitialized()
     {
         if (!_initialized)

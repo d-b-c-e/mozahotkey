@@ -532,3 +532,71 @@ public class StopFfbAction : MozaAction
         return "FFB Stopped";
     }
 }
+
+/// <summary>
+/// Action that toggles throttle pedal reverse.
+/// </summary>
+public class ToggleThrottleReverseAction : MozaAction
+{
+    public ToggleThrottleReverseAction()
+        : base("throttle_reverse_toggle", "Toggle Throttle Reverse", "Toggles throttle pedal output direction")
+    {
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newState = device.ToggleThrottleReverse();
+        return newState ? "Throttle: Reversed" : "Throttle: Normal";
+    }
+}
+
+/// <summary>
+/// Action that toggles brake pedal reverse.
+/// </summary>
+public class ToggleBrakeReverseAction : MozaAction
+{
+    public ToggleBrakeReverseAction()
+        : base("brake_reverse_toggle", "Toggle Brake Reverse", "Toggles brake pedal output direction")
+    {
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newState = device.ToggleBrakeReverse();
+        return newState ? "Brake: Reversed" : "Brake: Normal";
+    }
+}
+
+/// <summary>
+/// Action that toggles clutch pedal reverse.
+/// </summary>
+public class ToggleClutchReverseAction : MozaAction
+{
+    public ToggleClutchReverseAction()
+        : base("clutch_reverse_toggle", "Toggle Clutch Reverse", "Toggles clutch pedal output direction")
+    {
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newState = device.ToggleClutchReverse();
+        return newState ? "Clutch: Reversed" : "Clutch: Normal";
+    }
+}
+
+/// <summary>
+/// Action that toggles handbrake between axis and button mode.
+/// </summary>
+public class ToggleHandbrakeModeAction : MozaAction
+{
+    public ToggleHandbrakeModeAction()
+        : base("handbrake_mode_toggle", "Toggle Handbrake Mode", "Toggles handbrake between axis and button mode")
+    {
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newMode = device.ToggleHandbrakeMode();
+        return newMode == 0 ? "Handbrake: Axis" : "Handbrake: Button";
+    }
+}
