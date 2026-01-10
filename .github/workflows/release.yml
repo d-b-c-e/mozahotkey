@@ -1,0 +1,128 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Update version in project files
+        shell: pwsh
+        run: |
+          $version = "${{ steps.version.outputs.VERSION }}"
+
+          # Update App csproj
+          $appCsproj = "src/MozaHotkey.App/MozaHotkey.App.csproj"
+          (Get-Content $appCsproj) -replace '<Version>.*</Version>', "<Version>$version</Version>" | Set-Content $appCsproj
+
+          # Update StreamDeck csproj
+          $sdCsproj = "src/MozaHotkey.StreamDeck/MozaHotkey.StreamDeck.csproj"
+          (Get-Content $sdCsproj) -replace '<Version>.*</Version>', "<Version>$version</Version>" | Set-Content $sdCsproj
+
+          # Update installer
+          $issFile = "installer/MozaHotkey.iss"
+          (Get-Content $issFile) -replace '#define MyAppVersion ".*"', "#define MyAppVersion `"$version`"" | Set-Content $issFile
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup -y
+
+      - name: Build Windows App Installer
+        shell: pwsh
+        run: |
+          $version = "${{ steps.version.outputs.VERSION }}"
+
+          # Build the app
+          dotnet publish src/MozaHotkey.App/MozaHotkey.App.csproj -c Release -r win-x64 --self-contained false
+
+          # Run Inno Setup
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer/MozaHotkey.iss
+
+          # Rename output to include version
+          $outputDir = "releases"
+          if (-not (Test-Path $outputDir)) { New-Item -ItemType Directory -Path $outputDir }
+
+      - name: Build Stream Deck Plugin
+        shell: pwsh
+        run: |
+          $version = "${{ steps.version.outputs.VERSION }}"
+          $pluginId = "com.mozahotkey.streamdeck"
+          $pluginName = "$pluginId.sdPlugin"
+          $outputDir = "releases"
+          $stagingPath = "$outputDir/staging"
+          $pluginStagingPath = "$stagingPath/$pluginName"
+
+          # Build
+          dotnet build src/MozaHotkey.StreamDeck/MozaHotkey.StreamDeck.csproj -c Release
+
+          # Create staging directory
+          New-Item -ItemType Directory -Path $pluginStagingPath -Force | Out-Null
+
+          # Copy plugin files
+          Copy-Item -Path "src/MozaHotkey.StreamDeck/bin/Release/*" -Destination $pluginStagingPath -Recurse
+
+          # Generate marketplace icon
+          Add-Type -AssemblyName System.Drawing
+          $imagesPath = "src/MozaHotkey.StreamDeck/Images"
+          $marketplaceIconPath = "$imagesPath/marketplaceIcon.png"
+          $size = 288
+          $bitmap = New-Object System.Drawing.Bitmap($size, $size)
+          $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+          $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
+          $graphics.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAliasGridFit
+          $bgBrush = New-Object System.Drawing.SolidBrush([System.Drawing.ColorTranslator]::FromHtml("#E31837"))
+          $graphics.FillRectangle($bgBrush, 0, 0, $size, $size)
+          $textBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
+          $font = New-Object System.Drawing.Font("Segoe UI", 48, [System.Drawing.FontStyle]::Bold)
+          $stringFormat = New-Object System.Drawing.StringFormat
+          $stringFormat.Alignment = [System.Drawing.StringAlignment]::Center
+          $stringFormat.LineAlignment = [System.Drawing.StringAlignment]::Center
+          $rect = New-Object System.Drawing.RectangleF(0, -20, $size, $size)
+          $graphics.DrawString("MOZA", $font, $textBrush, $rect, $stringFormat)
+          $subtitleFont = New-Object System.Drawing.Font("Segoe UI", 28, [System.Drawing.FontStyle]::Regular)
+          $subtitleRect = New-Object System.Drawing.RectangleF(0, 50, $size, $size)
+          $graphics.DrawString("Hotkey", $subtitleFont, $textBrush, $subtitleRect, $stringFormat)
+          $bitmap.Save($marketplaceIconPath, [System.Drawing.Imaging.ImageFormat]::Png)
+          $font.Dispose(); $subtitleFont.Dispose(); $textBrush.Dispose(); $bgBrush.Dispose()
+          $stringFormat.Dispose(); $graphics.Dispose(); $bitmap.Dispose()
+
+          # Copy marketplace icon to plugin
+          Copy-Item -Path $marketplaceIconPath -Destination "$pluginStagingPath/Images/marketplaceIcon.png" -Force
+
+          # Create .streamDeckPlugin (ZIP with different extension)
+          $pluginFilePath = "$outputDir/$pluginId-v$version.streamDeckPlugin"
+          Compress-Archive -Path "$stagingPath/*" -DestinationPath "$outputDir/temp.zip" -Force
+          Move-Item -Path "$outputDir/temp.zip" -Destination $pluginFilePath -Force
+
+          # Clean up staging
+          Remove-Item -Path $stagingPath -Recurse -Force
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: MozaHotkey v${{ steps.version.outputs.VERSION }}
+          draft: false
+          prerelease: ${{ contains(steps.version.outputs.VERSION, 'alpha') || contains(steps.version.outputs.VERSION, 'beta') }}
+          generate_release_notes: true
+          files: |
+            releases/MozaHotkey-Setup-v${{ steps.version.outputs.VERSION }}.exe
+            releases/com.mozahotkey.streamdeck-v${{ steps.version.outputs.VERSION }}.streamDeckPlugin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
