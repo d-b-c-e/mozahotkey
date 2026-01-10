@@ -302,6 +302,58 @@
                 }
             ],
             "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.throttlereverse",
+            "Name": "Throttle Reverse",
+            "Tooltip": "Toggle throttle pedal output direction",
+            "Icon": "Images/throttleIcon",
+            "States": [
+                {
+                    "Image": "Images/throttleIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.brakereverse",
+            "Name": "Brake Reverse",
+            "Tooltip": "Toggle brake pedal output direction",
+            "Icon": "Images/brakeIcon",
+            "States": [
+                {
+                    "Image": "Images/brakeIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.clutchreverse",
+            "Name": "Clutch Reverse",
+            "Tooltip": "Toggle clutch pedal output direction",
+            "Icon": "Images/clutchIcon",
+            "States": [
+                {
+                    "Image": "Images/clutchIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.handbrakemode",
+            "Name": "Handbrake Mode",
+            "Tooltip": "Toggle handbrake between axis and button mode",
+            "Icon": "Images/handbrakeIcon",
+            "States": [
+                {
+                    "Image": "Images/handbrakeIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
         }
     ]
 }

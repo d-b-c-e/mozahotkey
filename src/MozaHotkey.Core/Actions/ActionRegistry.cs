@@ -22,6 +22,7 @@ public static class ActionRegistry
         _actions.Add(new DecreaseRotationAction(180));
 
         // Preset Rotations
+        _actions.Add(new SetRotationAction(180));
         _actions.Add(new SetRotationAction(270));
         _actions.Add(new SetRotationAction(360));
         _actions.Add(new SetRotationAction(540));
@@ -87,6 +88,14 @@ public static class ActionRegistry
         _actions.Add(new CenterWheelAction());
         _actions.Add(new ToggleFfbReverseAction());
         _actions.Add(new StopFfbAction());
+
+        // Pedal Reverse Toggles
+        _actions.Add(new ToggleThrottleReverseAction());
+        _actions.Add(new ToggleBrakeReverseAction());
+        _actions.Add(new ToggleClutchReverseAction());
+
+        // Handbrake Mode Toggle
+        _actions.Add(new ToggleHandbrakeModeAction());
     }
 
     /// <summary>

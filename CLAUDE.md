@@ -77,6 +77,10 @@ MozaHotkey/
 | `setMotorFfbReverse(int)` | Set FFB direction (0=normal, 1=reversed) | 0-1 |
 | `stopForceFeedback()` | Emergency stop all force feedback | N/A |
 | `CenterWheel()` | Center the steering wheel | N/A |
+| `setPedalAccOutDir(int)` | Set throttle pedal direction (0=normal, 1=reversed) | 0-1 |
+| `setPedalBrakeOutDir(int)` | Set brake pedal direction (0=normal, 1=reversed) | 0-1 |
+| `setPedalClutchOutDir(int)` | Set clutch pedal direction (0=normal, 1=reversed) | 0-1 |
+| `setHandbrakeApplicationMode(int)` | Set handbrake mode (0=axis, 1=button) | 0-1 |
 
 All getter functions use `ref ERRORCODE` parameter.
 
@@ -131,6 +135,10 @@ Installed to: `%APPDATA%\Elgato\StreamDeck\Plugins\com.mozahotkey.streamdeck.sdP
 | FFB Reverse | Toggle FFB direction | N/A | Button only |
 | Stop FFB | Emergency stop all force feedback | N/A | Button only |
 | Center Wheel | Center the steering wheel | N/A | Button only |
+| Throttle Reverse | Toggle throttle pedal direction | N/A | Button only |
+| Brake Reverse | Toggle brake pedal direction | N/A | Button only |
+| Clutch Reverse | Toggle clutch pedal direction | N/A | Button only |
+| Handbrake Mode | Toggle handbrake axis/button mode | N/A | Button only |
 
 ### Per-Action Settings
 
@@ -155,6 +163,7 @@ Icons are 72x72 PNG files in `src/MozaHotkey.StreamDeck/Images/`:
 - swInertiaIcon.png, speedIcon.png, frictionIcon.png
 - inertiaIcon.png, springIcon.png, roadIcon.png
 - speedDampingIcon.png, reverseIcon.png, stopIcon.png
+- throttleIcon.png, brakeIcon.png, clutchIcon.png, handbrakeIcon.png
 
 Adjustable actions also have Up/Down variants (e.g., ffbIconUp.png, ffbIconDown.png) for direction indication.
 

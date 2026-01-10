@@ -156,5 +156,13 @@ New-PlaceholderIcon -Name "centerIcon" -Label "Center`nWheel" -BackgroundColor "
 New-PlaceholderIcon -Name "reverseIcon" -Label "FFB`nReverse" -BackgroundColor "#DC143C"
 New-PlaceholderIcon -Name "stopIcon" -Label "STOP`nFFB" -BackgroundColor "#B22222"
 
+# Pedal reverse toggles
+New-PlaceholderIcon -Name "throttleIcon" -Label "Throttle`nReverse" -BackgroundColor "#2E8B57"
+New-PlaceholderIcon -Name "brakeIcon" -Label "Brake`nReverse" -BackgroundColor "#CD5C5C"
+New-PlaceholderIcon -Name "clutchIcon" -Label "Clutch`nReverse" -BackgroundColor "#708090"
+
+# Handbrake mode toggle
+New-PlaceholderIcon -Name "handbrakeIcon" -Label "E-Brake`nMode" -BackgroundColor "#8B0000"
+
 Write-Host ""
 Write-Host "Done! Icons created in: $imagesPath" -ForegroundColor Green
