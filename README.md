@@ -6,9 +6,10 @@ A Stream Deck plugin for controlling Moza Racing wheel bases. Adjust FFB strengt
 
 **[Download from Releases](https://github.com/d-b-c-e/mozahotkey/releases)**
 
-1. Download the `.streamDeckPlugin` file from the latest release
-2. Double-click to install
-3. Done! Find "Moza Hotkey" in your Stream Deck actions
+1. Click "Assets" to expand the downloads
+2. Download the `.streamDeckPlugin` file
+3. Double-click to install
+4. Done! Find "Moza Hotkey" in your Stream Deck actions
 
 *Requires: Windows 10/11, Stream Deck software 6.0+, and Moza Pit House installed*
 
