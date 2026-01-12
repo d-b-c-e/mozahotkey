@@ -20,6 +20,8 @@ public class RotationAction : KeyAndEncoderBase
     }
 
     private PluginSettings settings;
+    private readonly DateTime _startupTime = DateTime.UtcNow;
+    private static readonly TimeSpan StartupGracePeriod = TimeSpan.FromSeconds(30);
 
     public RotationAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
     {
@@ -35,6 +37,8 @@ public class RotationAction : KeyAndEncoderBase
         InitializeDisplay();
     }
 
+    private bool IsInStartupGracePeriod => DateTime.UtcNow - _startupTime < StartupGracePeriod;
+
     private async void InitializeDisplay()
     {
         try
@@ -43,6 +47,20 @@ public class RotationAction : KeyAndEncoderBase
             if (MozaDeviceManager.Instance.TryInitialize())
             {
                 var (_, currentValue) = MozaDeviceManager.Instance.Device.GetWheelRotation();
+
+                // During startup grace period, treat invalid values (< 90) as "not connected yet"
+                // since Moza Pit House may not be fully loaded.
+                if (currentValue < 90 && IsInStartupGracePeriod)
+                {
+                    await Connection.SetTitleAsync("N/C");
+                    await Connection.SetFeedbackAsync(new Dictionary<string, string>
+                    {
+                        { "value", "N/C" },
+                        { "indicator", "0" }
+                    });
+                    return;
+                }
+
                 await Connection.SetTitleAsync($"{currentValue}°");
                 var indicatorValue = (currentValue - 90) * 100 / (2700 - 90);
                 await Connection.SetFeedbackAsync(new Dictionary<string, string>

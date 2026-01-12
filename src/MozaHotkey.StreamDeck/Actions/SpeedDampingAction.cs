@@ -21,6 +21,8 @@ public class SpeedDampingAction : KeyAndEncoderBase
 
     private PluginSettings settings;
     private bool _initialized = false;
+    private readonly DateTime _startupTime = DateTime.UtcNow;
+    private static readonly TimeSpan StartupGracePeriod = TimeSpan.FromSeconds(30);
 
     public SpeedDampingAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
     {
@@ -36,6 +38,8 @@ public class SpeedDampingAction : KeyAndEncoderBase
         InitializeDisplay();
     }
 
+    private bool IsInStartupGracePeriod => DateTime.UtcNow - _startupTime < StartupGracePeriod;
+
     private async void InitializeDisplay()
     {
         try
@@ -44,6 +48,20 @@ public class SpeedDampingAction : KeyAndEncoderBase
             if (MozaDeviceManager.Instance.TryInitialize())
             {
                 var currentValue = MozaDeviceManager.Instance.Device.GetSpeedDamping();
+
+                // During startup grace period, treat 0 as "not connected yet" since
+                // Moza Pit House may not be fully loaded.
+                if (currentValue == 0 && IsInStartupGracePeriod)
+                {
+                    await Connection.SetTitleAsync("N/C");
+                    await Connection.SetFeedbackAsync(new Dictionary<string, string>
+                    {
+                        { "value", "N/C" },
+                        { "indicator", "0" }
+                    });
+                    return;
+                }
+
                 await Connection.SetTitleAsync($"{currentValue}%");
                 await Connection.SetFeedbackAsync(new Dictionary<string, string>
                 {

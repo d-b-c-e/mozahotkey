@@ -20,6 +20,8 @@ public class SteeringWheelInertiaAction : KeyAndEncoderBase
     }
 
     private PluginSettings settings;
+    private readonly DateTime _startupTime = DateTime.UtcNow;
+    private static readonly TimeSpan StartupGracePeriod = TimeSpan.FromSeconds(30);
 
     public SteeringWheelInertiaAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
     {
@@ -35,6 +37,8 @@ public class SteeringWheelInertiaAction : KeyAndEncoderBase
         InitializeDisplay();
     }
 
+    private bool IsInStartupGracePeriod => DateTime.UtcNow - _startupTime < StartupGracePeriod;
+
     private async void InitializeDisplay()
     {
         try
@@ -43,6 +47,20 @@ public class SteeringWheelInertiaAction : KeyAndEncoderBase
             if (MozaDeviceManager.Instance.TryInitialize())
             {
                 var currentValue = MozaDeviceManager.Instance.Device.GetSteeringWheelInertia();
+
+                // During startup grace period, treat invalid values (< 100) as "not connected yet"
+                // since Moza Pit House may not be fully loaded. Valid range is 100-1550.
+                if (currentValue < 100 && IsInStartupGracePeriod)
+                {
+                    await Connection.SetTitleAsync("N/C");
+                    await Connection.SetFeedbackAsync(new Dictionary<string, string>
+                    {
+                        { "value", "N/C" },
+                        { "indicator", "0" }
+                    });
+                    return;
+                }
+
                 await Connection.SetTitleAsync($"{currentValue}g");
                 // Scale 100-1550 to 0-100 for indicator
                 var indicatorValue = (currentValue - 100) * 100 / (1550 - 100);

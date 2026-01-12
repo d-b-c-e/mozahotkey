@@ -20,6 +20,8 @@ public class SpringStrengthAction : KeyAndEncoderBase
     }
 
     private PluginSettings settings;
+    private readonly DateTime _startupTime = DateTime.UtcNow;
+    private static readonly TimeSpan StartupGracePeriod = TimeSpan.FromSeconds(30);
 
     public SpringStrengthAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
     {
@@ -35,6 +37,8 @@ public class SpringStrengthAction : KeyAndEncoderBase
         InitializeDisplay();
     }
 
+    private bool IsInStartupGracePeriod => DateTime.UtcNow - _startupTime < StartupGracePeriod;
+
     private async void InitializeDisplay()
     {
         try
@@ -43,6 +47,20 @@ public class SpringStrengthAction : KeyAndEncoderBase
             if (MozaDeviceManager.Instance.TryInitialize())
             {
                 var currentValue = MozaDeviceManager.Instance.Device.GetSpringStrength();
+
+                // During startup grace period, treat 0 as "not connected yet" since
+                // Moza Pit House may not be fully loaded.
+                if (currentValue == 0 && IsInStartupGracePeriod)
+                {
+                    await Connection.SetTitleAsync("N/C");
+                    await Connection.SetFeedbackAsync(new Dictionary<string, string>
+                    {
+                        { "value", "N/C" },
+                        { "indicator", "0" }
+                    });
+                    return;
+                }
+
                 await Connection.SetTitleAsync($"{currentValue}%");
                 await Connection.SetFeedbackAsync(new Dictionary<string, string>
                 {

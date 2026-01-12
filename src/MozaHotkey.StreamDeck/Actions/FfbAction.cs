@@ -20,6 +20,8 @@ public class FfbAction : KeyAndEncoderBase
     }
 
     private PluginSettings settings;
+    private readonly DateTime _startupTime = DateTime.UtcNow;
+    private static readonly TimeSpan StartupGracePeriod = TimeSpan.FromSeconds(30);
 
     public FfbAction(ISDConnection connection, InitialPayload payload) : base(connection, payload)
     {
@@ -35,6 +37,8 @@ public class FfbAction : KeyAndEncoderBase
         InitializeDisplay();
     }
 
+    private bool IsInStartupGracePeriod => DateTime.UtcNow - _startupTime < StartupGracePeriod;
+
     private async void InitializeDisplay()
     {
         try
@@ -43,6 +47,22 @@ public class FfbAction : KeyAndEncoderBase
             if (MozaDeviceManager.Instance.TryInitialize())
             {
                 var currentValue = MozaDeviceManager.Instance.Device.GetFfbStrength();
+
+                // During startup grace period, treat 0 as "not connected yet" since
+                // Moza Pit House may not be fully loaded. Keep retrying until we get
+                // a non-zero value or the grace period expires.
+                if (currentValue == 0 && IsInStartupGracePeriod)
+                {
+                    await Connection.SetTitleAsync("N/C");
+                    await Connection.SetFeedbackAsync(new Dictionary<string, string>
+                    {
+                        { "value", "N/C" },
+                        { "indicator", "0" }
+                    });
+                    // Don't set _initialized, so OnTick will retry
+                    return;
+                }
+
                 await Connection.SetTitleAsync($"{currentValue}%");
                 await Connection.SetFeedbackAsync(new Dictionary<string, string>
                 {
