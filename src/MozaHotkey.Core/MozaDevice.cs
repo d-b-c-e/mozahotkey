@@ -277,7 +277,7 @@ public class MozaDevice : IDisposable
     }
 
     /// <summary>
-    /// Gets the natural inertia (0-100).
+    /// Gets the natural inertia (100-500).
     /// </summary>
     public int GetNaturalInertia()
     {
@@ -289,12 +289,12 @@ public class MozaDevice : IDisposable
     }
 
     /// <summary>
-    /// Sets the natural inertia (0-100).
+    /// Sets the natural inertia (100-500).
     /// </summary>
     public void SetNaturalInertia(int value)
     {
         EnsureInitialized();
-        value = Math.Clamp(value, 0, 100);
+        value = Math.Clamp(value, 100, 500);
         var error = setMotorNaturalInertia(value);
         ThrowIfError(error, "Failed to set natural inertia");
     }
@@ -305,7 +305,7 @@ public class MozaDevice : IDisposable
     public int AdjustNaturalInertia(int delta)
     {
         var current = GetNaturalInertia();
-        var newValue = Math.Clamp(current + delta, 0, 100);
+        var newValue = Math.Clamp(current + delta, 100, 500);
         SetNaturalInertia(newValue);
         return newValue;
     }

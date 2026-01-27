@@ -49,7 +49,7 @@ I hope you find it useful! I might consider deploying it to the Stream Deck Mark
 | Steering Wheel Inertia | 100-1550g | Simulated wheel weight |
 | Maximum Wheel Speed | 0-100% | Wheel rotation speed limit |
 | Natural Friction | 0-100% | Static friction simulation |
-| Natural Inertia | 0-100% | Rotational inertia simulation |
+| Natural Inertia | 100-500% | Rotational inertia simulation |
 | Spring Strength | 0-100% | Center spring force |
 | Road Sensitivity | 0-10 | Road feel detail level |
 | Speed Damping | 0-100% | Speed-dependent damping to reduce oscillation |

@@ -69,7 +69,7 @@ MozaHotkey/
 | `setMotorSpringStrength(int)` | Set center spring strength | 0-100 |
 | `setMotorPeakTorque(int)` | Set max torque limit | 50-100 |
 | `setMotorNaturalFriction(int)` | Set natural friction | 0-100 |
-| `setMotorNaturalInertia(int)` | Set natural inertia | 0-100 |
+| `setMotorNaturalInertia(int)` | Set natural inertia | 100-500 |
 | `setMotorNaturalInertiaRatio(int)` | Set steering wheel inertia (weight simulation) | 100-1550 |
 | `setMotorLimitWheelSpeed(int)` | Set maximum wheel speed | 0-100 |
 | `setMotorRoadSensitivity(int)` | Set road sensitivity/feel | 0-10 |

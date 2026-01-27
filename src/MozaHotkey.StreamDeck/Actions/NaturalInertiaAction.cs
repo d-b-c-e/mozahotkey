@@ -48,9 +48,9 @@ public class NaturalInertiaAction : KeyAndEncoderBase
             {
                 var currentValue = MozaDeviceManager.Instance.Device.GetNaturalInertia();
 
-                // During startup grace period, treat 0 as "not connected yet" since
-                // Moza Pit House may not be fully loaded.
-                if (currentValue == 0 && IsInStartupGracePeriod)
+                // During startup grace period, treat values < 100 as "not connected yet" since
+                // Moza Pit House may not be fully loaded. Valid range is 100-500.
+                if (currentValue < 100 && IsInStartupGracePeriod)
                 {
                     await Connection.SetTitleAsync("N/C");
                     await Connection.SetFeedbackAsync(new Dictionary<string, string>
@@ -62,10 +62,12 @@ public class NaturalInertiaAction : KeyAndEncoderBase
                 }
 
                 await Connection.SetTitleAsync($"{currentValue}%");
+                // Scale 100-500 to 0-100 for indicator
+                var indicatorValue = (currentValue - 100) * 100 / 400;
                 await Connection.SetFeedbackAsync(new Dictionary<string, string>
                 {
                     { "value", $"{currentValue}%" },
-                    { "indicator", currentValue.ToString() }
+                    { "indicator", indicatorValue.ToString() }
                 });
                 _initialized = true;
             }
@@ -110,10 +112,12 @@ public class NaturalInertiaAction : KeyAndEncoderBase
             var delta = payload.Ticks * settings.IncrementValue;
             var newValue = device.AdjustNaturalInertia(delta);
             Connection.SetTitleAsync($"{newValue}%");
+            // Scale 100-500 to 0-100 for indicator
+            var indicatorValue = (newValue - 100) * 100 / 400;
             Connection.SetFeedbackAsync(new Dictionary<string, string>
             {
                 { "value", $"{newValue}%" },
-                { "indicator", newValue.ToString() }
+                { "indicator", indicatorValue.ToString() }
             });
         }
         catch (Exception ex)
@@ -128,6 +132,13 @@ public class NaturalInertiaAction : KeyAndEncoderBase
         {
             var currentValue = MozaDeviceManager.Instance.Device.GetNaturalInertia();
             Connection.SetTitleAsync($"{currentValue}%");
+            // Scale 100-500 to 0-100 for indicator
+            var indicatorValue = (currentValue - 100) * 100 / 400;
+            Connection.SetFeedbackAsync(new Dictionary<string, string>
+            {
+                { "value", $"{currentValue}%" },
+                { "indicator", indicatorValue.ToString() }
+            });
         }
         catch { }
     }
