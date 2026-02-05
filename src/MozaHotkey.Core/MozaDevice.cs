@@ -594,6 +594,106 @@ public class MozaDevice : IDisposable
         return newMode;
     }
 
+    /// <summary>
+    /// Gets whether auto-blip (automatic rev-match on downshift) is enabled.
+    /// </summary>
+    public bool GetAutoBlipEnabled()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getHandingShifterAutoBlipSwitch(ref error);
+        ThrowIfError(error, "Failed to get auto-blip switch");
+        return result != 0;
+    }
+
+    /// <summary>
+    /// Sets whether auto-blip is enabled.
+    /// </summary>
+    public void SetAutoBlipEnabled(bool enabled)
+    {
+        EnsureInitialized();
+        var error = setHandingShifterAutoBlipSwitch(enabled ? 1 : 0);
+        ThrowIfError(error, "Failed to set auto-blip switch");
+    }
+
+    /// <summary>
+    /// Toggles auto-blip and returns the new state.
+    /// </summary>
+    public bool ToggleAutoBlip()
+    {
+        var current = GetAutoBlipEnabled();
+        SetAutoBlipEnabled(!current);
+        return !current;
+    }
+
+    /// <summary>
+    /// Gets the auto-blip output/throttle amount (0-100).
+    /// </summary>
+    public int GetAutoBlipOutput()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getHandingShifterAutoBlipOutput(ref error);
+        ThrowIfError(error, "Failed to get auto-blip output");
+        return result;
+    }
+
+    /// <summary>
+    /// Sets the auto-blip output/throttle amount (0-100).
+    /// </summary>
+    public void SetAutoBlipOutput(int value)
+    {
+        EnsureInitialized();
+        value = Math.Clamp(value, 0, 100);
+        var error = setHandingShifterAutoBlipOutput(value);
+        ThrowIfError(error, "Failed to set auto-blip output");
+    }
+
+    /// <summary>
+    /// Adjusts auto-blip output by a delta value, clamping to valid range.
+    /// </summary>
+    public int AdjustAutoBlipOutput(int delta)
+    {
+        var current = GetAutoBlipOutput();
+        var newValue = Math.Clamp(current + delta, 0, 100);
+        SetAutoBlipOutput(newValue);
+        return newValue;
+    }
+
+    /// <summary>
+    /// Gets the auto-blip duration (0-500).
+    /// </summary>
+    public int GetAutoBlipDuration()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getHandingShifterAutoBlipDuration(ref error);
+        ThrowIfError(error, "Failed to get auto-blip duration");
+        return result;
+    }
+
+    /// <summary>
+    /// Sets the auto-blip duration (0-500).
+    /// </summary>
+    public void SetAutoBlipDuration(int value)
+    {
+        EnsureInitialized();
+        value = Math.Clamp(value, 0, 500);
+        var error = setHandingShifterAutoBlipDuration(value);
+        ThrowIfError(error, "Failed to set auto-blip duration");
+    }
+
+    /// <summary>
+    /// Adjusts auto-blip duration by a delta value, clamping to valid range.
+    /// </summary>
+    public int AdjustAutoBlipDuration(int delta)
+    {
+        var current = GetAutoBlipDuration();
+        var newValue = Math.Clamp(current + delta, 0, 500);
+        SetAutoBlipDuration(newValue);
+        return newValue;
+    }
+
     private void EnsureInitialized()
     {
         if (!_initialized)

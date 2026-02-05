@@ -600,3 +600,100 @@ public class ToggleHandbrakeModeAction : MozaAction
         return newMode == 0 ? "Handbrake: Axis" : "Handbrake: Button";
     }
 }
+
+/// <summary>
+/// Action that toggles auto-blip (automatic rev-match on downshift).
+/// </summary>
+public class ToggleAutoBlipAction : MozaAction
+{
+    public ToggleAutoBlipAction()
+        : base("auto_blip_toggle", "Toggle Auto-Blip", "Toggles automatic rev-match on downshift")
+    {
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newState = device.ToggleAutoBlip();
+        return newState ? "Auto-Blip: ON" : "Auto-Blip: OFF";
+    }
+}
+
+/// <summary>
+/// Action that increases auto-blip output by a specified amount.
+/// </summary>
+public class IncreaseAutoBlipOutputAction : MozaAction
+{
+    private readonly int _amount;
+
+    public IncreaseAutoBlipOutputAction(int amount = 5)
+        : base($"auto_blip_output_increase_{amount}", $"Increase Blip Output +{amount}", $"Increases auto-blip throttle output by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustAutoBlipOutput(_amount);
+        return $"Blip Output: {newValue}%";
+    }
+}
+
+/// <summary>
+/// Action that decreases auto-blip output by a specified amount.
+/// </summary>
+public class DecreaseAutoBlipOutputAction : MozaAction
+{
+    private readonly int _amount;
+
+    public DecreaseAutoBlipOutputAction(int amount = 5)
+        : base($"auto_blip_output_decrease_{amount}", $"Decrease Blip Output -{amount}", $"Decreases auto-blip throttle output by {amount}")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustAutoBlipOutput(-_amount);
+        return $"Blip Output: {newValue}%";
+    }
+}
+
+/// <summary>
+/// Action that increases auto-blip duration by a specified amount.
+/// </summary>
+public class IncreaseAutoBlipDurationAction : MozaAction
+{
+    private readonly int _amount;
+
+    public IncreaseAutoBlipDurationAction(int amount = 50)
+        : base($"auto_blip_duration_increase_{amount}", $"Increase Blip Duration +{amount}", $"Increases auto-blip duration by {amount}ms")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustAutoBlipDuration(_amount);
+        return $"Blip Duration: {newValue}ms";
+    }
+}
+
+/// <summary>
+/// Action that decreases auto-blip duration by a specified amount.
+/// </summary>
+public class DecreaseAutoBlipDurationAction : MozaAction
+{
+    private readonly int _amount;
+
+    public DecreaseAutoBlipDurationAction(int amount = 50)
+        : base($"auto_blip_duration_decrease_{amount}", $"Decrease Blip Duration -{amount}", $"Decreases auto-blip duration by {amount}ms")
+    {
+        _amount = amount;
+    }
+
+    public override string Execute(MozaDevice device)
+    {
+        var newValue = device.AdjustAutoBlipDuration(-_amount);
+        return $"Blip Duration: {newValue}ms";
+    }
+}

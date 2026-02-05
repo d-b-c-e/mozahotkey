@@ -164,5 +164,9 @@ New-PlaceholderIcon -Name "clutchIcon" -Label "Clutch`nReverse" -BackgroundColor
 # Handbrake mode toggle
 New-PlaceholderIcon -Name "handbrakeIcon" -Label "E-Brake`nMode" -BackgroundColor "#8B0000"
 
+# Auto-blip (shifter) actions
+New-PlaceholderIcon -Name "blipToggleIcon" -Label "Auto`nBlip" -BackgroundColor "#B8860B"
+New-PlaceholderIcon -Name "blipIcon" -Label "Blip`nOutput" -BackgroundColor "#DAA520" -GenerateVariants
+
 Write-Host ""
 Write-Host "Done! Icons created in: $imagesPath" -ForegroundColor Green

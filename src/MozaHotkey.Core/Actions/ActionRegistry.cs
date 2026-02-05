@@ -96,6 +96,17 @@ public static class ActionRegistry
 
         // Handbrake Mode Toggle
         _actions.Add(new ToggleHandbrakeModeAction());
+
+        // Auto-Blip (Shifter)
+        _actions.Add(new ToggleAutoBlipAction());
+        _actions.Add(new IncreaseAutoBlipOutputAction(5));
+        _actions.Add(new DecreaseAutoBlipOutputAction(5));
+        _actions.Add(new IncreaseAutoBlipOutputAction(10));
+        _actions.Add(new DecreaseAutoBlipOutputAction(10));
+        _actions.Add(new IncreaseAutoBlipDurationAction(50));
+        _actions.Add(new DecreaseAutoBlipDurationAction(50));
+        _actions.Add(new IncreaseAutoBlipDurationAction(100));
+        _actions.Add(new DecreaseAutoBlipDurationAction(100));
     }
 
     /// <summary>

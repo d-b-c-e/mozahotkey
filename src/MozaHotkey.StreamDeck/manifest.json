@@ -354,6 +354,61 @@
                 }
             ],
             "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.autoblip",
+            "Name": "Auto-Blip Toggle",
+            "Tooltip": "Toggle automatic rev-match on downshift (requires shifter)",
+            "Icon": "Images/blipToggleIcon",
+            "States": [
+                {
+                    "Image": "Images/blipToggleIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.autoblipoutput",
+            "Name": "Auto-Blip Output",
+            "Tooltip": "Adjust auto-blip throttle amount. Use button or dial.",
+            "Icon": "Images/blipIcon",
+            "States": [
+                {
+                    "Image": "Images/blipIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust output",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.autoblipduration",
+            "Name": "Auto-Blip Duration",
+            "Tooltip": "Adjust auto-blip duration. Use button or dial.",
+            "Icon": "Images/blipIcon",
+            "States": [
+                {
+                    "Image": "Images/blipIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust duration",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
         }
     ]
 }
