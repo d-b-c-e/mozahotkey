@@ -15,6 +15,8 @@ A Stream Deck plugin for controlling Moza Racing wheel bases. Adjust FFB strengt
 
 *Requires: Windows 10/11, Stream Deck software 6.0+, and Moza Pit House installed*
 
+See what's new in the [Changelog](CHANGELOG.md).
+
 ---
 
 ## Why I Made This
