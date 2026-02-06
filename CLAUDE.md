@@ -32,6 +32,9 @@ MozaHotkey/
 │   │   ├── Actions/               # Hotkey action definitions
 │   │   │   ├── MozaAction.cs      # Base action class and implementations
 │   │   │   └── ActionRegistry.cs  # Registry of all available actions
+│   │   ├── Profiles/              # Pit House preset handling
+│   │   │   ├── PresetProfile.cs   # Model + JSON parser for motor presets
+│   │   │   └── PresetManager.cs   # Find/enumerate Pit House presets
 │   │   └── Settings/              # Configuration and persistence
 │   │       ├── AppSettings.cs     # JSON-based settings storage
 │   │       └── HotkeyBinding.cs   # Hotkey binding model
@@ -81,6 +84,11 @@ MozaHotkey/
 | `setPedalBrakeOutDir(int)` | Set brake pedal direction (0=normal, 1=reversed) | 0-1 |
 | `setPedalClutchOutDir(int)` | Set clutch pedal direction (0=normal, 1=reversed) | 0-1 |
 | `setHandbrakeApplicationMode(int)` | Set handbrake mode (0=axis, 1=button) | 0-1 |
+| `setHandingShifterAutoBlipSwitch(int)` | Set auto-blip on/off (0=off, 1=on) | 0-1 |
+| `setHandingShifterAutoBlipOutput(int)` | Set auto-blip throttle amount | 0-100 |
+| `setHandingShifterAutoBlipDuration(int)` | Set auto-blip duration | 0-500 |
+| `setMotorSpeedDampingStartPoint(int)` | Set speed damping activation point | 0-100 |
+| `setMotorHandsOffProtection(int)` | Set hands-off protection mode | 0-2 |
 
 All getter functions use `ref ERRORCODE` parameter.
 
@@ -139,6 +147,10 @@ Installed to: `%APPDATA%\Elgato\StreamDeck\Plugins\com.mozahotkey.streamdeck.sdP
 | Brake Reverse | Toggle brake pedal direction | N/A | Button only |
 | Clutch Reverse | Toggle clutch pedal direction | N/A | Button only |
 | Handbrake Mode | Toggle handbrake axis/button mode | N/A | Button only |
+| Auto-Blip Toggle | Toggle automatic rev-match on downshift | N/A | Button only |
+| Auto-Blip Output | Adjust auto-blip throttle amount | 5 | Button, Dial |
+| Auto-Blip Duration | Adjust auto-blip duration (0-500ms) | 50 | Button, Dial |
+| Apply Preset | Apply a Pit House motor preset | N/A | Button only |
 
 ### Per-Action Settings
 
@@ -164,6 +176,7 @@ Icons are 72x72 PNG files in `src/MozaHotkey.StreamDeck/Images/`:
 - inertiaIcon.png, springIcon.png, roadIcon.png
 - speedDampingIcon.png, reverseIcon.png, stopIcon.png
 - throttleIcon.png, brakeIcon.png, clutchIcon.png, handbrakeIcon.png
+- blipToggleIcon.png, blipIcon.png (+ Up/Down variants), presetIcon.png
 
 Adjustable actions also have Up/Down variants (e.g., ffbIconUp.png, ffbIconDown.png) for direction indication.
 
@@ -178,3 +191,19 @@ Each action extends `KeyAndEncoderBase` and implements:
 - `ReceivedSettings()`: Updates settings from Property Inspector
 
 The `_initialized` flag ensures display updates retry until the Moza device is connected.
+
+### Pit House Preset Integration
+
+Motor presets are loaded from `%USERPROFILE%\Documents\MOZA Pit House\Presets\Motor\*.json`.
+The `PresetManager` finds the Pit House directory (handles OneDrive redirection) and enumerates presets.
+The `ApplyPresetAction` reads the selected preset JSON and applies all supported `deviceParams` via SDK.
+
+Supported preset fields (11 of ~22):
+- `gameForceFeedbackStrength`, `maximumSteeringAngle`, `maximumTorque`
+- `mechanicalDamper`, `mechanicalSpringStrength`, `mechanicalFriction`
+- `maximumSteeringSpeed`, `gameForceFeedbackReversal`, `speedDependentDamping`
+- `initialSpeedDependentDamping`, `safeDrivingEnabled/Mode`
+
+Not supported (no SDK function): `gameForceFeedbackFilter`, `setGameDampingValue`, `setGameFrictionValue`,
+`setGameInertiaValue`, `setGameSpringValue`, `softLimitStrength`, `softLimitStiffness`, `constForceExtraMode`,
+`forceFeedbackMaping`, `naturalInertiaV2`, `gearJoltLevel`

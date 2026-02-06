@@ -1,5 +1,6 @@
 using mozaAPI;
 using static mozaAPI.mozaAPI;
+using MozaHotkey.Core.Profiles;
 
 namespace MozaHotkey.Core;
 
@@ -692,6 +693,106 @@ public class MozaDevice : IDisposable
         var newValue = Math.Clamp(current + delta, 0, 500);
         SetAutoBlipDuration(newValue);
         return newValue;
+    }
+
+    /// <summary>
+    /// Gets the speed damping start point.
+    /// </summary>
+    public int GetSpeedDampingStartPoint()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getMotorSpeedDampingStartPoint(ref error);
+        ThrowIfError(error, "Failed to get speed damping start point");
+        return result;
+    }
+
+    /// <summary>
+    /// Sets the speed damping start point.
+    /// </summary>
+    public void SetSpeedDampingStartPoint(int value)
+    {
+        EnsureInitialized();
+        value = Math.Clamp(value, 0, 100);
+        var error = setMotorSpeedDampingStartPoint(value);
+        ThrowIfError(error, "Failed to set speed damping start point");
+    }
+
+    /// <summary>
+    /// Gets the hands-off protection mode.
+    /// </summary>
+    public int GetHandsOffProtection()
+    {
+        EnsureInitialized();
+        ERRORCODE error = ERRORCODE.NORMAL;
+        var result = getMotorHandsOffProtection(ref error);
+        ThrowIfError(error, "Failed to get hands-off protection");
+        return result;
+    }
+
+    /// <summary>
+    /// Sets the hands-off protection mode.
+    /// </summary>
+    public void SetHandsOffProtection(int value)
+    {
+        EnsureInitialized();
+        var error = setMotorHandsOffProtection(value);
+        ThrowIfError(error, "Failed to set hands-off protection");
+    }
+
+    /// <summary>
+    /// Applies all supported settings from a Pit House preset profile.
+    /// Returns the number of settings successfully applied.
+    /// </summary>
+    public int ApplyPreset(PresetProfile preset)
+    {
+        EnsureInitialized();
+        var applied = 0;
+        var p = preset.DeviceParams;
+
+        if (p.TryGetValue("gameForceFeedbackStrength", out var ffb))
+        { SetFfbStrength(Convert.ToInt32(ffb)); applied++; }
+
+        if (p.TryGetValue("maximumSteeringAngle", out var angle))
+        { SetWheelRotation(Convert.ToInt32(angle)); applied++; }
+
+        if (p.TryGetValue("maximumTorque", out var torque))
+        { SetMaxTorque(Convert.ToInt32(torque)); applied++; }
+
+        if (p.TryGetValue("mechanicalDamper", out var damper))
+        { SetDamping(Convert.ToInt32(damper)); applied++; }
+
+        if (p.TryGetValue("mechanicalSpringStrength", out var spring))
+        { SetSpringStrength(Convert.ToInt32(spring)); applied++; }
+
+        if (p.TryGetValue("mechanicalFriction", out var friction))
+        { SetNaturalFriction(Convert.ToInt32(friction)); applied++; }
+
+        if (p.TryGetValue("maximumSteeringSpeed", out var speed))
+        { SetMaxWheelSpeed(Convert.ToInt32(speed)); applied++; }
+
+        if (p.TryGetValue("gameForceFeedbackReversal", out var reverse))
+        {
+            var reversed = reverse is bool b ? b : Convert.ToInt32(reverse) != 0;
+            SetFfbReverse(reversed);
+            applied++;
+        }
+
+        if (p.TryGetValue("speedDependentDamping", out var speedDamp))
+        { SetSpeedDamping(Convert.ToInt32(speedDamp)); applied++; }
+
+        if (p.TryGetValue("initialSpeedDependentDamping", out var speedDampStart))
+        { SetSpeedDampingStartPoint(Convert.ToInt32(speedDampStart)); applied++; }
+
+        if (p.TryGetValue("safeDrivingEnabled", out var safeEnabled) &&
+            p.TryGetValue("safeDrivingMode", out var safeMode))
+        {
+            var enabled = safeEnabled is bool sb ? sb : Convert.ToInt32(safeEnabled) != 0;
+            SetHandsOffProtection(enabled ? Convert.ToInt32(safeMode) : 0);
+            applied++;
+        }
+
+        return applied;
     }
 
     private void EnsureInitialized()

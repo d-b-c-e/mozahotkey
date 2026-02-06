@@ -409,6 +409,20 @@
                 }
             },
             "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.mozahotkey.streamdeck.applypreset",
+            "Name": "Apply Preset",
+            "Tooltip": "Apply a Moza Pit House motor preset to your wheel base",
+            "Icon": "Images/presetIcon",
+            "States": [
+                {
+                    "Image": "Images/presetIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"],
+            "PropertyInspectorPath": "PropertyInspector/applyPreset.html"
         }
     ]
 }

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Apply Preset Settings</title>
+    <link rel="stylesheet" href="sdpi.css">
+</head>
+<body>
+    <div class="sdpi-wrapper">
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Preset</div>
+            <select class="sdpi-item-value" id="presetPath" onchange="onPresetChanged()">
+                <option value="">Loading presets...</option>
+            </select>
+        </div>
+
+        <div class="info" id="preset-info">
+            Select a Moza Pit House motor preset to apply when the button is pressed.
+            <br><br>
+            Applies supported settings: FFB Strength, Wheel Rotation, Max Torque,
+            Damping, Spring, Friction, Max Speed, FFB Reverse, Speed Damping,
+            and Hands-Off Protection.
+        </div>
+
+        <div class="info" id="no-presets" style="display: none;">
+            No presets found. Make sure Moza Pit House is installed and you have
+            motor presets in your Documents folder.
+        </div>
+    </div>
+
+    <script src="pi.js"></script>
+    <script>
+        function onSettingsLoaded(settings) {
+            var presets = settings.availablePresets || [];
+            var select = document.getElementById('presetPath');
+            select.innerHTML = '';
+
+            if (presets.length === 0) {
+                select.innerHTML = '<option value="">No presets found</option>';
+                document.getElementById('preset-info').style.display = 'none';
+                document.getElementById('no-presets').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('preset-info').style.display = 'block';
+            document.getElementById('no-presets').style.display = 'none';
+
+            // Add empty option
+            var emptyOpt = document.createElement('option');
+            emptyOpt.value = '';
+            emptyOpt.textContent = '-- Select a preset --';
+            select.appendChild(emptyOpt);
+
+            // Add presets
+            presets.forEach(function(preset) {
+                var opt = document.createElement('option');
+                opt.value = preset.path;
+                opt.textContent = preset.devices ? preset.name + ' (' + preset.devices + ')' : preset.name;
+                select.appendChild(opt);
+            });
+
+            // Select current setting
+            select.value = getSetting('presetPath', '');
+        }
+
+        function onPresetChanged() {
+            setSetting('presetPath', document.getElementById('presetPath').value);
+        }
+    </script>
+</body>
+</html>

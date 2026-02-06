@@ -168,5 +168,8 @@ New-PlaceholderIcon -Name "handbrakeIcon" -Label "E-Brake`nMode" -BackgroundColo
 New-PlaceholderIcon -Name "blipToggleIcon" -Label "Auto`nBlip" -BackgroundColor "#B8860B"
 New-PlaceholderIcon -Name "blipIcon" -Label "Blip`nOutput" -BackgroundColor "#DAA520" -GenerateVariants
 
+# Preset (profile switcher)
+New-PlaceholderIcon -Name "presetIcon" -Label "Apply`nPreset" -BackgroundColor "#6A0DAD"
+
 Write-Host ""
 Write-Host "Done! Icons created in: $imagesPath" -ForegroundColor Green

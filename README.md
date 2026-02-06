@@ -34,7 +34,8 @@ I hope you find it useful! I might consider deploying it to the Stream Deck Mark
 - **Full Stream Deck Support**: Works with Stream Deck buttons and Stream Deck+ dials
 - **Real-time Display**: Current values shown on buttons and dial LCD screens
 - **Per-Action Settings**: Configure increment values and direction for each button
-- **19 Available Actions**: Control all major wheel base and pedal settings
+- **23 Available Actions**: Control all major wheel base, pedal, and shifter settings
+- **Apply Preset**: Load Moza Pit House motor presets directly from Stream Deck
 
 ## Available Actions
 
@@ -53,6 +54,8 @@ I hope you find it useful! I might consider deploying it to the Stream Deck Mark
 | Spring Strength | 0-100% | Center spring force |
 | Road Sensitivity | 0-10 | Road feel detail level |
 | Speed Damping | 0-100% | Speed-dependent damping to reduce oscillation |
+| Auto-Blip Output | 0-100% | Automatic rev-match throttle amount (shifter) |
+| Auto-Blip Duration | 0-500ms | Automatic rev-match duration (shifter) |
 
 ### Preset & Utility Actions (Button only)
 
@@ -66,6 +69,8 @@ I hope you find it useful! I might consider deploying it to the Stream Deck Mark
 | Brake Reverse | Toggles brake pedal output direction |
 | Clutch Reverse | Toggles clutch pedal output direction |
 | Handbrake Mode | Toggles handbrake between axis and button mode |
+| Auto-Blip Toggle | Toggles automatic rev-match on downshift (shifter) |
+| Apply Preset | Apply a Moza Pit House motor preset to your wheel base |
 
 ## Requirements
 
