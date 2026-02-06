@@ -87,7 +87,7 @@ MozaHotkey/
 | `setHandingShifterAutoBlipSwitch(int)` | Set auto-blip on/off (0=off, 1=on) | 0-1 |
 | `setHandingShifterAutoBlipOutput(int)` | Set auto-blip throttle amount | 0-100 |
 | `setHandingShifterAutoBlipDuration(int)` | Set auto-blip duration | 0-500 |
-| `setMotorSpeedDampingStartPoint(int)` | Set speed damping activation point | 0-100 |
+| `setMotorSpeedDampingStartPoint(int)` | Set speed damping activation point | 0-200 |
 | `setMotorHandsOffProtection(int)` | Set hands-off protection mode | 0-2 |
 
 All getter functions use `ref ERRORCODE` parameter.

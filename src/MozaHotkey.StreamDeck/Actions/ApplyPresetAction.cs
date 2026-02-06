@@ -107,11 +107,25 @@ public class ApplyPresetAction : KeypadBase
             }
 
             var device = MozaDeviceManager.Instance.Device;
-            var count = device.ApplyPreset(preset);
+            var (applied, failed, errors) = device.ApplyPreset(preset);
+
+            foreach (var error in errors)
+            {
+                Logger.Instance.LogMessage(TracingLevel.WARN, $"Preset '{preset.Name}': {error}");
+            }
 
             var name = preset.Name.Length > 12 ? preset.Name[..12] : preset.Name;
-            Connection.SetTitleAsync($"{name}\n({count})");
-            Connection.ShowOk();
+            if (applied > 0)
+            {
+                var label = failed == 0 ? $"({applied})" : $"({applied}, {failed} skip)";
+                Connection.SetTitleAsync($"{name}\n{label}");
+                Connection.ShowOk();
+            }
+            else
+            {
+                Connection.SetTitleAsync($"{name}\n{failed} err");
+                Connection.ShowAlert();
+            }
         }
         catch (Exception ex)
         {
@@ -128,10 +142,10 @@ public class ApplyPresetAction : KeypadBase
     public override void ReceivedSettings(ReceivedSettingsPayload payload)
     {
         var previousPath = settings.PresetPath;
-        Tools.AutoPopulateSettings(settings, payload.Settings);
+        // Don't use Tools.AutoPopulateSettings — it uses Convert.ChangeType which
+        // can't handle List<PresetEntry> and crashes the entire plugin.
+        settings = payload.Settings.ToObject<PluginSettings>() ?? PluginSettings.CreateDefaultSettings();
 
-        // Only refresh presets list if the path changed (user selected a preset)
-        // Avoid re-enumerating when we just pushed settings ourselves
         if (settings.PresetPath != previousPath)
         {
             UpdateTitle();

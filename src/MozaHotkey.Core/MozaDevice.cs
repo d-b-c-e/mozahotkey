@@ -97,6 +97,18 @@ public class MozaDevice : IDisposable
     }
 
     /// <summary>
+    /// Sets the wheel rotation with separate hardware and game limits (90-2700 degrees each).
+    /// </summary>
+    public void SetWheelRotation(int hardwareLimit, int gameLimit)
+    {
+        EnsureInitialized();
+        hardwareLimit = Math.Clamp(hardwareLimit, 90, 2700);
+        gameLimit = Math.Clamp(gameLimit, 90, 2700);
+        var error = setMotorLimitAngle(hardwareLimit, gameLimit);
+        ThrowIfError(error, "Failed to set wheel rotation");
+    }
+
+    /// <summary>
     /// Adjusts wheel rotation by a delta value, clamping to valid range.
     /// </summary>
     public int AdjustWheelRotation(int delta)
@@ -708,12 +720,13 @@ public class MozaDevice : IDisposable
     }
 
     /// <summary>
-    /// Sets the speed damping start point.
+    /// Sets the speed damping start point (0-200).
+    /// Pit House presets store this as a speed value, not a percentage.
     /// </summary>
     public void SetSpeedDampingStartPoint(int value)
     {
         EnsureInitialized();
-        value = Math.Clamp(value, 0, 100);
+        value = Math.Clamp(value, 0, 200);
         var error = setMotorSpeedDampingStartPoint(value);
         ThrowIfError(error, "Failed to set speed damping start point");
     }
@@ -742,57 +755,89 @@ public class MozaDevice : IDisposable
 
     /// <summary>
     /// Applies all supported settings from a Pit House preset profile.
-    /// Returns the number of settings successfully applied.
+    /// Returns (applied, failed) counts. Continues past individual errors.
     /// </summary>
-    public int ApplyPreset(PresetProfile preset)
+    public (int Applied, int Failed, List<string> Errors) ApplyPreset(PresetProfile preset)
     {
         EnsureInitialized();
         var applied = 0;
+        var failed = 0;
+        var errors = new List<string>();
         var p = preset.DeviceParams;
 
-        if (p.TryGetValue("gameForceFeedbackStrength", out var ffb))
-        { SetFfbStrength(Convert.ToInt32(ffb)); applied++; }
-
-        if (p.TryGetValue("maximumSteeringAngle", out var angle))
-        { SetWheelRotation(Convert.ToInt32(angle)); applied++; }
-
-        if (p.TryGetValue("maximumTorque", out var torque))
-        { SetMaxTorque(Convert.ToInt32(torque)); applied++; }
-
-        if (p.TryGetValue("mechanicalDamper", out var damper))
-        { SetDamping(Convert.ToInt32(damper)); applied++; }
-
-        if (p.TryGetValue("mechanicalSpringStrength", out var spring))
-        { SetSpringStrength(Convert.ToInt32(spring)); applied++; }
-
-        if (p.TryGetValue("mechanicalFriction", out var friction))
-        { SetNaturalFriction(Convert.ToInt32(friction)); applied++; }
-
-        if (p.TryGetValue("maximumSteeringSpeed", out var speed))
-        { SetMaxWheelSpeed(Convert.ToInt32(speed)); applied++; }
-
-        if (p.TryGetValue("gameForceFeedbackReversal", out var reverse))
+        void TryApply(string paramName, Action action)
         {
-            var reversed = reverse is bool b ? b : Convert.ToInt32(reverse) != 0;
+            if (!p.ContainsKey(paramName)) return;
+            try { action(); applied++; }
+            catch (Exception ex) { failed++; errors.Add($"{paramName}: {ex.Message}"); }
+        }
+
+        TryApply("gameForceFeedbackStrength", () =>
+            SetFfbStrength(Convert.ToInt32(p["gameForceFeedbackStrength"])));
+
+        // Handle steering angle — use separate game angle if available
+        if (p.ContainsKey("maximumSteeringAngle"))
+        {
+            try
+            {
+                var hwAngle = Convert.ToInt32(p["maximumSteeringAngle"]);
+                var gameAngle = p.TryGetValue("maximumGameSteeringAngle", out var ga)
+                    ? Convert.ToInt32(ga) : hwAngle;
+                SetWheelRotation(hwAngle, gameAngle);
+                applied++;
+            }
+            catch (Exception ex) { failed++; errors.Add($"maximumSteeringAngle: {ex.Message}"); }
+        }
+
+        TryApply("maximumTorque", () =>
+            SetMaxTorque(Convert.ToInt32(p["maximumTorque"])));
+
+        TryApply("mechanicalDamper", () =>
+            SetDamping(Convert.ToInt32(p["mechanicalDamper"])));
+
+        TryApply("mechanicalSpringStrength", () =>
+            SetSpringStrength(Convert.ToInt32(p["mechanicalSpringStrength"])));
+
+        TryApply("mechanicalFriction", () =>
+            SetNaturalFriction(Convert.ToInt32(p["mechanicalFriction"])));
+
+        TryApply("maximumSteeringSpeed", () =>
+            SetMaxWheelSpeed(Convert.ToInt32(p["maximumSteeringSpeed"])));
+
+        TryApply("gameForceFeedbackReversal", () =>
+        {
+            var val = p["gameForceFeedbackReversal"];
+            var reversed = val is bool b ? b : Convert.ToInt32(val) != 0;
             SetFfbReverse(reversed);
-            applied++;
-        }
+        });
 
-        if (p.TryGetValue("speedDependentDamping", out var speedDamp))
-        { SetSpeedDamping(Convert.ToInt32(speedDamp)); applied++; }
+        TryApply("speedDependentDamping", () =>
+            SetSpeedDamping(Convert.ToInt32(p["speedDependentDamping"])));
 
-        if (p.TryGetValue("initialSpeedDependentDamping", out var speedDampStart))
-        { SetSpeedDampingStartPoint(Convert.ToInt32(speedDampStart)); applied++; }
+        TryApply("initialSpeedDependentDamping", () =>
+            SetSpeedDampingStartPoint(Convert.ToInt32(p["initialSpeedDependentDamping"])));
 
-        if (p.TryGetValue("safeDrivingEnabled", out var safeEnabled) &&
-            p.TryGetValue("safeDrivingMode", out var safeMode))
+        if (p.ContainsKey("safeDrivingEnabled") && p.ContainsKey("safeDrivingMode"))
         {
-            var enabled = safeEnabled is bool sb ? sb : Convert.ToInt32(safeEnabled) != 0;
-            SetHandsOffProtection(enabled ? Convert.ToInt32(safeMode) : 0);
-            applied++;
+            try
+            {
+                var enabled = p["safeDrivingEnabled"] is bool sb ? sb : Convert.ToInt32(p["safeDrivingEnabled"]) != 0;
+                var mode = enabled ? Math.Max(1, Convert.ToInt32(p["safeDrivingMode"])) : 0;
+                try
+                {
+                    SetHandsOffProtection(mode);
+                }
+                catch (MozaException) when (mode > 1)
+                {
+                    // Some wheel bases don't support higher protection levels — fall back
+                    SetHandsOffProtection(1);
+                }
+                applied++;
+            }
+            catch (Exception ex) { failed++; errors.Add($"safeDriving: {ex.Message}"); }
         }
 
-        return applied;
+        return (applied, failed, errors);
     }
 
     private void EnsureInitialized()
