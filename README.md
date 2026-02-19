@@ -1,17 +1,17 @@
-# MozaHotkey
+# Moza Stream Deck Plugin
 
 A Stream Deck plugin for controlling Moza Racing wheel bases. Adjust FFB strength, wheel rotation, and other settings directly from your Stream Deck without alt-tabbing out of your sim racing games.
 
-![MozaHotkey Stream Deck Plugin](docs/mozahotkey_screenshot1.png)
+![Moza Stream Deck Plugin](docs/mozahotkey_screenshot1.png)
 
 ## Quick Start
 
-**[Download from Releases](https://github.com/d-b-c-e/mozahotkey/releases)**
+**[Download from Releases](https://github.com/d-b-c-e/moza-streamdeck-plugin/releases)**
 
 1. Click "Assets" to expand the downloads
 2. Download the `.streamDeckPlugin` file
 3. Double-click to install
-4. Done! Find "Moza Hotkey" in your Stream Deck actions
+4. Done! Find "Moza Racing" in your Stream Deck actions
 
 *Requires: Windows 10/11, Stream Deck software 6.0+, and Moza Pit House installed*
 
@@ -83,16 +83,16 @@ I hope you find it useful! I might consider deploying it to the Stream Deck Mark
 
 ## Installation
 
-1. Download the latest `.streamDeckPlugin` file from [Releases](https://github.com/d-b-c-e/mozahotkey/releases)
+1. Download the latest `.streamDeckPlugin` file from [Releases](https://github.com/d-b-c-e/moza-streamdeck-plugin/releases)
 2. Double-click the file to install
-3. Stream Deck will open and the plugin will be available under "Moza Hotkey"
+3. Stream Deck will open and the plugin will be available under "Moza Racing"
 
 ## Uninstallation
 
 1. Close the Stream Deck application
 2. Delete the plugin folder:
    ```
-   %APPDATA%\Elgato\StreamDeck\Plugins\com.mozahotkey.streamdeck.sdPlugin
+   %APPDATA%\Elgato\StreamDeck\Plugins\com.dbce.moza-streamdeck.sdPlugin
    ```
 3. Restart Stream Deck
 
@@ -127,16 +127,12 @@ I hope you find it useful! I might consider deploying it to the Stream Deck Mark
 - Press a dial or interact with a button to force a refresh
 - Restart Stream Deck if issues persist
 
-## Windows App (Optional)
-
-For users without a Stream Deck, a standalone Windows application is also available that provides global hotkey support for the same wheel base settings. Download `MozaHotkey-Setup` from the releases page if you need keyboard shortcut control.
-
 ## Building from Source
 
 ```bash
 # Clone the repository
-git clone https://github.com/d-b-c-e/mozahotkey.git
-cd mozahotkey
+git clone https://github.com/d-b-c-e/moza-streamdeck-plugin.git
+cd moza-streamdeck-plugin
 
 # Build the Stream Deck plugin
 .\scripts\build-streamdeck-release.ps1

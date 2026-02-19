@@ -4,7 +4,7 @@
 
 Add-Type -AssemblyName System.Drawing
 
-$imagesPath = Join-Path (Split-Path -Parent $PSScriptRoot) "src\MozaHotkey.StreamDeck\Images"
+$imagesPath = Join-Path (Split-Path -Parent $PSScriptRoot) "src\MozaStreamDeck.Plugin\Images"
 
 # Ensure directory exists
 if (-not (Test-Path $imagesPath)) {

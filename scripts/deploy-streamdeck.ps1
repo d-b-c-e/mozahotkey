@@ -1,5 +1,5 @@
 # Deploy Stream Deck Plugin Script
-# This script builds and deploys the MozaHotkey Stream Deck plugin
+# This script builds and deploys the Moza Stream Deck plugin
 
 param(
     [switch]$Release,
@@ -10,15 +10,15 @@ $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $solutionDir = Split-Path -Parent $scriptDir
-$projectDir = Join-Path $solutionDir "src\MozaHotkey.StreamDeck"
-$pluginName = "com.mozahotkey.streamdeck.sdPlugin"
+$projectDir = Join-Path $solutionDir "src\MozaStreamDeck.Plugin"
+$pluginName = "com.dbce.moza-streamdeck.sdPlugin"
 $streamDeckPluginsPath = Join-Path $env:APPDATA "Elgato\StreamDeck\Plugins"
 $targetPath = Join-Path $streamDeckPluginsPath $pluginName
 
 $config = if ($Release) { "Release" } else { "Debug" }
 
-Write-Host "Building MozaHotkey.StreamDeck ($config)..." -ForegroundColor Cyan
-dotnet build "$projectDir\MozaHotkey.StreamDeck.csproj" -c $config
+Write-Host "Building MozaStreamDeck.Plugin ($config)..." -ForegroundColor Cyan
+dotnet build "$projectDir\MozaStreamDeck.Plugin.csproj" -c $config
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Build failed!" -ForegroundColor Red
     exit 1

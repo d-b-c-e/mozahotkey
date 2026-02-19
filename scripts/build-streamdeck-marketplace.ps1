@@ -9,8 +9,8 @@ $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $solutionDir = Split-Path -Parent $scriptDir
-$projectDir = Join-Path $solutionDir "src\MozaHotkey.StreamDeck"
-$csprojPath = Join-Path $projectDir "MozaHotkey.StreamDeck.csproj"
+$projectDir = Join-Path $solutionDir "src\MozaStreamDeck.Plugin"
+$csprojPath = Join-Path $projectDir "MozaStreamDeck.Plugin.csproj"
 $manifestPath = Join-Path $projectDir "bin\Release\manifest.json"
 $imagesPath = Join-Path $projectDir "Images"
 
@@ -19,7 +19,7 @@ $imagesPath = Join-Path $projectDir "Images"
 $version = $csproj.Project.PropertyGroup.Version
 if (-not $version) { $version = "1.0.0" }
 
-$pluginId = "com.mozahotkey.streamdeck"
+$pluginId = "com.dbce.moza-streamdeck"
 $pluginName = "$pluginId.sdPlugin"
 $outputPath = Join-Path $solutionDir $OutputDir
 $stagingPath = Join-Path $outputPath "marketplace-staging"
@@ -81,10 +81,10 @@ $stringFormat.LineAlignment = [System.Drawing.StringAlignment]::Center
 $rect = New-Object System.Drawing.RectangleF(0, -20, $size, $size)
 $graphics.DrawString("MOZA", $font, $textBrush, $rect, $stringFormat)
 
-# Draw "Hotkey" subtitle
+# Draw "Racing" subtitle
 $subtitleFont = New-Object System.Drawing.Font("Segoe UI", 28, [System.Drawing.FontStyle]::Regular)
 $subtitleRect = New-Object System.Drawing.RectangleF(0, 50, $size, $size)
-$graphics.DrawString("Hotkey", $subtitleFont, $textBrush, $subtitleRect, $stringFormat)
+$graphics.DrawString("Racing", $subtitleFont, $textBrush, $subtitleRect, $stringFormat)
 
 # Save
 $bitmap.Save($marketplaceIconPath, [System.Drawing.Imaging.ImageFormat]::Png)
@@ -170,7 +170,7 @@ Write-Host ""
 # Create .streamDeckPlugin file (ZIP with different extension)
 Write-Host "Step 5: Creating .streamDeckPlugin package..." -ForegroundColor Yellow
 
-$pluginFilePath = Join-Path $outputPath "com.mozahotkey.streamdeck-v$version.streamDeckPlugin"
+$pluginFilePath = Join-Path $outputPath "$pluginId-v$version.streamDeckPlugin"
 
 if (Test-Path $pluginFilePath) {
     Remove-Item $pluginFilePath -Force

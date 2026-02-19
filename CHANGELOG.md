@@ -52,7 +52,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - GitHub Actions workflow for automated releases
 - Build and deploy scripts for development
 
-[0.8.3-alpha]: https://github.com/d-b-c-e/mozahotkey/compare/v0.8.2-alpha...v0.8.3-alpha
-[0.8.2-alpha]: https://github.com/d-b-c-e/mozahotkey/compare/v0.8.1-alpha...v0.8.2-alpha
-[0.8.1-alpha]: https://github.com/d-b-c-e/mozahotkey/compare/v0.8.0-alpha...v0.8.1-alpha
-[0.8.0-alpha]: https://github.com/d-b-c-e/mozahotkey/releases/tag/v0.8.0-alpha
+[0.8.3-alpha]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v0.8.2-alpha...v0.8.3-alpha
+[0.8.2-alpha]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v0.8.1-alpha...v0.8.2-alpha
+[0.8.1-alpha]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v0.8.0-alpha...v0.8.1-alpha
+[0.8.0-alpha]: https://github.com/d-b-c-e/moza-streamdeck-plugin/releases/tag/v0.8.0-alpha

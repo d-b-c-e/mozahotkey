@@ -9,8 +9,8 @@ $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $solutionDir = Split-Path -Parent $scriptDir
-$projectDir = Join-Path $solutionDir "src\MozaHotkey.StreamDeck"
-$csprojPath = Join-Path $projectDir "MozaHotkey.StreamDeck.csproj"
+$projectDir = Join-Path $solutionDir "src\MozaStreamDeck.Plugin"
+$csprojPath = Join-Path $projectDir "MozaStreamDeck.Plugin.csproj"
 $imagesPath = Join-Path $projectDir "Images"
 
 # Get version from csproj
@@ -18,14 +18,14 @@ $imagesPath = Join-Path $projectDir "Images"
 $version = $csproj.Project.PropertyGroup.Version
 if (-not $version) { $version = "1.0.0" }
 
-$pluginId = "com.mozahotkey.streamdeck"
+$pluginId = "com.dbce.moza-streamdeck"
 $pluginName = "$pluginId.sdPlugin"
 $outputPath = Join-Path $solutionDir $OutputDir
 $stagingPath = Join-Path $outputPath "staging"
 $pluginStagingPath = Join-Path $stagingPath $pluginName
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "Building MozaHotkey Stream Deck Plugin" -ForegroundColor Cyan
+Write-Host "Building Moza Stream Deck Plugin" -ForegroundColor Cyan
 Write-Host "Version: $version" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
@@ -84,7 +84,7 @@ $graphics.DrawString("MOZA", $font, $textBrush, $rect, $stringFormat)
 
 $subtitleFont = New-Object System.Drawing.Font("Segoe UI", 28, [System.Drawing.FontStyle]::Regular)
 $subtitleRect = New-Object System.Drawing.RectangleF(0, 50, $size, $size)
-$graphics.DrawString("Hotkey", $subtitleFont, $textBrush, $subtitleRect, $stringFormat)
+$graphics.DrawString("Racing", $subtitleFont, $textBrush, $subtitleRect, $stringFormat)
 
 $bitmap.Save($marketplaceIconPath, [System.Drawing.Imaging.ImageFormat]::Png)
 

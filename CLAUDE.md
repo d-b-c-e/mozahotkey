@@ -4,48 +4,33 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-MozaHotkey is a Windows utility that provides global hotkey support for Moza Racing wheel bases. It allows users to adjust FFB strength, wheel rotation, and other settings without alt-tabbing out of their sim racing games. It also includes a Stream Deck plugin for direct hardware control.
+moza-streamdeck-plugin is a Stream Deck plugin for Moza Racing wheel bases. It allows users to adjust FFB strength, wheel rotation, and other settings directly from Stream Deck buttons and dials (Stream Deck+) while in their sim racing games.
 
 ## Build Commands
 
 ```bash
 # Build the solution
-dotnet build
+dotnet build MozaStreamDeckPlugin.sln
 
 # Build for release
-dotnet build --configuration Release
-
-# Run the application
-dotnet run --project src/MozaHotkey.App
+dotnet build MozaStreamDeckPlugin.sln --configuration Release
 
 # Clean build artifacts
-dotnet clean
+dotnet clean MozaStreamDeckPlugin.sln
 ```
 
 ## Architecture
 
 ```
-MozaHotkey/
+moza-streamdeck-plugin/
 ├── src/
-│   ├── MozaHotkey.Core/           # Core library (SDK wrapper, actions, settings)
+│   ├── MozaStreamDeck.Core/       # Core library (SDK wrapper, preset handling)
 │   │   ├── MozaDevice.cs          # Wrapper around Moza SDK
-│   │   ├── Actions/               # Hotkey action definitions
-│   │   │   ├── MozaAction.cs      # Base action class and implementations
-│   │   │   └── ActionRegistry.cs  # Registry of all available actions
-│   │   ├── Profiles/              # Pit House preset handling
-│   │   │   ├── PresetProfile.cs   # Model + JSON parser for motor presets
-│   │   │   └── PresetManager.cs   # Find/enumerate Pit House presets
-│   │   └── Settings/              # Configuration and persistence
-│   │       ├── AppSettings.cs     # JSON-based settings storage
-│   │       └── HotkeyBinding.cs   # Hotkey binding model
+│   │   └── Profiles/              # Pit House preset handling
+│   │       ├── PresetProfile.cs   # Model + JSON parser for motor presets
+│   │       └── PresetManager.cs   # Find/enumerate Pit House presets
 │   │
-│   ├── MozaHotkey.App/            # WinForms application
-│   │   ├── MainForm.cs            # Main window with action list
-│   │   ├── HotkeyDialog.cs        # Hotkey capture dialog
-│   │   ├── GlobalHotkeyManager.cs # Windows API hotkey registration
-│   │   └── Program.cs             # Entry point with single-instance check
-│   │
-│   └── MozaHotkey.StreamDeck/     # Stream Deck plugin
+│   └── MozaStreamDeck.Plugin/     # Stream Deck plugin
 │       ├── manifest.json          # Plugin metadata and action definitions
 │       ├── Program.cs             # Entry point with BarRaider StreamDeck-Tools
 │       ├── MozaDeviceManager.cs   # Singleton device lifecycle
@@ -94,18 +79,18 @@ All getter functions use `ref ERRORCODE` parameter.
 
 ## Platform Requirements
 
-- Windows only (uses WinForms and Windows API for global hotkeys)
+- Windows only (Stream Deck software and Moza SDK are Windows-only)
 - .NET 8.0
 - x64 architecture (Moza SDK is x64 only)
 - Moza Pit House must be installed for the SDK to communicate with hardware
 
 ## Settings Location
 
-Settings are stored in: `%LOCALAPPDATA%\MozaHotkey\settings.json`
+Action settings are managed by BarRaider's StreamDeck-Tools and stored automatically by the Stream Deck software per-action instance. There is no separate settings file.
 
 ## Stream Deck Plugin
 
-The Stream Deck plugin provides direct control of Moza wheel settings from Stream Deck buttons and dials (Stream Deck+).
+The plugin provides direct control of Moza wheel settings from Stream Deck buttons and dials (Stream Deck+).
 
 ### Build and Deploy
 
@@ -114,7 +99,7 @@ The Stream Deck plugin provides direct control of Moza wheel settings from Strea
 .\scripts\deploy-streamdeck.ps1 -KillStreamDeck
 
 # Build only (without deploying)
-dotnet build src/MozaHotkey.StreamDeck
+dotnet build src/MozaStreamDeck.Plugin
 
 # Generate placeholder icons
 .\scripts\generate-placeholder-icons.ps1
@@ -122,7 +107,7 @@ dotnet build src/MozaHotkey.StreamDeck
 
 ### Plugin Location
 
-Installed to: `%APPDATA%\Elgato\StreamDeck\Plugins\com.mozahotkey.streamdeck.sdPlugin\`
+Installed to: `%APPDATA%\Elgato\StreamDeck\Plugins\com.dbce.moza-streamdeck.sdPlugin\`
 
 ### Available Actions
 
@@ -168,7 +153,7 @@ For dials, direction is determined by rotation direction; only increment is conf
 
 ### Icon Requirements
 
-Icons are 72x72 PNG files in `src/MozaHotkey.StreamDeck/Images/`:
+Icons are 72x72 PNG files in `src/MozaStreamDeck.Plugin/Images/`:
 - pluginIcon.png, categoryIcon.png (Moza branding)
 - ffbIcon.png, rotationIcon.png, setRotationIcon.png
 - dampingIcon.png, torqueIcon.png, centerIcon.png

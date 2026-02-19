@@ -1,0 +1,428 @@
+{
+    "Name": "Moza Racing",
+    "Version": "0.8.3-alpha",
+    "Author": "github.com/d-b-c-e",
+    "Description": "Control your Moza wheel base settings directly from Stream Deck. Adjust FFB, rotation, damping, and more without leaving your game.",
+    "Category": "Moza Racing",
+    "CategoryIcon": "Images/categoryIcon",
+    "Icon": "Images/pluginIcon",
+    "URL": "https://github.com/d-b-c-e/moza-streamdeck-plugin",
+    "SDKVersion": 2,
+    "Software": {
+        "MinimumVersion": "6.0"
+    },
+    "OS": [
+        {
+            "Platform": "windows",
+            "MinimumVersion": "10"
+        }
+    ],
+    "CodePath": "MozaStreamDeck.Plugin.exe",
+    "Actions": [
+        {
+            "UUID": "com.dbce.moza-streamdeck.ffb",
+            "Name": "FFB Strength",
+            "Tooltip": "Adjust Force Feedback strength. Use button or dial.",
+            "Icon": "Images/ffbIcon",
+            "States": [
+                {
+                    "Image": "Images/ffbIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust FFB",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.rotation",
+            "Name": "Wheel Rotation",
+            "Tooltip": "Adjust wheel rotation angle. Use button or dial.",
+            "Icon": "Images/rotationIcon",
+            "States": [
+                {
+                    "Image": "Images/rotationIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust rotation",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.setrotation",
+            "Name": "Set Rotation",
+            "Tooltip": "Set wheel rotation to a specific value",
+            "Icon": "Images/setRotationIcon",
+            "States": [
+                {
+                    "Image": "Images/setRotationIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"],
+            "PropertyInspectorPath": "PropertyInspector/setRotation.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.naturaldampening",
+            "Name": "Natural Damping",
+            "Tooltip": "Adjust natural damping. Use button or dial.",
+            "Icon": "Images/dampingIcon",
+            "States": [
+                {
+                    "Image": "Images/dampingIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust damping",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.maxtorque",
+            "Name": "Max Torque",
+            "Tooltip": "Adjust maximum torque limit. Use button or dial.",
+            "Icon": "Images/torqueIcon",
+            "States": [
+                {
+                    "Image": "Images/torqueIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust torque",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.steeringwheelinertia",
+            "Name": "Steering Wheel Inertia",
+            "Tooltip": "Adjust steering wheel inertia (simulates wheel weight). Use button or dial.",
+            "Icon": "Images/swInertiaIcon",
+            "States": [
+                {
+                    "Image": "Images/swInertiaIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust inertia",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.maxwheelspeed",
+            "Name": "Maximum Wheel Speed",
+            "Tooltip": "Adjust maximum wheel speed limit. Use button or dial.",
+            "Icon": "Images/speedIcon",
+            "States": [
+                {
+                    "Image": "Images/speedIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust speed",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.naturalfriction",
+            "Name": "Natural Friction",
+            "Tooltip": "Adjust natural friction. Use button or dial.",
+            "Icon": "Images/frictionIcon",
+            "States": [
+                {
+                    "Image": "Images/frictionIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust friction",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.naturalinertia",
+            "Name": "Natural Inertia",
+            "Tooltip": "Adjust natural inertia. Use button or dial.",
+            "Icon": "Images/inertiaIcon",
+            "States": [
+                {
+                    "Image": "Images/inertiaIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust inertia",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.springstrength",
+            "Name": "Wheel Spring Strength",
+            "Tooltip": "Adjust wheel spring/center force strength. Use button or dial.",
+            "Icon": "Images/springIcon",
+            "States": [
+                {
+                    "Image": "Images/springIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust spring",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.roadsensitivity",
+            "Name": "Road Sensitivity",
+            "Tooltip": "Adjust road feel detail level (0-10). Use button or dial.",
+            "Icon": "Images/roadIcon",
+            "States": [
+                {
+                    "Image": "Images/roadIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust sensitivity",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.speeddamping",
+            "Name": "Speed Damping",
+            "Tooltip": "Adjust speed-dependent damping to reduce oscillation at high speeds. Use button or dial.",
+            "Icon": "Images/speedDampingIcon",
+            "States": [
+                {
+                    "Image": "Images/speedDampingIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust damping",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.ffbreverse",
+            "Name": "FFB Reverse",
+            "Tooltip": "Toggle Force Feedback direction. Useful when switching between games.",
+            "Icon": "Images/reverseIcon",
+            "States": [
+                {
+                    "Image": "Images/reverseIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.stopffb",
+            "Name": "Stop FFB",
+            "Tooltip": "Emergency stop - immediately kills all force feedback",
+            "Icon": "Images/stopIcon",
+            "States": [
+                {
+                    "Image": "Images/stopIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.centerwheel",
+            "Name": "Center Wheel",
+            "Tooltip": "Center the steering wheel",
+            "Icon": "Images/centerIcon",
+            "States": [
+                {
+                    "Image": "Images/centerIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.throttlereverse",
+            "Name": "Throttle Reverse",
+            "Tooltip": "Toggle throttle pedal output direction",
+            "Icon": "Images/throttleIcon",
+            "States": [
+                {
+                    "Image": "Images/throttleIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.brakereverse",
+            "Name": "Brake Reverse",
+            "Tooltip": "Toggle brake pedal output direction",
+            "Icon": "Images/brakeIcon",
+            "States": [
+                {
+                    "Image": "Images/brakeIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.clutchreverse",
+            "Name": "Clutch Reverse",
+            "Tooltip": "Toggle clutch pedal output direction",
+            "Icon": "Images/clutchIcon",
+            "States": [
+                {
+                    "Image": "Images/clutchIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.handbrakemode",
+            "Name": "Handbrake Mode",
+            "Tooltip": "Toggle handbrake between axis and button mode",
+            "Icon": "Images/handbrakeIcon",
+            "States": [
+                {
+                    "Image": "Images/handbrakeIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.autoblip",
+            "Name": "Auto-Blip Toggle",
+            "Tooltip": "Toggle automatic rev-match on downshift (requires shifter)",
+            "Icon": "Images/blipToggleIcon",
+            "States": [
+                {
+                    "Image": "Images/blipToggleIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.autoblipoutput",
+            "Name": "Auto-Blip Output",
+            "Tooltip": "Adjust auto-blip throttle amount. Use button or dial.",
+            "Icon": "Images/blipIcon",
+            "States": [
+                {
+                    "Image": "Images/blipIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust output",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.autoblipduration",
+            "Name": "Auto-Blip Duration",
+            "Tooltip": "Adjust auto-blip duration. Use button or dial.",
+            "Icon": "Images/blipIcon",
+            "States": [
+                {
+                    "Image": "Images/blipIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad", "Encoder"],
+            "Encoder": {
+                "layout": "Layouts/value-bar.json",
+                "TriggerDescription": {
+                    "Rotate": "Adjust duration",
+                    "Push": "Show current"
+                }
+            },
+            "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.applypreset",
+            "Name": "Apply Preset",
+            "Tooltip": "Apply a Moza Pit House motor preset to your wheel base",
+            "Icon": "Images/presetIcon",
+            "States": [
+                {
+                    "Image": "Images/presetIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"],
+            "PropertyInspectorPath": "PropertyInspector/applyPreset.html"
+        }
+    ]
+}

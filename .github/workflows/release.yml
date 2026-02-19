@@ -31,59 +31,32 @@ jobs:
         run: |
           $version = "${{ steps.version.outputs.VERSION }}"
 
-          # Update App csproj
-          $appCsproj = "src/MozaHotkey.App/MozaHotkey.App.csproj"
-          (Get-Content $appCsproj) -replace '<Version>.*</Version>', "<Version>$version</Version>" | Set-Content $appCsproj
-
           # Update StreamDeck csproj
-          $sdCsproj = "src/MozaHotkey.StreamDeck/MozaHotkey.StreamDeck.csproj"
+          $sdCsproj = "src/MozaStreamDeck.Plugin/MozaStreamDeck.Plugin.csproj"
           (Get-Content $sdCsproj) -replace '<Version>.*</Version>', "<Version>$version</Version>" | Set-Content $sdCsproj
-
-          # Update installer
-          $issFile = "installer/MozaHotkey.iss"
-          (Get-Content $issFile) -replace '#define MyAppVersion ".*"', "#define MyAppVersion `"$version`"" | Set-Content $issFile
-
-      - name: Install Inno Setup
-        shell: pwsh
-        run: choco install innosetup -y
-
-      - name: Build Windows App Installer
-        shell: pwsh
-        run: |
-          $version = "${{ steps.version.outputs.VERSION }}"
-
-          # Build the app
-          dotnet publish src/MozaHotkey.App/MozaHotkey.App.csproj -c Release -r win-x64 --self-contained false
-
-          # Run Inno Setup
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer/MozaHotkey.iss
-
-          # Rename output to include version
-          $outputDir = "releases"
-          if (-not (Test-Path $outputDir)) { New-Item -ItemType Directory -Path $outputDir }
 
       - name: Build Stream Deck Plugin
         shell: pwsh
         run: |
           $version = "${{ steps.version.outputs.VERSION }}"
-          $pluginId = "com.mozahotkey.streamdeck"
+          $pluginId = "com.dbce.moza-streamdeck"
           $pluginName = "$pluginId.sdPlugin"
           $outputDir = "releases"
           $stagingPath = "$outputDir/staging"
           $pluginStagingPath = "$stagingPath/$pluginName"
 
           # Build
-          dotnet build src/MozaHotkey.StreamDeck/MozaHotkey.StreamDeck.csproj -c Release
+          dotnet build src/MozaStreamDeck.Plugin/MozaStreamDeck.Plugin.csproj -c Release
 
           # Create staging directory
           New-Item -ItemType Directory -Path $pluginStagingPath -Force | Out-Null
 
           # Copy plugin files
-          Copy-Item -Path "src/MozaHotkey.StreamDeck/bin/Release/*" -Destination $pluginStagingPath -Recurse
+          Copy-Item -Path "src/MozaStreamDeck.Plugin/bin/Release/*" -Destination $pluginStagingPath -Recurse
 
           # Generate marketplace icon
           Add-Type -AssemblyName System.Drawing
-          $imagesPath = "src/MozaHotkey.StreamDeck/Images"
+          $imagesPath = "src/MozaStreamDeck.Plugin/Images"
           $marketplaceIconPath = "$imagesPath/marketplaceIcon.png"
           $size = 288
           $bitmap = New-Object System.Drawing.Bitmap($size, $size)
@@ -101,7 +74,7 @@ jobs:
           $graphics.DrawString("MOZA", $font, $textBrush, $rect, $stringFormat)
           $subtitleFont = New-Object System.Drawing.Font("Segoe UI", 28, [System.Drawing.FontStyle]::Regular)
           $subtitleRect = New-Object System.Drawing.RectangleF(0, 50, $size, $size)
-          $graphics.DrawString("Hotkey", $subtitleFont, $textBrush, $subtitleRect, $stringFormat)
+          $graphics.DrawString("Racing", $subtitleFont, $textBrush, $subtitleRect, $stringFormat)
           $bitmap.Save($marketplaceIconPath, [System.Drawing.Imaging.ImageFormat]::Png)
           $font.Dispose(); $subtitleFont.Dispose(); $textBrush.Dispose(); $bgBrush.Dispose()
           $stringFormat.Dispose(); $graphics.Dispose(); $bitmap.Dispose()
@@ -120,12 +93,11 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          name: MozaHotkey v${{ steps.version.outputs.VERSION }}
+          name: Moza Stream Deck Plugin v${{ steps.version.outputs.VERSION }}
           draft: false
           prerelease: ${{ contains(steps.version.outputs.VERSION, 'alpha') || contains(steps.version.outputs.VERSION, 'beta') }}
           generate_release_notes: true
           files: |
-            releases/MozaHotkey-Setup-v${{ steps.version.outputs.VERSION }}.exe
-            releases/com.mozahotkey.streamdeck-v${{ steps.version.outputs.VERSION }}.streamDeckPlugin
+            releases/com.dbce.moza-streamdeck-v${{ steps.version.outputs.VERSION }}.streamDeckPlugin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
