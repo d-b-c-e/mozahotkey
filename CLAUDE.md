@@ -35,12 +35,20 @@ moza-streamdeck-plugin/
 │       ├── Program.cs             # Entry point with BarRaider StreamDeck-Tools
 │       ├── MozaDeviceManager.cs   # Singleton device lifecycle
 │       ├── Actions/               # Stream Deck action handlers (one per setting)
+│       ├── Layouts/               # Stream Deck+ encoder layout JSON
 │       ├── PropertyInspector/     # HTML/JS settings UI for each action
 │       └── Images/                # Icon PNG files (72x72)
 │
 ├── scripts/
 │   ├── deploy-streamdeck.ps1      # Deploy plugin to Stream Deck
-│   └── generate-placeholder-icons.ps1  # Generate placeholder icons
+│   ├── build-streamdeck-release.ps1      # Build .streamDeckPlugin release package
+│   ├── build-streamdeck-marketplace.ps1  # Build for marketplace submission
+│   ├── list-sdk-methods.ps1       # List available Moza SDK methods
+│   └── generate-placeholder-icons.ps1    # Generate placeholder icons
+│
+├── .github/
+│   └── workflows/
+│       └── release.yml            # GitHub Actions: automated release on tag push
 │
 └── lib/
     └── MozaSDK/                   # Moza SDK DLLs (included in repo)
@@ -154,7 +162,7 @@ For dials, direction is determined by rotation direction; only increment is conf
 ### Icon Requirements
 
 Icons are 72x72 PNG files in `src/MozaStreamDeck.Plugin/Images/`:
-- pluginIcon.png, categoryIcon.png (Moza branding)
+- pluginIcon.png, categoryIcon.png, marketplaceIcon.png (Moza branding)
 - ffbIcon.png, rotationIcon.png, setRotationIcon.png
 - dampingIcon.png, torqueIcon.png, centerIcon.png
 - swInertiaIcon.png, speedIcon.png, frictionIcon.png
@@ -162,6 +170,7 @@ Icons are 72x72 PNG files in `src/MozaStreamDeck.Plugin/Images/`:
 - speedDampingIcon.png, reverseIcon.png, stopIcon.png
 - throttleIcon.png, brakeIcon.png, clutchIcon.png, handbrakeIcon.png
 - blipToggleIcon.png, blipIcon.png (+ Up/Down variants), presetIcon.png
+- settingsIcon.png (generic/utility)
 
 Adjustable actions also have Up/Down variants (e.g., ffbIconUp.png, ffbIconDown.png) for direction indication.
 
@@ -183,6 +192,21 @@ Motor presets are loaded from `%USERPROFILE%\Documents\MOZA Pit House\Presets\Mo
 The `PresetManager` finds the Pit House directory (handles OneDrive redirection) and enumerates presets.
 The `ApplyPresetAction` reads the selected preset JSON and applies all supported `deviceParams` via SDK.
 
+**Pit House preset directory structure:**
+```
+Documents/MOZA Pit House/
+├── Presets/
+│   ├── Motor/              ← Plugin scans HERE (wheel base FFB/rotation settings)
+│   ├── Steering Wheel/     ← NOT scanned (button mappings, RPM LEDs — no SDK control)
+│   ├── Pedals/             ← NOT scanned (pedal curves — no SDK control)
+│   ├── config.ini          ← Maps device models to default preset IDs
+│   └── favorites.json      ← User's favorited preset IDs
+└── LocalParameters/        ← Per-device active settings (not presets)
+```
+
+Only `Motor/` presets contain `deviceParams` fields the plugin can apply via SDK.
+Steering Wheel presets (e.g., "ESX-Official") contain LED/button config only.
+
 Supported preset fields (11 of ~22):
 - `gameForceFeedbackStrength`, `maximumSteeringAngle`, `maximumTorque`
 - `mechanicalDamper`, `mechanicalSpringStrength`, `mechanicalFriction`
@@ -192,3 +216,22 @@ Supported preset fields (11 of ~22):
 Not supported (no SDK function): `gameForceFeedbackFilter`, `setGameDampingValue`, `setGameFrictionValue`,
 `setGameInertiaValue`, `setGameSpringValue`, `softLimitStrength`, `softLimitStiffness`, `constForceExtraMode`,
 `forceFeedbackMaping`, `naturalInertiaV2`, `gearJoltLevel`
+
+## MCP Tools (dbce-mcp-server)
+
+The `dbce-mcp-server` provides tools globally via MCP. Key tools for this project:
+
+### Image Generation (for Stream Deck icons)
+
+- `generate_image` — Generate professional action icons via OpenAI gpt-image-1. Supports transparent backgrounds natively. Use for creating visually distinctive icons for each of the 25+ actions.
+- `resize_image` — Resize generated icons to exact 72x72 pixels required by Stream Deck SDK.
+- `remove_background` — Clean up icon backgrounds to work on Stream Deck's dark display.
+
+### UI Verification
+
+- `screenshot` — Capture the Stream Deck software window to verify how icons render in the actual plugin UI, Property Inspector layout, and dial indicator appearance.
+
+### Tool Selection
+
+- For icon creation workflow: `generate_image` (with transparent BG) → `resize_image` (to 72x72 PNG) → verify with `screenshot` of Stream Deck app
+- Do NOT use Playwright MCP for this project — Stream Deck Property Inspectors are local HTML but managed by the SDK, not a regular browser
