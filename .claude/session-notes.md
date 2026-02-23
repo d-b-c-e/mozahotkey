@@ -2,30 +2,32 @@
 <!-- Written by /wrapup. Read by /catchup at the start of the next session. -->
 <!-- Overwritten each session — history preserved in git log of this file. -->
 
-- **Date:** 2026-02-21
+- **Date:** 2026-02-23
 - **Branch:** main
 
 ## What Was Done
-- Deployed new plugin (`com.dbce.moza-streamdeck`) to Stream Deck after project rename
-- Removed stale old plugin (`com.mozahotkey.streamdeck.sdPlugin`) — required killing orphaned `MozaStreamDeck.Plugin` process that was locking files
-- Investigated `_Arcade` preset rotation label not updating after Apply Preset
-- Investigated missing `ESX-Official` preset — found it's a Steering Wheel preset in `Presets/Steering Wheel/`, not a Motor preset
-- Updated CLAUDE.md: added missing scripts to architecture, documented Pit House preset directory structure, added missing icons
+- Created and pushed `v1.0.0` git tag, triggering the GitHub Actions release workflow
+- Verified the release built successfully and the `.streamDeckPlugin` asset was attached
+- Rewrote the auto-generated release notes (which referenced old alpha PRs) with proper v1.0.0 content
+- Identified log file locations for user troubleshooting: `pluginlog.log` and `StreamDeck.log`
+- Added log file documentation to both README.md (Troubleshooting section) and CLAUDE.md
 
 ## Decisions Made
-- Steering Wheel presets (like `ESX-Official`) are intentionally not shown in plugin: they contain LED/button config only, no motor/FFB `deviceParams` the SDK can control
-- Pit House preset directory structure documented in CLAUDE.md for future reference
+- Used `gh release edit --notes-file` to update release notes: avoids PowerShell heredoc quoting issues with `gh release edit --notes`
+- Log file paths documented in both user-facing README and developer CLAUDE.md: users need it for bug reports, devs need it for debugging
 
 ## Open Items
-- [ ] `_Arcade` preset rotation label not updating — likely `setMotorLimitAngle(135, 135)` failing on R12 at that low angle (similar to hands-off protection OUTOFRANGE issue). Need to test with wheel connected and check Apply Preset button for "skip" count
-- [ ] No automated tests exist yet — unit tests for `PresetManager`, `PresetProfile` parsing, and value clamping would add confidence
-- [ ] Old `MozaHotkey.App` build artifacts remain in `src/MozaHotkey.App/bin/` and `obj/` — should be cleaned up or gitignored
+- [ ] A user reported the plugin "not working" — no details yet, need them to provide `pluginlog.log`
+- [ ] Consider creating a GitHub issue template that asks for log files, wheel model, and Pit House version
+- [ ] `_Arcade` preset rotation label not updating (carried from previous session)
+- [ ] No automated tests exist yet
 
 ## Next Steps
-1. Test Apply Preset with `_Arcade` profile while wheel is connected — check if rotation setting reports a skip/error
-2. If rotation fails at 135, add SDK error fallback for low rotation values (similar to hands-off protection fallback)
-3. Consider polishing icons and preparing for Stream Deck Marketplace submission
-4. Add unit tests for core preset parsing and value clamping logic
+1. Follow up on user report once they provide log files
+2. Consider submitting to Stream Deck Marketplace if feedback is positive
+3. Consider adding a GitHub issue template for bug reports
 
 ## Context for Next Session
-The plugin was successfully redeployed under the new `com.dbce.moza-streamdeck` plugin ID. Any old Stream Deck button configs from the `com.mozahotkey.streamdeck` era need to be re-added manually. The rotation display issue with _Arcade preset is the top bug to investigate — code review showed no logic bug, so it's likely an SDK-level rejection of 135 degrees on the R12 wheel base.
+v1.0.0 is now live on GitHub Releases. A user has reported issues but hasn't provided
+details yet — point them to the log file paths in the README troubleshooting section.
+The release workflow is confirmed working end-to-end (tag push -> build -> release).

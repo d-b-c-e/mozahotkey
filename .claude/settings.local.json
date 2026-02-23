@@ -1,14 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git config:*)",
-      "Bash(powershell -Command \"Get-ChildItem ''E:\\\\Source\\\\MozaHotkey'' -Force\")",
-      "WebFetch(domain:github.com)",
-      "Bash(git ls-tree:*)",
-      "WebFetch(domain:us.mozaracing.com)",
+      "Bash(*)",
+      "Edit(*)",
+      "Write(*)",
+      "WebFetch(*)",
       "WebSearch",
-      "Bash(powershell -Command \"Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory\\(''E:\\\\Source\\\\MozaHotkey\\\\sdk_temp\\\\MOZA_SDK.zip'', ''E:\\\\Source\\\\MozaHotkey\\\\sdk_temp\\\\extracted''\\)\")",
-      "Bash(powershell -Command:*)"
+      "mcp__*",
+      "Skill(wrapup)"
     ]
   }
 }

@@ -217,6 +217,14 @@ Not supported (no SDK function): `gameForceFeedbackFilter`, `setGameDampingValue
 `setGameInertiaValue`, `setGameSpringValue`, `softLimitStrength`, `softLimitStiffness`, `constForceExtraMode`,
 `forceFeedbackMaping`, `naturalInertiaV2`, `gearJoltLevel`
 
+## Logging / Troubleshooting
+
+Plugin log (BarRaider StreamDeck-Tools logger):
+`%APPDATA%\Elgato\StreamDeck\Plugins\com.dbce.moza-streamdeck.sdPlugin\pluginlog.log`
+
+Stream Deck application logs (plugin load/crash issues):
+`%APPDATA%\Elgato\StreamDeck\logs\StreamDeck.log`
+
 ## MCP Tools (dbce-mcp-server)
 
 The `dbce-mcp-server` provides tools globally via MCP. Key tools for this project:

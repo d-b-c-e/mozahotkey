@@ -127,6 +127,13 @@ I hope you find it useful! I might consider deploying it to the Stream Deck Mark
 - Press a dial or interact with a button to force a refresh
 - Restart Stream Deck if issues persist
 
+### Log Files
+
+If you need to file a bug report, include the relevant log file:
+
+- **Plugin log**: `%APPDATA%\Elgato\StreamDeck\Plugins\com.dbce.moza-streamdeck.sdPlugin\pluginlog.log`
+- **Stream Deck log**: `%APPDATA%\Elgato\StreamDeck\logs\StreamDeck.log`
+
 ## Building from Source
 
 ```bash
