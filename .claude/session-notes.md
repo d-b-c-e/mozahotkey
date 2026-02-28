@@ -2,32 +2,37 @@
 <!-- Written by /wrapup. Read by /catchup at the start of the next session. -->
 <!-- Overwritten each session — history preserved in git log of this file. -->
 
-- **Date:** 2026-02-23
+- **Date:** 2026-02-28
 - **Branch:** main
 
 ## What Was Done
-- Created and pushed `v1.0.0` git tag, triggering the GitHub Actions release workflow
-- Verified the release built successfully and the `.streamDeckPlugin` asset was attached
-- Rewrote the auto-generated release notes (which referenced old alpha PRs) with proper v1.0.0 content
-- Identified log file locations for user troubleshooting: `pluginlog.log` and `StreamDeck.log`
-- Added log file documentation to both README.md (Troubleshooting section) and CLAUDE.md
+- Researched recommended Moza wheel settings for arcade racing games (non-FFB, XOutput/x360ce scenarios)
+- Updated `_Arcade` Pit House preset (`3e4d0e5e-0af8-4c84-8588-346af5669f3b`) with research-based values:
+  - FFB 40→60, Rotation 135→360, Torque 100→75, Damper 25→50, Friction 20→30, Spring 0→40, Inertia 150→250, Speed Damping 25→0
+- Fixed `MozaDevice.cs:SetSpeedDampingStartPoint` — SDK rejects 0 but Pit House presets commonly store 0 for "disabled"
+- Applied fix in `ApplyPreset` to skip the SDK call when `initialSpeedDependentDamping` is 0
+- Saved comprehensive arcade wheel settings research to persistent memory at `arcade-wheel-settings.md`
+- Deployed and verified preset applies cleanly (11 settings, 0 skips)
 
 ## Decisions Made
-- Used `gh release edit --notes-file` to update release notes: avoids PowerShell heredoc quoting issues with `gh release edit --notes`
-- Log file paths documented in both user-facing README and developer CLAUDE.md: users need it for bug reports, devs need it for debugging
+- Spring strength 40% for arcade: essential for non-FFB games where the game provides no centering force
+- Speed damping start point 0 = skip SDK call: the SDK function `setMotorSpeedDampingStartPoint` rejects 0 even though Pit House stores it — 0 means disabled, so skipping is correct behavior
+- Kept clamp at 1-200 in `SetSpeedDampingStartPoint` as documentation of the SDK's actual accepted range
 
 ## Open Items
-- [ ] A user reported the plugin "not working" — no details yet, need them to provide `pluginlog.log`
-- [ ] Consider creating a GitHub issue template that asks for log files, wheel model, and Pit House version
-- [ ] `_Arcade` preset rotation label not updating (carried from previous session)
+- [ ] Arcade preset is tuned but untested in actual games — user should test in Burnout/NFS/The Crew
+- [ ] `_Arcade` preset was manually edited on disk — Pit House may overwrite if user edits via GUI
 - [ ] No automated tests exist yet
+- [ ] Consider submitting to Stream Deck Marketplace
 
 ## Next Steps
-1. Follow up on user report once they provide log files
-2. Consider submitting to Stream Deck Marketplace if feedback is positive
-3. Consider adding a GitHub issue template for bug reports
+1. Test the `_Arcade` preset in actual arcade games and iterate on values
+2. Consider creating game-specific presets (NFS, Forza Horizon, Burnout) using the research ranges
+3. Bump version for next release with the speed damping start point fix
 
 ## Context for Next Session
-v1.0.0 is now live on GitHub Releases. A user has reported issues but hasn't provided
-details yet — point them to the log file paths in the README troubleshooting section.
-The release workflow is confirmed working end-to-end (tag push -> build -> release).
+The `_Arcade` preset was updated with community-researched values optimized for non-FFB arcade games
+used via XOutput. Key insight: in non-FFB games, spring/damper/friction are the entire FFB system
+since the game sends no forces. The speed damping start point fix (`src/MozaStreamDeck.Core/MozaDevice.cs:817-821`)
+is the only code change — skip SDK call for value 0 instead of sending it and getting OUTOFRANGE.
+Research notes saved to `.claude/projects/E--Source-moza-streamdeck-plugin/memory/arcade-wheel-settings.md`.

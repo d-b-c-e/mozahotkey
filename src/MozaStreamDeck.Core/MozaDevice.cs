@@ -720,13 +720,13 @@ public class MozaDevice : IDisposable
     }
 
     /// <summary>
-    /// Sets the speed damping start point (0-200).
+    /// Sets the speed damping start point (1-200). SDK rejects 0; callers should skip the call for 0.
     /// Pit House presets store this as a speed value, not a percentage.
     /// </summary>
     public void SetSpeedDampingStartPoint(int value)
     {
         EnsureInitialized();
-        value = Math.Clamp(value, 0, 200);
+        value = Math.Clamp(value, 1, 200);
         var error = setMotorSpeedDampingStartPoint(value);
         ThrowIfError(error, "Failed to set speed damping start point");
     }
@@ -815,7 +815,11 @@ public class MozaDevice : IDisposable
             SetSpeedDamping(Convert.ToInt32(p["speedDependentDamping"])));
 
         TryApply("initialSpeedDependentDamping", () =>
-            SetSpeedDampingStartPoint(Convert.ToInt32(p["initialSpeedDependentDamping"])));
+        {
+            var startPoint = Convert.ToInt32(p["initialSpeedDependentDamping"]);
+            if (startPoint > 0)
+                SetSpeedDampingStartPoint(startPoint);
+        });
 
         if (p.ContainsKey("safeDrivingEnabled") && p.ContainsKey("safeDrivingMode"))
         {

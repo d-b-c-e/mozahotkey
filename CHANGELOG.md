@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.1] - 2026-02-28
+
+### Fixed
+- Apply Preset: speed damping start point (initialSpeedDependentDamping) no longer fails with OUTOFRANGE when preset value is 0 — SDK rejects 0 so the call is now skipped for disabled speed damping
+
 ## [1.0.0] - 2026-02-21
 
 ### Changed
@@ -59,6 +64,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - GitHub Actions workflow for automated releases
 - Build and deploy scripts for development
 
+[1.0.1]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/d-b-c-e/moza-streamdeck-plugin/releases/tag/v1.0.0
 [0.8.3-alpha]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v0.8.2-alpha...v0.8.3-alpha
 [0.8.2-alpha]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v0.8.1-alpha...v0.8.2-alpha
