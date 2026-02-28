@@ -45,7 +45,7 @@ public class MaxTorqueAction : KeyAndEncoderBase
         try
         {
             UpdateDirectionIcon();
-            if (MozaDeviceManager.Instance.TryInitialize())
+            if (MozaDeviceManager.Instance.IsReady)
             {
                 var currentValue = MozaDeviceManager.Instance.Device.GetMaxTorque();
 
@@ -88,6 +88,11 @@ public class MaxTorqueAction : KeyAndEncoderBase
     {
         try
         {
+            if (!MozaDeviceManager.Instance.EnsureInitialized())
+            {
+                Connection.ShowAlert();
+                return;
+            }
             var device = MozaDeviceManager.Instance.Device;
             var delta = settings.Direction == "decrease" ? -settings.IncrementValue : settings.IncrementValue;
             var newValue = device.AdjustMaxTorque(delta);
@@ -107,6 +112,11 @@ public class MaxTorqueAction : KeyAndEncoderBase
     {
         try
         {
+            if (!MozaDeviceManager.Instance.EnsureInitialized())
+            {
+                Connection.ShowAlert();
+                return;
+            }
             var device = MozaDeviceManager.Instance.Device;
             var delta = payload.Ticks * settings.IncrementValue;
             var newValue = device.AdjustMaxTorque(delta);
@@ -126,6 +136,7 @@ public class MaxTorqueAction : KeyAndEncoderBase
 
     public override void DialDown(DialPayload payload)
     {
+        if (!MozaDeviceManager.Instance.IsReady) return;
         try
         {
             var currentValue = MozaDeviceManager.Instance.Device.GetMaxTorque();
@@ -141,7 +152,7 @@ public class MaxTorqueAction : KeyAndEncoderBase
 
     public override void OnTick()
     {
-        if (!_initialized)
+        if (!_initialized && MozaDeviceManager.Instance.IsReady)
         {
             InitializeDisplay();
         }

@@ -17,7 +17,7 @@ public class ClutchReverseAction : KeypadBase
     {
         try
         {
-            if (MozaDeviceManager.Instance.TryInitialize())
+            if (MozaDeviceManager.Instance.IsReady)
             {
                 var isReversed = MozaDeviceManager.Instance.Device.GetClutchReverse();
                 await Connection.SetTitleAsync(isReversed ? "REV" : "NRM");
@@ -35,6 +35,11 @@ public class ClutchReverseAction : KeypadBase
     {
         try
         {
+            if (!MozaDeviceManager.Instance.EnsureInitialized())
+            {
+                Connection.ShowAlert();
+                return;
+            }
             var device = MozaDeviceManager.Instance.Device;
             var newState = device.ToggleClutchReverse();
             Connection.SetTitleAsync(newState ? "REV" : "NRM");
@@ -52,7 +57,7 @@ public class ClutchReverseAction : KeypadBase
 
     public override void OnTick()
     {
-        if (!_initialized)
+        if (!_initialized && MozaDeviceManager.Instance.IsReady)
         {
             InitializeDisplay();
         }

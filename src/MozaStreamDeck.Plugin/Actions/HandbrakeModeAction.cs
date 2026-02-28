@@ -17,7 +17,7 @@ public class HandbrakeModeAction : KeypadBase
     {
         try
         {
-            if (MozaDeviceManager.Instance.TryInitialize())
+            if (MozaDeviceManager.Instance.IsReady)
             {
                 var mode = MozaDeviceManager.Instance.Device.GetHandbrakeMode();
                 await Connection.SetTitleAsync(mode == 0 ? "AXIS" : "BTN");
@@ -35,6 +35,11 @@ public class HandbrakeModeAction : KeypadBase
     {
         try
         {
+            if (!MozaDeviceManager.Instance.EnsureInitialized())
+            {
+                Connection.ShowAlert();
+                return;
+            }
             var device = MozaDeviceManager.Instance.Device;
             var newMode = device.ToggleHandbrakeMode();
             Connection.SetTitleAsync(newMode == 0 ? "AXIS" : "BTN");
@@ -52,7 +57,7 @@ public class HandbrakeModeAction : KeypadBase
 
     public override void OnTick()
     {
-        if (!_initialized)
+        if (!_initialized && MozaDeviceManager.Instance.IsReady)
         {
             InitializeDisplay();
         }

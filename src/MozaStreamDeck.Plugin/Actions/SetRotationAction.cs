@@ -27,6 +27,11 @@ public class SetRotationAction : KeypadBase
     {
         try
         {
+            if (!MozaDeviceManager.Instance.EnsureInitialized())
+            {
+                Connection.ShowAlert();
+                return;
+            }
             var device = MozaDeviceManager.Instance.Device;
             device.SetWheelRotation(settings.Degrees);
             Connection.SetTitleAsync($"{settings.Degrees}°");

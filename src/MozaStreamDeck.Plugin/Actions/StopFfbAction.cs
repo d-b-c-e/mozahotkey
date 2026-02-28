@@ -14,6 +14,11 @@ public class StopFfbAction : KeypadBase
     {
         try
         {
+            if (!MozaDeviceManager.Instance.EnsureInitialized())
+            {
+                Connection.ShowAlert();
+                return;
+            }
             var device = MozaDeviceManager.Instance.Device;
             device.StopForceFeedback();
             Connection.SetTitleAsync("STOP");

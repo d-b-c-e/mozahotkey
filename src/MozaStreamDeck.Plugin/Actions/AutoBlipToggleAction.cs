@@ -17,7 +17,7 @@ public class AutoBlipToggleAction : KeypadBase
     {
         try
         {
-            if (MozaDeviceManager.Instance.TryInitialize())
+            if (MozaDeviceManager.Instance.IsReady)
             {
                 var isEnabled = MozaDeviceManager.Instance.Device.GetAutoBlipEnabled();
                 await Connection.SetTitleAsync(isEnabled ? "ON" : "OFF");
@@ -35,6 +35,11 @@ public class AutoBlipToggleAction : KeypadBase
     {
         try
         {
+            if (!MozaDeviceManager.Instance.EnsureInitialized())
+            {
+                Connection.ShowAlert();
+                return;
+            }
             var device = MozaDeviceManager.Instance.Device;
             var newState = device.ToggleAutoBlip();
             Connection.SetTitleAsync(newState ? "ON" : "OFF");
@@ -52,7 +57,7 @@ public class AutoBlipToggleAction : KeypadBase
 
     public override void OnTick()
     {
-        if (!_initialized)
+        if (!_initialized && MozaDeviceManager.Instance.IsReady)
         {
             InitializeDisplay();
         }

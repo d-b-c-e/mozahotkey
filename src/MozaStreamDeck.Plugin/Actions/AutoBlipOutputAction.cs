@@ -46,7 +46,7 @@ public class AutoBlipOutputAction : KeyAndEncoderBase
         try
         {
             UpdateDirectionIcon();
-            if (MozaDeviceManager.Instance.TryInitialize())
+            if (MozaDeviceManager.Instance.IsReady)
             {
                 var currentValue = MozaDeviceManager.Instance.Device.GetAutoBlipOutput();
 
@@ -90,6 +90,11 @@ public class AutoBlipOutputAction : KeyAndEncoderBase
     {
         try
         {
+            if (!MozaDeviceManager.Instance.EnsureInitialized())
+            {
+                Connection.ShowAlert();
+                return;
+            }
             var device = MozaDeviceManager.Instance.Device;
             var delta = settings.Direction == "decrease" ? -settings.IncrementValue : settings.IncrementValue;
             var newValue = device.AdjustAutoBlipOutput(delta);
@@ -109,6 +114,11 @@ public class AutoBlipOutputAction : KeyAndEncoderBase
     {
         try
         {
+            if (!MozaDeviceManager.Instance.EnsureInitialized())
+            {
+                Connection.ShowAlert();
+                return;
+            }
             var device = MozaDeviceManager.Instance.Device;
             var delta = payload.Ticks * settings.IncrementValue;
             var newValue = device.AdjustAutoBlipOutput(delta);
@@ -129,6 +139,7 @@ public class AutoBlipOutputAction : KeyAndEncoderBase
 
     public override void DialDown(DialPayload payload)
     {
+        if (!MozaDeviceManager.Instance.IsReady) return;
         try
         {
             var currentValue = MozaDeviceManager.Instance.Device.GetAutoBlipOutput();
@@ -150,7 +161,7 @@ public class AutoBlipOutputAction : KeyAndEncoderBase
 
     public override void OnTick()
     {
-        if (!_initialized)
+        if (!_initialized && MozaDeviceManager.Instance.IsReady)
         {
             InitializeDisplay();
         }

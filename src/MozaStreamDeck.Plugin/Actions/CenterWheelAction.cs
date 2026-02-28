@@ -14,6 +14,11 @@ public class CenterWheelAction : KeypadBase
     {
         try
         {
+            if (!MozaDeviceManager.Instance.EnsureInitialized())
+            {
+                Connection.ShowAlert();
+                return;
+            }
             var device = MozaDeviceManager.Instance.Device;
             device.CenterWheel();
             Connection.SetTitleAsync("Done");

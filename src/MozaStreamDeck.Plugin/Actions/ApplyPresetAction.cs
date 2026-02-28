@@ -110,6 +110,11 @@ public class ApplyPresetAction : KeypadBase
                 return;
             }
 
+            if (!MozaDeviceManager.Instance.EnsureInitialized())
+            {
+                Connection.ShowAlert();
+                return;
+            }
             var device = MozaDeviceManager.Instance.Device;
             var (applied, failed, errors) = device.ApplyPreset(preset);
 

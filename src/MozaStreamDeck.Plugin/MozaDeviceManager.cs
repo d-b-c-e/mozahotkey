@@ -5,6 +5,7 @@ namespace MozaStreamDeck.Plugin;
 /// <summary>
 /// Singleton manager for MozaDevice lifecycle within the Stream Deck plugin.
 /// Ensures only one connection to the Moza SDK is maintained.
+/// SDK initialization is deferred until user interaction to avoid launching Pit House at boot.
 /// </summary>
 public sealed class MozaDeviceManager : IDisposable
 {
@@ -20,16 +21,15 @@ public sealed class MozaDeviceManager : IDisposable
     }
 
     /// <summary>
-    /// Gets the MozaDevice instance, initializing if necessary.
+    /// Gets the MozaDevice instance. Throws if not initialized — callers must
+    /// check IsReady or call TryInitialize() first (typically in KeyPressed/DialRotate).
     /// </summary>
     public MozaDevice Device
     {
         get
         {
             if (!_device.IsInitialized)
-            {
-                _device.Initialize();
-            }
+                throw new InvalidOperationException("Moza SDK not initialized. Call TryInitialize() first.");
             return _device;
         }
     }
@@ -40,7 +40,7 @@ public sealed class MozaDeviceManager : IDisposable
     public bool IsReady => _device.IsInitialized;
 
     /// <summary>
-    /// Raised when device state changes externally (e.g., a preset was applied).
+    /// Raised when device state changes externally (e.g., a preset was applied, or SDK first initialized).
     /// Subscribers should re-read their values from the device and refresh their displays.
     /// </summary>
     public static event Action? DeviceStateChanged;
@@ -51,12 +51,25 @@ public sealed class MozaDeviceManager : IDisposable
     public static void NotifyStateChanged() => DeviceStateChanged?.Invoke();
 
     /// <summary>
-    /// Attempts to initialize the device.
+    /// Attempts to initialize the device. Only call from user-interaction handlers
+    /// (KeyPressed, DialRotate) to avoid launching Pit House at boot.
     /// </summary>
     public bool TryInitialize()
     {
         if (_device.IsInitialized) return true;
         return _device.Initialize();
+    }
+
+    /// <summary>
+    /// Initializes the SDK if needed and notifies all actions to refresh their displays.
+    /// Returns false if initialization failed. Use in KeyPressed/DialRotate handlers.
+    /// </summary>
+    public bool EnsureInitialized()
+    {
+        if (_device.IsInitialized) return true;
+        if (!_device.Initialize()) return false;
+        NotifyStateChanged();
+        return true;
     }
 
     public void Dispose()
