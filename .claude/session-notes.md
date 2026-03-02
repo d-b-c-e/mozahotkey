@@ -2,37 +2,30 @@
 <!-- Written by /wrapup. Read by /catchup at the start of the next session. -->
 <!-- Overwritten each session — history preserved in git log of this file. -->
 
-- **Date:** 2026-02-28
+- **Date:** 2026-03-02
 - **Branch:** main
 
 ## What Was Done
-- Researched recommended Moza wheel settings for arcade racing games (non-FFB, XOutput/x360ce scenarios)
-- Updated `_Arcade` Pit House preset (`3e4d0e5e-0af8-4c84-8588-346af5669f3b`) with research-based values:
-  - FFB 40→60, Rotation 135→360, Torque 100→75, Damper 25→50, Friction 20→30, Spring 0→40, Inertia 150→250, Speed Damping 25→0
-- Fixed `MozaDevice.cs:SetSpeedDampingStartPoint` — SDK rejects 0 but Pit House presets commonly store 0 for "disabled"
-- Applied fix in `ApplyPreset` to skip the SDK call when `initialSpeedDependentDamping` is 0
-- Saved comprehensive arcade wheel settings research to persistent memory at `arcade-wheel-settings.md`
-- Deployed and verified preset applies cleanly (11 settings, 0 skips)
+- Diagnosed user-reported crash: plugin exit code 0xC0000005 (access violation) with no plugin log
+- Root cause: missing .NET 8.0 Desktop Runtime on user's machine — plugin is framework-dependent
+- Made plugin **self-contained** (`SelfContained=true`) so .NET runtime is bundled
+- Switched all build/deploy/CI scripts from `dotnet build` to `dotnet publish -o`
+- Bumped version to 1.0.3
+- Updated CLAUDE.md, README.md, CHANGELOG.md with new build model
+- Built release package: 36.3 MB compressed (up from ~5 MB)
+- Deployed and verified: plugin runs, no crashes, all 3 Stream Deck devices detected
 
 ## Decisions Made
-- Spring strength 40% for arcade: essential for non-FFB games where the game provides no centering force
-- Speed damping start point 0 = skip SDK call: the SDK function `setMotorSpeedDampingStartPoint` rejects 0 even though Pit House stores it — 0 means disabled, so skipping is correct behavior
-- Kept clamp at 1-200 in `SetSpeedDampingStartPoint` as documentation of the SDK's actual accepted range
+- Self-contained over framework-dependent: eliminates #1 user support issue at the cost of ~31 MB package size increase
+- No trimming: BarRaider StreamDeck-Tools uses reflection heavily, trimming would be risky
+- Used explicit `-o` flag with `dotnet publish` to keep output paths consistent with existing scripts
 
 ## Open Items
-- [ ] Arcade preset is tuned but untested in actual games — user should test in Burnout/NFS/The Crew
-- [ ] `_Arcade` preset was manually edited on disk — Pit House may overwrite if user edits via GUI
+- [ ] `src/MozaHotkey.App/` directory has 110 stale build artifact files (no csproj) — safe to delete
 - [ ] No automated tests exist yet
 - [ ] Consider submitting to Stream Deck Marketplace
 
 ## Next Steps
-1. Test the `_Arcade` preset in actual arcade games and iterate on values
-2. Consider creating game-specific presets (NFS, Forza Horizon, Burnout) using the research ranges
-3. Bump version for next release with the speed damping start point fix
-
-## Context for Next Session
-The `_Arcade` preset was updated with community-researched values optimized for non-FFB arcade games
-used via XOutput. Key insight: in non-FFB games, spring/damper/friction are the entire FFB system
-since the game sends no forces. The speed damping start point fix (`src/MozaStreamDeck.Core/MozaDevice.cs:817-821`)
-is the only code change — skip SDK call for value 0 instead of sending it and getting OUTOFRANGE.
-Research notes saved to `.claude/projects/E--Source-moza-streamdeck-plugin/memory/arcade-wheel-settings.md`.
+1. Create v1.0.3 release on GitHub
+2. Clean up stale `src/MozaHotkey.App/` directory
+3. Consider adding a troubleshooting note about the crash for other users

@@ -9,11 +9,8 @@ moza-streamdeck-plugin is a Stream Deck plugin for Moza Racing wheel bases. It a
 ## Build Commands
 
 ```bash
-# Build the solution
-dotnet build MozaStreamDeckPlugin.sln
-
-# Build for release
-dotnet build MozaStreamDeckPlugin.sln --configuration Release
+# Publish the plugin (self-contained, bundles .NET runtime)
+dotnet publish src/MozaStreamDeck.Plugin/MozaStreamDeck.Plugin.csproj -c Release -o src/MozaStreamDeck.Plugin/bin/Release
 
 # Clean build artifacts
 dotnet clean MozaStreamDeckPlugin.sln
@@ -88,7 +85,7 @@ All getter functions use `ref ERRORCODE` parameter.
 ## Platform Requirements
 
 - Windows only (Stream Deck software and Moza SDK are Windows-only)
-- .NET 8.0
+- .NET 8.0 (bundled — plugin is self-contained, no runtime install needed)
 - x64 architecture (Moza SDK is x64 only)
 - Moza Pit House must be installed for the SDK to communicate with hardware
 
@@ -106,8 +103,8 @@ The plugin provides direct control of Moza wheel settings from Stream Deck butto
 # Deploy to Stream Deck (closes/reopens Stream Deck)
 .\scripts\deploy-streamdeck.ps1 -KillStreamDeck
 
-# Build only (without deploying)
-dotnet build src/MozaStreamDeck.Plugin
+# Publish only (without deploying) — self-contained, bundles .NET runtime
+dotnet publish src/MozaStreamDeck.Plugin/MozaStreamDeck.Plugin.csproj -c Release -o src/MozaStreamDeck.Plugin/bin/Release
 
 # Generate placeholder icons
 .\scripts\generate-placeholder-icons.ps1

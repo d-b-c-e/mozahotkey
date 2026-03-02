@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.3] - 2026-03-02
+
+### Changed
+- Plugin is now **self-contained** — bundles the .NET 8.0 runtime so users no longer need to install it separately
+- Build scripts switched from `dotnet build` to `dotnet publish` for self-contained output
+- Release package size increased from ~5 MB to ~36 MB (compressed) due to bundled runtime
+
+### Fixed
+- Plugin crash on startup (exit code 0xC0000005) on systems without .NET 8.0 Desktop Runtime installed
+
 ## [1.0.2] - 2026-02-28
 
 ### Changed
@@ -68,6 +78,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - GitHub Actions workflow for automated releases
 - Build and deploy scripts for development
 
+[1.0.3]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/d-b-c-e/moza-streamdeck-plugin/releases/tag/v1.0.0

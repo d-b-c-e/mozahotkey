@@ -17,10 +17,11 @@ $targetPath = Join-Path $streamDeckPluginsPath $pluginName
 
 $config = if ($Release) { "Release" } else { "Debug" }
 
-Write-Host "Building MozaStreamDeck.Plugin ($config)..." -ForegroundColor Cyan
-dotnet build "$projectDir\MozaStreamDeck.Plugin.csproj" -c $config
+Write-Host "Publishing MozaStreamDeck.Plugin ($config, self-contained)..." -ForegroundColor Cyan
+$outputBin = Join-Path $projectDir "bin\$config"
+dotnet publish "$projectDir\MozaStreamDeck.Plugin.csproj" -c $config -o $outputBin
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "Build failed!" -ForegroundColor Red
+    Write-Host "Publish failed!" -ForegroundColor Red
     exit 1
 }
 

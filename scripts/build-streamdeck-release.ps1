@@ -41,19 +41,20 @@ if (Test-Path $stagingPath) {
 }
 New-Item -ItemType Directory -Path $pluginStagingPath -Force | Out-Null
 
-# Build in Release mode
-Write-Host "Building Release configuration..." -ForegroundColor Yellow
+# Publish in Release mode (self-contained, bundles .NET runtime)
+Write-Host "Publishing Release configuration (self-contained)..." -ForegroundColor Yellow
+$publishOutput = Join-Path $projectDir "bin\Release"
 Push-Location $solutionDir
 try {
-    dotnet build $csprojPath -c Release
+    dotnet publish $csprojPath -c Release -o $publishOutput
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "Build failed!" -ForegroundColor Red
+        Write-Host "Publish failed!" -ForegroundColor Red
         exit 1
     }
 } finally {
     Pop-Location
 }
-Write-Host "Build succeeded!" -ForegroundColor Green
+Write-Host "Publish succeeded!" -ForegroundColor Green
 Write-Host ""
 
 # Generate 288x288 marketplace icon if needed

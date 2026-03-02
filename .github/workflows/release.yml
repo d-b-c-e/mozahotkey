@@ -45,8 +45,9 @@ jobs:
           $stagingPath = "$outputDir/staging"
           $pluginStagingPath = "$stagingPath/$pluginName"
 
-          # Build
-          dotnet build src/MozaStreamDeck.Plugin/MozaStreamDeck.Plugin.csproj -c Release
+          # Publish (self-contained, bundles .NET runtime)
+          $publishOutput = "src/MozaStreamDeck.Plugin/bin/Release"
+          dotnet publish src/MozaStreamDeck.Plugin/MozaStreamDeck.Plugin.csproj -c Release -o $publishOutput
 
           # Create staging directory
           New-Item -ItemType Directory -Path $pluginStagingPath -Force | Out-Null

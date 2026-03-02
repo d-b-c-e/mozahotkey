@@ -136,12 +136,14 @@ If you need to file a bug report, include the relevant log file:
 
 ## Building from Source
 
+Requires [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (only for building — end users don't need it since the plugin bundles its own runtime).
+
 ```bash
 # Clone the repository
 git clone https://github.com/d-b-c-e/moza-streamdeck-plugin.git
 cd moza-streamdeck-plugin
 
-# Build the Stream Deck plugin
+# Build the .streamDeckPlugin release package
 .\scripts\build-streamdeck-release.ps1
 
 # Deploy for local testing
