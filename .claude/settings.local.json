@@ -7,7 +7,9 @@
       "WebFetch(*)",
       "WebSearch",
       "mcp__*",
-      "Skill(wrapup)"
+      "Skill(wrapup)",
+      "mcp__dbce-tools__screenshot",
+      "mcp__dbce-tools__list_windows"
     ]
   }
 }
