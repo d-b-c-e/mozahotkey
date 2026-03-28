@@ -151,6 +151,8 @@ Installed to: `%APPDATA%\Elgato\StreamDeck\Plugins\com.dbce.moza-streamdeck.sdPl
 | Auto-Blip Toggle | Toggle automatic rev-match on downshift | N/A | Button only |
 | Auto-Blip Output | Adjust auto-blip throttle amount | 5 | Button, Dial |
 | Auto-Blip Duration | Adjust auto-blip duration (0-500ms) | 50 | Button, Dial |
+| Hands Off Protection | Cycle hands-off protection mode (Off/M1/M2) | N/A | Button only |
+| Refresh Connection | Re-establish SDK connection and refresh all displays | N/A | Button only |
 | Apply Preset | Apply a Pit House motor preset | N/A | Button only |
 
 ### Per-Action Settings
@@ -178,7 +180,7 @@ Icons are 72x72 PNG files in `src/MozaStreamDeck.Plugin/Images/`:
 - speedDampingIcon.png, reverseIcon.png, stopIcon.png
 - throttleIcon.png, brakeIcon.png, clutchIcon.png, handbrakeIcon.png
 - blipToggleIcon.png, blipIcon.png (+ Up/Down variants), presetIcon.png
-- settingsIcon.png (generic/utility)
+- handsOffIcon.png, settingsIcon.png (generic/utility, also used for Refresh)
 
 Adjustable actions also have Up/Down variants (e.g., ffbIconUp.png, ffbIconDown.png) for direction indication.
 

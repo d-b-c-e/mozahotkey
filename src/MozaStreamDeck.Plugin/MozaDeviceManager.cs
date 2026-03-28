@@ -72,6 +72,24 @@ public sealed class MozaDeviceManager : IDisposable
         return true;
     }
 
+    /// <summary>
+    /// Tears down the SDK connection, re-initializes it, and notifies all actions
+    /// to refresh their displays. Use when values seem stale or out of sync.
+    /// </summary>
+    public bool ForceRefresh()
+    {
+        try
+        {
+            _device.Reinitialize();
+            NotifyStateChanged();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     public void Dispose()
     {
         if (_disposed) return;

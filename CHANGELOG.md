@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ## [Unreleased]
 
 ### Added
+- **Hands Off Protection** toggle action — cycles through Off / Mode 1 / Mode 2 with automatic fallback for wheel bases that don't support Mode 2
+- **Refresh Connection** action — tears down and re-establishes the SDK connection, then refreshes all button displays (fixes stale values after boot-order issues)
 - Unit test project (`tests/MozaStreamDeck.Tests/`) with xUnit — 17 tests covering preset JSON parsing and Pit House directory discovery
 - Troubleshooting guide (`docs/TROUBLESHOOTING.md`) covering common issues: crashes, N/C display, preset errors, Pit House auto-launch, and log file locations
 

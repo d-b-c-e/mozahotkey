@@ -36,7 +36,7 @@ I hope you find it useful! I might consider deploying it to the Stream Deck Mark
 - **Full Stream Deck Support**: Works with Stream Deck buttons and Stream Deck+ dials
 - **Real-time Display**: Current values shown on buttons and dial LCD screens
 - **Per-Action Settings**: Configure increment values and direction for each button
-- **23 Available Actions**: Control all major wheel base, pedal, and shifter settings
+- **25 Available Actions**: Control all major wheel base, pedal, and shifter settings
 - **Apply Preset**: Load Moza Pit House motor presets directly from Stream Deck
 
 ## Available Actions
@@ -72,6 +72,8 @@ I hope you find it useful! I might consider deploying it to the Stream Deck Mark
 | Clutch Reverse | Toggles clutch pedal output direction |
 | Handbrake Mode | Toggles handbrake between axis and button mode |
 | Auto-Blip Toggle | Toggles automatic rev-match on downshift (shifter) |
+| Hands Off Protection | Cycles hands-off protection mode (Off / Mode 1 / Mode 2) |
+| Refresh Connection | Re-establishes SDK connection and refreshes all button displays |
 | Apply Preset | Apply a Moza Pit House motor preset to your wheel base |
 
 ## Requirements

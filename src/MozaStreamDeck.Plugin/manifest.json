@@ -356,6 +356,19 @@
             "Controllers": ["Keypad"]
         },
         {
+            "UUID": "com.dbce.moza-streamdeck.handsoffprotection",
+            "Name": "Hands Off Protection",
+            "Tooltip": "Cycle hands-off protection mode (Off / Mode 1 / Mode 2)",
+            "Icon": "Images/handsOffIcon",
+            "States": [
+                {
+                    "Image": "Images/handsOffIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
+        },
+        {
             "UUID": "com.dbce.moza-streamdeck.autoblip",
             "Name": "Auto-Blip Toggle",
             "Tooltip": "Toggle automatic rev-match on downshift (requires shifter)",
@@ -409,6 +422,19 @@
                 }
             },
             "PropertyInspectorPath": "PropertyInspector/adjustAction.html"
+        },
+        {
+            "UUID": "com.dbce.moza-streamdeck.refresh",
+            "Name": "Refresh Connection",
+            "Tooltip": "Re-establish connection to Moza SDK and refresh all button displays",
+            "Icon": "Images/settingsIcon",
+            "States": [
+                {
+                    "Image": "Images/settingsIcon",
+                    "TitleAlignment": "bottom"
+                }
+            ],
+            "Controllers": ["Keypad"]
         },
         {
             "UUID": "com.dbce.moza-streamdeck.applypreset",

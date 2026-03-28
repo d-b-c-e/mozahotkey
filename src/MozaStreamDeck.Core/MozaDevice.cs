@@ -754,6 +754,26 @@ public class MozaDevice : IDisposable
     }
 
     /// <summary>
+    /// Cycles hands-off protection mode: 0→1→2→0.
+    /// Falls back to mode 1 if the wheel base doesn't support mode 2.
+    /// </summary>
+    public int ToggleHandsOffProtection()
+    {
+        var current = GetHandsOffProtection();
+        var newMode = (current + 1) % 3;
+        try
+        {
+            SetHandsOffProtection(newMode);
+            return newMode;
+        }
+        catch (MozaException) when (newMode == 2)
+        {
+            SetHandsOffProtection(1);
+            return 1;
+        }
+    }
+
+    /// <summary>
     /// Applies all supported settings from a Pit House preset profile.
     /// Returns (applied, failed) counts. Continues past individual errors.
     /// </summary>
@@ -854,6 +874,22 @@ public class MozaDevice : IDisposable
     {
         if (error != ERRORCODE.NORMAL)
             throw new MozaException($"{message}: {error}");
+    }
+
+    /// <summary>
+    /// Tears down and re-initializes the SDK connection.
+    /// Use when the connection to Pit House seems stale or unresponsive.
+    /// </summary>
+    public void Reinitialize()
+    {
+        if (_initialized)
+        {
+            try { removeMozaSDK(); } catch { }
+            _initialized = false;
+        }
+
+        installMozaSDK();
+        _initialized = true;
     }
 
     public void Dispose()

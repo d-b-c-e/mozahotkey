@@ -164,6 +164,9 @@ New-PlaceholderIcon -Name "clutchIcon" -Label "Clutch`nReverse" -BackgroundColor
 # Handbrake mode toggle
 New-PlaceholderIcon -Name "handbrakeIcon" -Label "E-Brake`nMode" -BackgroundColor "#8B0000"
 
+# Hands-off protection toggle
+New-PlaceholderIcon -Name "handsOffIcon" -Label "Hands`nOff" -BackgroundColor "#8B4500"
+
 # Auto-blip (shifter) actions
 New-PlaceholderIcon -Name "blipToggleIcon" -Label "Auto`nBlip" -BackgroundColor "#B8860B"
 New-PlaceholderIcon -Name "blipIcon" -Label "Blip`nOutput" -BackgroundColor "#DAA520" -GenerateVariants
