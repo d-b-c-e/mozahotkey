@@ -1,3 +1,4 @@
+using BarRaider.SdTools;
 using MozaStreamDeck.Core;
 
 namespace MozaStreamDeck.Plugin;
@@ -80,12 +81,28 @@ public sealed class MozaDeviceManager : IDisposable
     {
         try
         {
+            Logger.Instance.LogMessage(TracingLevel.INFO, "ForceRefresh: reinitializing device...");
             _device.Reinitialize();
-            NotifyStateChanged();
+            Logger.Instance.LogMessage(TracingLevel.INFO, "ForceRefresh: reinitialize complete, scheduling delayed notifications...");
+
+            // The SDK takes several seconds to re-establish communication with Pit House
+            // after reinitialize. Fire notifications at intervals to catch actions as
+            // the SDK becomes ready (observed ~3.5s in testing).
+            Task.Run(async () =>
+            {
+                for (int i = 1; i <= 5; i++)
+                {
+                    await Task.Delay(1000);
+                    Logger.Instance.LogMessage(TracingLevel.INFO, $"ForceRefresh: delayed notify attempt {i}/5");
+                    NotifyStateChanged();
+                }
+            });
+
             return true;
         }
-        catch
+        catch (Exception ex)
         {
+            Logger.Instance.LogMessage(TracingLevel.ERROR, $"ForceRefresh failed: {ex.Message}");
             return false;
         }
     }

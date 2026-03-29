@@ -47,18 +47,26 @@ public class RotationAction : KeyAndEncoderBase
             UpdateDirectionIcon();
             if (MozaDeviceManager.Instance.IsReady)
             {
+                Logger.Instance.LogMessage(TracingLevel.INFO, "Rotation: InitializeDisplay called, device is ready");
                 var (_, currentValue) = MozaDeviceManager.Instance.Device.GetWheelRotation();
+                Logger.Instance.LogMessage(TracingLevel.INFO, $"Rotation: GetWheelRotation returned {currentValue}");
 
                 // During startup grace period, treat invalid values (< 90) as "not connected yet"
                 // since Moza Pit House may not be fully loaded.
-                if (currentValue < 90 && IsInStartupGracePeriod)
+                // Skip this filter if already initialized (refresh scenario) — just wait for
+                // the next retry to get the real value.
+                if (currentValue < 90)
                 {
-                    await Connection.SetTitleAsync("N/C");
-                    await Connection.SetFeedbackAsync(new Dictionary<string, string>
+                    Logger.Instance.LogMessage(TracingLevel.INFO, $"Rotation: value {currentValue} < 90, skipping display update (waiting for SDK)");
+                    if (!_initialized)
                     {
-                        { "value", "N/C" },
-                        { "indicator", "0" }
-                    });
+                        await Connection.SetTitleAsync("N/C");
+                        await Connection.SetFeedbackAsync(new Dictionary<string, string>
+                        {
+                            { "value", "N/C" },
+                            { "indicator", "0" }
+                        });
+                    }
                     return;
                 }
 
@@ -70,14 +78,17 @@ public class RotationAction : KeyAndEncoderBase
                     { "indicator", indicatorValue.ToString() }
                 });
                 _initialized = true;
+                Logger.Instance.LogMessage(TracingLevel.INFO, $"Rotation: display updated to {currentValue}°");
             }
             else
             {
+                Logger.Instance.LogMessage(TracingLevel.WARN, "Rotation: InitializeDisplay called but device not ready");
                 await Connection.SetTitleAsync("N/C");
             }
         }
-        catch
+        catch (Exception ex)
         {
+            Logger.Instance.LogMessage(TracingLevel.ERROR, $"Rotation: InitializeDisplay failed: {ex.Message}");
             await Connection.SetTitleAsync("N/C");
         }
     }

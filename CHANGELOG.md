@@ -4,13 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## [Unreleased]
+## [1.0.4] - 2026-03-28
 
 ### Added
 - **Hands Off Protection** toggle action — cycles through Off / Mode 1 / Mode 2 with automatic fallback for wheel bases that don't support Mode 2
 - **Refresh Connection** action — tears down and re-establishes the SDK connection, then refreshes all button displays (fixes stale values after boot-order issues)
 - Unit test project (`tests/MozaStreamDeck.Tests/`) with xUnit — 17 tests covering preset JSON parsing and Pit House directory discovery
 - Troubleshooting guide (`docs/TROUBLESHOOTING.md`) covering common issues: crashes, N/C display, preset errors, Pit House auto-launch, and log file locations
+- Diagnostic logging in Rotation action and ForceRefresh for easier troubleshooting
+
+### Fixed
+- **Wheel Rotation display not updating on Refresh** — the Moza SDK takes ~3.5 seconds to re-establish communication after reinitialize; Refresh now retries notifications over 5 seconds instead of a single immediate attempt
+- Rotation display no longer briefly flashes "N/C" during refresh when the SDK returns transitional invalid values (0) — keeps the previous valid display until a fresh value is available
+- Silent exception swallowing in Rotation action's display initialization — errors are now logged instead of hidden behind a bare `catch`
 
 ## [1.0.3] - 2026-03-02
 
@@ -86,6 +92,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - GitHub Actions workflow for automated releases
 - Build and deploy scripts for development
 
+[1.0.4]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v1.0.0...v1.0.1
