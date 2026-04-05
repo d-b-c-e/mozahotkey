@@ -33,7 +33,13 @@ public class SetRotationAction : KeypadBase
                 return;
             }
             var device = MozaDeviceManager.Instance.Device;
+            var (hwBefore, gameBefore) = device.GetWheelRotation();
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"SetRotation: setting to {settings.Degrees}, before=hw:{hwBefore}/game:{gameBefore}");
             device.SetWheelRotation(settings.Degrees);
+            var (hwAfter, gameAfter) = device.GetWheelRotation();
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"SetRotation: set to {settings.Degrees}, readback=hw:{hwAfter}/game:{gameAfter}");
+            if (gameAfter != settings.Degrees)
+                Logger.Instance.LogMessage(TracingLevel.WARN, $"SetRotation: MISMATCH — set {settings.Degrees} but readback {gameAfter}");
             Connection.SetTitleAsync($"{settings.Degrees}°");
             Connection.ShowOk();
         }

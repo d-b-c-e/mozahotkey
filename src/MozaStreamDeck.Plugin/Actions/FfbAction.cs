@@ -166,9 +166,11 @@ public class FfbAction : KeyAndEncoderBase
 
     public override void OnTick()
     {
-        if (!_initialized && MozaDeviceManager.Instance.IsReady)
+        if (!_initialized)
         {
-            InitializeDisplay();
+            MozaDeviceManager.Instance.TryAutoInitialize();
+            if (MozaDeviceManager.Instance.IsReady)
+                InitializeDisplay();
         }
     }
 

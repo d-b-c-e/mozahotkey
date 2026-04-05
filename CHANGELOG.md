@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.5] - 2026-04-04
+
+### Fixed
+- **Apply Preset: wheel rotation now applies correctly** — Pit House presets store steering angle as half-angle (center-to-lock), but the SDK expects full lock-to-lock; preset angles are now doubled (e.g., preset value 135 = 270 degrees)
+- **Apply Preset: rotation no longer reverts after applying** — rotation is now set last (after all other settings) with 50ms delays between SDK calls, preventing the rapid-fire writes from losing the rotation change
+- **Rotation display stays in sync after preset** — a rotation override mechanism ensures all RotationAction instances display the correct value from the preset instead of reading a stale value from the SDK (which takes ~1 second to propagate)
+
+### Changed
+- **Auto-initialization on startup** — the plugin now automatically connects to the Moza SDK ~10 seconds after Stream Deck starts (if Pit House is running), populating all button/dial displays without requiring a manual Refresh or button press
+- Enhanced diagnostic logging for rotation operations — dial turns, button presses, and preset applies now log before/after values and readback for easier troubleshooting
+
 ## [1.0.4] - 2026-03-28
 
 ### Added
@@ -92,6 +103,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - GitHub Actions workflow for automated releases
 - Build and deploy scripts for development
 
+[1.0.5]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/d-b-c-e/moza-streamdeck-plugin/compare/v1.0.1...v1.0.2

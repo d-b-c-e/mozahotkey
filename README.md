@@ -122,7 +122,7 @@ For detailed troubleshooting, see the [Troubleshooting Guide](docs/TROUBLESHOOTI
 
 ### Quick Fixes
 
-- **"N/C" on all actions**: Press any Moza button or dial to trigger SDK initialization
+- **"N/C" on all actions**: The plugin auto-connects ~10 seconds after startup if Pit House is running. If still showing N/C, press any Moza button/dial or use Refresh Connection
 - **Plugin won't load / crashes**: Update to v1.0.3+ (bundles .NET runtime)
 - **Pit House launches at boot**: Update to v1.0.2+ (deferred initialization)
 - **Preset shows skipped settings**: Some preset fields have no SDK support — this is expected

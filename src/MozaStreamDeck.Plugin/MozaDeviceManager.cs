@@ -15,6 +15,8 @@ public sealed class MozaDeviceManager : IDisposable
 
     private readonly MozaDevice _device;
     private bool _disposed;
+    private bool _autoInitAttempted;
+    private static readonly DateTime _startupTime = DateTime.UtcNow;
 
     private MozaDeviceManager()
     {
@@ -47,6 +49,45 @@ public sealed class MozaDeviceManager : IDisposable
     public static event Action? DeviceStateChanged;
 
     /// <summary>
+    /// When set, contains the rotation value that was just written to the device.
+    /// RotationAction should use this instead of reading from SDK (which may be stale).
+    /// Expires after 5 seconds to prevent stale overrides.
+    /// </summary>
+    public static int? PendingRotationOverride { get; set; }
+    public static DateTime PendingRotationOverrideTime { get; set; }
+
+    /// <summary>
+    /// Gets the rotation override if it's still fresh (within 5 seconds).
+    /// </summary>
+    public static int? GetRotationOverride()
+    {
+        if (PendingRotationOverride.HasValue &&
+            (DateTime.UtcNow - PendingRotationOverrideTime).TotalSeconds < 5)
+        {
+            return PendingRotationOverride.Value;
+        }
+        PendingRotationOverride = null;
+        return null;
+    }
+
+    /// <summary>
+    /// Sets a rotation override with the current timestamp.
+    /// </summary>
+    public static void SetRotationOverride(int value)
+    {
+        PendingRotationOverride = value;
+        PendingRotationOverrideTime = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Clears the rotation override (e.g., when the user manually changes rotation via dial).
+    /// </summary>
+    public static void ClearRotationOverride()
+    {
+        PendingRotationOverride = null;
+    }
+
+    /// <summary>
     /// Notifies all subscribers that device state has changed and displays should refresh.
     /// </summary>
     public static void NotifyStateChanged() => DeviceStateChanged?.Invoke();
@@ -59,6 +100,39 @@ public sealed class MozaDeviceManager : IDisposable
     {
         if (_device.IsInitialized) return true;
         return _device.Initialize();
+    }
+
+    /// <summary>
+    /// Attempts one-time auto-initialization after startup grace period (10 seconds).
+    /// Called from OnTick to populate displays without requiring user interaction.
+    /// Only attempts once — if it fails (Pit House not running), waits for user interaction.
+    /// </summary>
+    public bool TryAutoInitialize()
+    {
+        if (_device.IsInitialized) return true;
+        if (_autoInitAttempted) return false;
+        if ((DateTime.UtcNow - _startupTime).TotalSeconds < 10) return false;
+
+        _autoInitAttempted = true;
+        Logger.Instance.LogMessage(TracingLevel.INFO, "AutoInit: attempting one-time SDK initialization...");
+        if (!_device.Initialize())
+        {
+            Logger.Instance.LogMessage(TracingLevel.INFO, "AutoInit: failed (Pit House may not be running)");
+            return false;
+        }
+
+        Logger.Instance.LogMessage(TracingLevel.INFO, "AutoInit: SDK initialized, notifying all actions");
+        // Use delayed notifications like ForceRefresh — SDK needs time to populate
+        Task.Run(async () =>
+        {
+            for (int i = 1; i <= 5; i++)
+            {
+                await Task.Delay(1000);
+                Logger.Instance.LogMessage(TracingLevel.INFO, $"AutoInit: delayed notify attempt {i}/5");
+                NotifyStateChanged();
+            }
+        });
+        return true;
     }
 
     /// <summary>

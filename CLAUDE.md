@@ -188,13 +188,18 @@ Adjustable actions also have Up/Down variants (e.g., ffbIconUp.png, ffbIconDown.
 
 Each action extends `KeyAndEncoderBase` and implements:
 - `InitializeDisplay()`: Reads current value from device, updates button/dial display
-- `OnTick()`: Retries initialization if device wasn't ready at startup
+- `OnTick()`: Triggers auto-initialization after 10s startup grace period; retries display init if device wasn't ready
 - `KeyPressed()`: Handles button press (applies direction setting)
 - `DialRotate()`: Handles dial rotation (uses tick count * increment)
 - `DialDown()`: Refreshes current value display when dial is pressed
 - `ReceivedSettings()`: Updates settings from Property Inspector
 
 The `_initialized` flag ensures display updates retry until the Moza device is connected.
+
+**Rotation override mechanism:** When a preset is applied, `MozaDeviceManager.SetRotationOverride(value)` stores
+the target rotation. `RotationAction.InitializeDisplay()` checks for this override and uses it instead of reading
+from the SDK (which returns stale values for ~1 second after writes). The override expires after 5 seconds and is
+cleared when the user manually adjusts rotation via dial or button.
 
 ### Pit House Preset Integration
 
@@ -216,6 +221,13 @@ Documents/MOZA Pit House/
 
 Only `Motor/` presets contain `deviceParams` fields the plugin can apply via SDK.
 Steering Wheel presets (e.g., "ESX-Official") contain LED/button config only.
+
+**IMPORTANT: Preset steering angles are HALF-ANGLES.** Pit House presets store `maximumSteeringAngle`
+as center-to-lock (half the total rotation). The SDK `setMotorLimitAngle` expects full lock-to-lock.
+The plugin multiplies preset angle values by 2 when applying (e.g., preset 135 = 270° total).
+
+**Preset apply order matters.** Settings are applied with 50ms delays between each call, and steering
+angle is applied LAST. Applying it earlier in a rapid-fire sequence causes the write to be lost.
 
 Supported preset fields (11 of ~22):
 - `gameForceFeedbackStrength`, `maximumSteeringAngle`, `maximumTorque`

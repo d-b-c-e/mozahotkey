@@ -48,8 +48,22 @@ public class RotationAction : KeyAndEncoderBase
             if (MozaDeviceManager.Instance.IsReady)
             {
                 Logger.Instance.LogMessage(TracingLevel.INFO, "Rotation: InitializeDisplay called, device is ready");
-                var (_, currentValue) = MozaDeviceManager.Instance.Device.GetWheelRotation();
-                Logger.Instance.LogMessage(TracingLevel.INFO, $"Rotation: GetWheelRotation returned {currentValue}");
+
+                // If a preset was just applied, use its rotation value instead of
+                // reading from the SDK (which returns a stale value for ~1 second).
+                int currentValue;
+                var rotationOverride = MozaDeviceManager.GetRotationOverride();
+                if (rotationOverride.HasValue)
+                {
+                    currentValue = rotationOverride.Value;
+                    Logger.Instance.LogMessage(TracingLevel.INFO, $"Rotation: using override value {currentValue} (skipping SDK read)");
+                }
+                else
+                {
+                    var (hwLimit, gameLimit) = MozaDeviceManager.Instance.Device.GetWheelRotation();
+                    currentValue = gameLimit;
+                    Logger.Instance.LogMessage(TracingLevel.INFO, $"Rotation: GetWheelRotation returned hw:{hwLimit}/game:{gameLimit}");
+                }
 
                 // During startup grace period, treat invalid values (< 90) as "not connected yet"
                 // since Moza Pit House may not be fully loaded.
@@ -103,14 +117,21 @@ public class RotationAction : KeyAndEncoderBase
     {
         try
         {
+            MozaDeviceManager.ClearRotationOverride();
             if (!MozaDeviceManager.Instance.EnsureInitialized())
             {
                 Connection.ShowAlert();
                 return;
             }
             var device = MozaDeviceManager.Instance.Device;
+            var (hwBefore, gameBefore) = device.GetWheelRotation();
             var delta = settings.Direction == "decrease" ? -settings.IncrementValue : settings.IncrementValue;
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"Rotation: KeyPressed delta={delta}, before=hw:{hwBefore}/game:{gameBefore}");
             var newValue = device.AdjustWheelRotation(delta);
+            var (hwAfter, gameAfter) = device.GetWheelRotation();
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"Rotation: KeyPressed set to {newValue}, readback=hw:{hwAfter}/game:{gameAfter}");
+            if (gameAfter != newValue)
+                Logger.Instance.LogMessage(TracingLevel.WARN, $"Rotation: MISMATCH — set {newValue} but readback {gameAfter}");
             Connection.SetTitleAsync($"{newValue}°");
         }
         catch (Exception ex)
@@ -127,14 +148,21 @@ public class RotationAction : KeyAndEncoderBase
     {
         try
         {
+            MozaDeviceManager.ClearRotationOverride();
             if (!MozaDeviceManager.Instance.EnsureInitialized())
             {
                 Connection.ShowAlert();
                 return;
             }
             var device = MozaDeviceManager.Instance.Device;
+            var (hwBefore, gameBefore) = device.GetWheelRotation();
             var delta = payload.Ticks * settings.IncrementValue;
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"Rotation: DialRotate ticks={payload.Ticks} delta={delta}, before=hw:{hwBefore}/game:{gameBefore}");
             var newValue = device.AdjustWheelRotation(delta);
+            var (hwAfter, gameAfter) = device.GetWheelRotation();
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"Rotation: DialRotate set to {newValue}, readback=hw:{hwAfter}/game:{gameAfter}");
+            if (gameAfter != newValue)
+                Logger.Instance.LogMessage(TracingLevel.WARN, $"Rotation: MISMATCH — set {newValue} but readback {gameAfter}");
 
             Connection.SetTitleAsync($"{newValue}°");
             // Scale 90-2700 to 0-100 for indicator
@@ -173,9 +201,13 @@ public class RotationAction : KeyAndEncoderBase
 
     public override void OnTick()
     {
-        if (!_initialized && MozaDeviceManager.Instance.IsReady)
+        if (!_initialized)
         {
-            InitializeDisplay();
+            // Try auto-init once after startup (populates all displays without user interaction)
+            MozaDeviceManager.Instance.TryAutoInitialize();
+
+            if (MozaDeviceManager.Instance.IsReady)
+                InitializeDisplay();
         }
     }
 

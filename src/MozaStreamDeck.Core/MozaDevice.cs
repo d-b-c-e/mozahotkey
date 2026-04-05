@@ -788,26 +788,12 @@ public class MozaDevice : IDisposable
         void TryApply(string paramName, Action action)
         {
             if (!p.ContainsKey(paramName)) return;
-            try { action(); applied++; }
+            try { action(); applied++; Thread.Sleep(50); }
             catch (Exception ex) { failed++; errors.Add($"{paramName}: {ex.Message}"); }
         }
 
         TryApply("gameForceFeedbackStrength", () =>
             SetFfbStrength(Convert.ToInt32(p["gameForceFeedbackStrength"])));
-
-        // Handle steering angle — use separate game angle if available
-        if (p.ContainsKey("maximumSteeringAngle"))
-        {
-            try
-            {
-                var hwAngle = Convert.ToInt32(p["maximumSteeringAngle"]);
-                var gameAngle = p.TryGetValue("maximumGameSteeringAngle", out var ga)
-                    ? Convert.ToInt32(ga) : hwAngle;
-                SetWheelRotation(hwAngle, gameAngle);
-                applied++;
-            }
-            catch (Exception ex) { failed++; errors.Add($"maximumSteeringAngle: {ex.Message}"); }
-        }
 
         TryApply("maximumTorque", () =>
             SetMaxTorque(Convert.ToInt32(p["maximumTorque"])));
@@ -853,12 +839,30 @@ public class MozaDevice : IDisposable
                 }
                 catch (MozaException) when (mode > 1)
                 {
-                    // Some wheel bases don't support higher protection levels — fall back
                     SetHandsOffProtection(1);
                 }
                 applied++;
+                Thread.Sleep(50);
             }
             catch (Exception ex) { failed++; errors.Add($"safeDriving: {ex.Message}"); }
+        }
+
+        // Apply steering angle LAST — the SDK needs time to process all other writes
+        // before the rotation change will stick. When fired in rapid succession with
+        // other settings, the rotation write gets lost.
+        // Pit House presets store the HALF-ANGLE (center-to-lock), e.g., 135 = 270° total.
+        // The SDK setMotorLimitAngle expects the FULL lock-to-lock angle, so multiply by 2.
+        if (p.ContainsKey("maximumSteeringAngle"))
+        {
+            try
+            {
+                var hwAngle = Convert.ToInt32(p["maximumSteeringAngle"]) * 2;
+                var gameAngle = p.TryGetValue("maximumGameSteeringAngle", out var ga)
+                    ? Convert.ToInt32(ga) * 2 : hwAngle;
+                SetWheelRotation(hwAngle, gameAngle);
+                applied++;
+            }
+            catch (Exception ex) { failed++; errors.Add($"maximumSteeringAngle: {ex.Message}"); }
         }
 
         return (applied, failed, errors);
