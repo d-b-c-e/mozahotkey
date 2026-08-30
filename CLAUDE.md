@@ -203,7 +203,14 @@ cleared when the user manually adjusts rotation via dial or button.
 
 ### Pit House Preset Integration
 
-Motor presets are loaded from `%USERPROFILE%\Documents\MOZA Pit House\Presets\Motor\*.json`.
+Motor presets are loaded from `%USERPROFILE%\Documents\MOZA Pit House\Presets\Motor\`.
+
+**Preset files are `.mzpreset` ZIP archives**, not bare JSON. Each archive holds `preset.json`
+(the payload — same schema as the old loose files: `id`, `name`, `devices`, `deviceParams`) and
+`metadata.json` (format/version info the plugin ignores). `PresetProfile.LoadFromFile` sniffs the
+`PK` zip magic number and unpacks `preset.json`, falling back to reading the file as bare JSON so
+presets written by older Pit House versions still load.
+
 The `PresetManager` finds the Pit House directory (handles OneDrive redirection) and enumerates presets.
 The `ApplyPresetAction` reads the selected preset JSON and applies all supported `deviceParams` via SDK.
 
@@ -211,7 +218,7 @@ The `ApplyPresetAction` reads the selected preset JSON and applies all supported
 ```
 Documents/MOZA Pit House/
 ├── Presets/
-│   ├── Motor/              ← Plugin scans HERE (wheel base FFB/rotation settings)
+│   ├── Motor/              ← Plugin scans HERE (*.mzpreset — wheel base FFB/rotation)
 │   ├── Steering Wheel/     ← NOT scanned (button mappings, RPM LEDs — no SDK control)
 │   ├── Pedals/             ← NOT scanned (pedal curves — no SDK control)
 │   ├── config.ini          ← Maps device models to default preset IDs

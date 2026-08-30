@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using Xunit;
 using MozaStreamDeck.Core.Profiles;
 
@@ -18,6 +19,60 @@ public class PresetProfileTests
         var path = Path.Combine(_testDir, filename);
         File.WriteAllText(path, json);
         return path;
+    }
+
+    /// <summary>Writes a .mzpreset the way Pit House does: a zip holding preset.json.</summary>
+    private string WriteMzPresetFile(string json, string filename = "test.mzpreset")
+    {
+        var path = Path.Combine(_testDir, filename);
+        using var archive = ZipFile.Open(path, ZipArchiveMode.Create);
+
+        using (var writer = new StreamWriter(archive.CreateEntry("preset.json").Open()))
+            writer.Write(json);
+
+        using (var writer = new StreamWriter(archive.CreateEntry("metadata.json").Open()))
+            writer.Write("""{"format_version": "1.0", "preset_version": 5}""");
+
+        return path;
+    }
+
+    [Fact]
+    public void LoadFromFile_MzPresetArchive_ParsesInnerPresetJson()
+    {
+        var path = WriteMzPresetFile("""
+        {
+            "id": "zip-1",
+            "name": "R5 Pro-Dirt Rally 2-Official",
+            "devices": ["R5 Pro"],
+            "deviceParams": {
+                "gameForceFeedbackStrength": 80,
+                "maximumSteeringAngle": 270,
+                "gameForceFeedbackReversal": false
+            }
+        }
+        """);
+
+        var preset = PresetProfile.LoadFromFile(path);
+
+        Assert.NotNull(preset);
+        Assert.Equal("zip-1", preset.Id);
+        Assert.Equal("R5 Pro-Dirt Rally 2-Official", preset.Name);
+        Assert.Equal(path, preset.FilePath);
+        Assert.Equal(new List<string> { "R5 Pro" }, preset.Devices);
+        Assert.Equal(80, Convert.ToInt32(preset.DeviceParams["gameForceFeedbackStrength"]));
+        Assert.Equal(270, Convert.ToInt32(preset.DeviceParams["maximumSteeringAngle"]));
+        Assert.Equal(false, preset.DeviceParams["gameForceFeedbackReversal"]);
+    }
+
+    [Fact]
+    public void LoadFromFile_MzPresetWithoutPresetJson_ReturnsNull()
+    {
+        var path = Path.Combine(_testDir, "empty.mzpreset");
+        using (var archive = ZipFile.Open(path, ZipArchiveMode.Create))
+        using (var writer = new StreamWriter(archive.CreateEntry("metadata.json").Open()))
+            writer.Write("""{"format_version": "1.0"}""");
+
+        Assert.Null(PresetProfile.LoadFromFile(path));
     }
 
     [Fact]

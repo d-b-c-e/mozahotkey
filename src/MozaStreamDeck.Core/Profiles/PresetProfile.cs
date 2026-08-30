@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using System.Text.Json;
 
 namespace MozaStreamDeck.Core.Profiles;
@@ -14,14 +15,15 @@ public class PresetProfile
     public Dictionary<string, object> DeviceParams { get; set; } = new();
 
     /// <summary>
-    /// Loads a preset from a Pit House motor preset JSON file.
+    /// Loads a preset from a Pit House motor preset file. Handles both the
+    /// .mzpreset container Pit House writes now and the bare .json files
+    /// older versions wrote.
     /// </summary>
     public static PresetProfile? LoadFromFile(string path)
     {
         try
         {
-            var json = File.ReadAllText(path);
-            using var doc = JsonDocument.Parse(json);
+            using var doc = JsonDocument.Parse(ReadPresetJson(path));
             var root = doc.RootElement;
 
             var profile = new PresetProfile
@@ -61,5 +63,32 @@ public class PresetProfile
         {
             return null;
         }
+    }
+
+    /// <summary>
+    /// Pulls the preset JSON out of its container. A .mzpreset is a zip archive
+    /// holding preset.json (plus metadata.json, which we don't need); anything
+    /// else is read as bare JSON.
+    /// </summary>
+    private static string ReadPresetJson(string path)
+    {
+        using var stream = File.OpenRead(path);
+
+        // "PK" is the zip magic number. Sniff the bytes rather than trusting the
+        // extension, so a renamed or legacy-format file still loads.
+        var isZip = stream.ReadByte() == 'P' && stream.ReadByte() == 'K';
+        stream.Position = 0;
+
+        if (!isZip)
+        {
+            using var plain = new StreamReader(stream);
+            return plain.ReadToEnd();
+        }
+
+        using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
+        var entry = archive.GetEntry("preset.json")
+            ?? throw new InvalidDataException($"No preset.json inside {path}");
+        using var packed = new StreamReader(entry.Open());
+        return packed.ReadToEnd();
     }
 }

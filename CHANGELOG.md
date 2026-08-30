@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.6] - 2026-08-29
+
+### Fixed
+- **Dial adjustments no longer snap back to where they started** — the Moza SDK's getters lag writes by ~100ms, and Stream Deck delivers dial ticks faster than that, so every tick in the lag window read the same pre-spin value and computed the same result; a whole spin collapsed into a single increment. Most visible on FFB Strength, where a value at 100% could not be turned back down. Adjustments now chain off the last written value instead of re-reading the device mid-spin, and are serialized so concurrent ticks accumulate. Affects all 13 adjustable settings (FFB, rotation, damping, torque, friction, inertia, spring, road sensitivity, speed damping, wheel speed, auto-blip output/duration)
+- **Apply Preset finds presets again** — Pit House now writes motor presets as `.mzpreset` ZIP archives containing `preset.json`, but the plugin only scanned for loose `*.json` files and found nothing. Presets are now read out of the archive, with a fallback to bare JSON so presets from older Pit House versions still load
+
+### Added
+- Unit tests covering the `.mzpreset` archive format (19 tests total)
+
 ## [1.0.5] - 2026-04-04
 
 ### Fixed

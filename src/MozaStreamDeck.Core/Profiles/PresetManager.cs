@@ -37,7 +37,11 @@ public static class PresetManager
         var motorDir = Path.Combine(pitHouseDir, "Presets", "Motor");
         if (!Directory.Exists(motorDir)) return presets;
 
-        foreach (var file in Directory.GetFiles(motorDir, "*.json"))
+        // Pit House writes .mzpreset archives; older versions wrote bare .json.
+        var files = Directory.EnumerateFiles(motorDir, "*.mzpreset")
+            .Concat(Directory.EnumerateFiles(motorDir, "*.json"));
+
+        foreach (var file in files)
         {
             var preset = PresetProfile.LoadFromFile(file);
             if (preset != null && !string.IsNullOrWhiteSpace(preset.Name))

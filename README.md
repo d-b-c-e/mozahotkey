@@ -125,6 +125,8 @@ For detailed troubleshooting, see the [Troubleshooting Guide](docs/TROUBLESHOOTI
 - **"N/C" on all actions**: The plugin auto-connects ~10 seconds after startup if Pit House is running. If still showing N/C, press any Moza button/dial or use Refresh Connection
 - **Plugin won't load / crashes**: Update to v1.0.3+ (bundles .NET runtime)
 - **Pit House launches at boot**: Update to v1.0.2+ (deferred initialization)
+- **Apply Preset lists nothing**: Update to v1.0.6+ (Pit House now stores presets as `.mzpreset` archives)
+- **A dial snaps back to its old value**: Update to v1.0.6+ (SDK read-back lag during fast dial spins)
 - **Preset shows skipped settings**: Some preset fields have no SDK support — this is expected
 
 ### Log Files

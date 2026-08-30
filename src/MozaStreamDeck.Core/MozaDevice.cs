@@ -59,13 +59,8 @@ public class MozaDevice : IDisposable
     /// <summary>
     /// Adjusts FFB strength by a delta value, clamping to valid range.
     /// </summary>
-    public int AdjustFfbStrength(int delta)
-    {
-        var current = GetFfbStrength();
-        var newValue = Math.Clamp(current + delta, 0, 100);
-        SetFfbStrength(newValue);
-        return newValue;
-    }
+    public int AdjustFfbStrength(int delta) =>
+        Adjust(nameof(AdjustFfbStrength), delta, 0, 100, GetFfbStrength, SetFfbStrength);
 
     /// <summary>
     /// Gets the current wheel rotation angle limits.
@@ -111,13 +106,9 @@ public class MozaDevice : IDisposable
     /// <summary>
     /// Adjusts wheel rotation by a delta value, clamping to valid range.
     /// </summary>
-    public int AdjustWheelRotation(int delta)
-    {
-        var (_, current) = GetWheelRotation();
-        var newValue = Math.Clamp(current + delta, 90, 2700);
-        SetWheelRotation(newValue);
-        return newValue;
-    }
+    public int AdjustWheelRotation(int delta) =>
+        Adjust(nameof(AdjustWheelRotation), delta, 90, 2700,
+            () => GetWheelRotation().GameLimit, SetWheelRotation);
 
     /// <summary>
     /// Gets the road sensitivity (0-10).
@@ -145,13 +136,8 @@ public class MozaDevice : IDisposable
     /// <summary>
     /// Adjusts road sensitivity by a delta value, clamping to valid range.
     /// </summary>
-    public int AdjustRoadSensitivity(int delta)
-    {
-        var current = GetRoadSensitivity();
-        var newValue = Math.Clamp(current + delta, 0, 10);
-        SetRoadSensitivity(newValue);
-        return newValue;
-    }
+    public int AdjustRoadSensitivity(int delta) =>
+        Adjust(nameof(AdjustRoadSensitivity), delta, 0, 10, GetRoadSensitivity, SetRoadSensitivity);
 
     /// <summary>
     /// Gets the max torque limit (50-100).
@@ -179,13 +165,8 @@ public class MozaDevice : IDisposable
     /// <summary>
     /// Adjusts max torque by a delta value, clamping to valid range.
     /// </summary>
-    public int AdjustMaxTorque(int delta)
-    {
-        var current = GetMaxTorque();
-        var newValue = Math.Clamp(current + delta, 50, 100);
-        SetMaxTorque(newValue);
-        return newValue;
-    }
+    public int AdjustMaxTorque(int delta) =>
+        Adjust(nameof(AdjustMaxTorque), delta, 50, 100, GetMaxTorque, SetMaxTorque);
 
     /// <summary>
     /// Gets the damping strength (0-100).
@@ -213,13 +194,8 @@ public class MozaDevice : IDisposable
     /// <summary>
     /// Adjusts damping by a delta value, clamping to valid range.
     /// </summary>
-    public int AdjustDamping(int delta)
-    {
-        var current = GetDamping();
-        var newValue = Math.Clamp(current + delta, 0, 100);
-        SetDamping(newValue);
-        return newValue;
-    }
+    public int AdjustDamping(int delta) =>
+        Adjust(nameof(AdjustDamping), delta, 0, 100, GetDamping, SetDamping);
 
     /// <summary>
     /// Gets the spring/center force strength (0-100).
@@ -247,13 +223,8 @@ public class MozaDevice : IDisposable
     /// <summary>
     /// Adjusts spring strength by a delta value, clamping to valid range.
     /// </summary>
-    public int AdjustSpringStrength(int delta)
-    {
-        var current = GetSpringStrength();
-        var newValue = Math.Clamp(current + delta, 0, 100);
-        SetSpringStrength(newValue);
-        return newValue;
-    }
+    public int AdjustSpringStrength(int delta) =>
+        Adjust(nameof(AdjustSpringStrength), delta, 0, 100, GetSpringStrength, SetSpringStrength);
 
     /// <summary>
     /// Gets the natural friction (0-100).
@@ -281,13 +252,8 @@ public class MozaDevice : IDisposable
     /// <summary>
     /// Adjusts natural friction by a delta value, clamping to valid range.
     /// </summary>
-    public int AdjustNaturalFriction(int delta)
-    {
-        var current = GetNaturalFriction();
-        var newValue = Math.Clamp(current + delta, 0, 100);
-        SetNaturalFriction(newValue);
-        return newValue;
-    }
+    public int AdjustNaturalFriction(int delta) =>
+        Adjust(nameof(AdjustNaturalFriction), delta, 0, 100, GetNaturalFriction, SetNaturalFriction);
 
     /// <summary>
     /// Gets the natural inertia (100-500).
@@ -315,13 +281,8 @@ public class MozaDevice : IDisposable
     /// <summary>
     /// Adjusts natural inertia by a delta value, clamping to valid range.
     /// </summary>
-    public int AdjustNaturalInertia(int delta)
-    {
-        var current = GetNaturalInertia();
-        var newValue = Math.Clamp(current + delta, 100, 500);
-        SetNaturalInertia(newValue);
-        return newValue;
-    }
+    public int AdjustNaturalInertia(int delta) =>
+        Adjust(nameof(AdjustNaturalInertia), delta, 100, 500, GetNaturalInertia, SetNaturalInertia);
 
     /// <summary>
     /// Gets the steering wheel inertia ratio (100-1550).
@@ -350,13 +311,8 @@ public class MozaDevice : IDisposable
     /// <summary>
     /// Adjusts steering wheel inertia by a delta value, clamping to valid range.
     /// </summary>
-    public int AdjustSteeringWheelInertia(int delta)
-    {
-        var current = GetSteeringWheelInertia();
-        var newValue = Math.Clamp(current + delta, 100, 1550);
-        SetSteeringWheelInertia(newValue);
-        return newValue;
-    }
+    public int AdjustSteeringWheelInertia(int delta) =>
+        Adjust(nameof(AdjustSteeringWheelInertia), delta, 100, 1550, GetSteeringWheelInertia, SetSteeringWheelInertia);
 
     /// <summary>
     /// Gets the maximum wheel speed limit (0-100).
@@ -384,13 +340,8 @@ public class MozaDevice : IDisposable
     /// <summary>
     /// Adjusts max wheel speed by a delta value, clamping to valid range.
     /// </summary>
-    public int AdjustMaxWheelSpeed(int delta)
-    {
-        var current = GetMaxWheelSpeed();
-        var newValue = Math.Clamp(current + delta, 0, 100);
-        SetMaxWheelSpeed(newValue);
-        return newValue;
-    }
+    public int AdjustMaxWheelSpeed(int delta) =>
+        Adjust(nameof(AdjustMaxWheelSpeed), delta, 0, 100, GetMaxWheelSpeed, SetMaxWheelSpeed);
 
     /// <summary>
     /// Centers the wheel.
@@ -460,13 +411,8 @@ public class MozaDevice : IDisposable
     /// <summary>
     /// Adjusts speed damping by a delta value, clamping to valid range.
     /// </summary>
-    public int AdjustSpeedDamping(int delta)
-    {
-        var current = GetSpeedDamping();
-        var newValue = Math.Clamp(current + delta, 0, 100);
-        SetSpeedDamping(newValue);
-        return newValue;
-    }
+    public int AdjustSpeedDamping(int delta) =>
+        Adjust(nameof(AdjustSpeedDamping), delta, 0, 100, GetSpeedDamping, SetSpeedDamping);
 
     /// <summary>
     /// Stops all force feedback immediately.
@@ -665,13 +611,8 @@ public class MozaDevice : IDisposable
     /// <summary>
     /// Adjusts auto-blip output by a delta value, clamping to valid range.
     /// </summary>
-    public int AdjustAutoBlipOutput(int delta)
-    {
-        var current = GetAutoBlipOutput();
-        var newValue = Math.Clamp(current + delta, 0, 100);
-        SetAutoBlipOutput(newValue);
-        return newValue;
-    }
+    public int AdjustAutoBlipOutput(int delta) =>
+        Adjust(nameof(AdjustAutoBlipOutput), delta, 0, 100, GetAutoBlipOutput, SetAutoBlipOutput);
 
     /// <summary>
     /// Gets the auto-blip duration (0-500).
@@ -699,13 +640,8 @@ public class MozaDevice : IDisposable
     /// <summary>
     /// Adjusts auto-blip duration by a delta value, clamping to valid range.
     /// </summary>
-    public int AdjustAutoBlipDuration(int delta)
-    {
-        var current = GetAutoBlipDuration();
-        var newValue = Math.Clamp(current + delta, 0, 500);
-        SetAutoBlipDuration(newValue);
-        return newValue;
-    }
+    public int AdjustAutoBlipDuration(int delta) =>
+        Adjust(nameof(AdjustAutoBlipDuration), delta, 0, 500, GetAutoBlipDuration, SetAutoBlipDuration);
 
     /// <summary>
     /// Gets the speed damping start point.
@@ -865,7 +801,48 @@ public class MozaDevice : IDisposable
             catch (Exception ex) { failed++; errors.Add($"maximumSteeringAngle: {ex.Message}"); }
         }
 
+        InvalidateAdjustCache();
         return (applied, failed, errors);
+    }
+
+    // The SDK's getters lag writes by ~100ms: after setMotorFfbStrength(60) the
+    // matching getter keeps returning the old value until the base reports back.
+    // Stream Deck delivers dial ticks well inside that window, so reading the
+    // device on every tick makes each tick compute its new value from the same
+    // pre-spin reading — a whole spin collapses into one increment and the value
+    // snaps back to where it started. Adjust from what we last wrote instead,
+    // falling back to the device once the getter has had time to catch up.
+    private readonly object _adjustLock = new();
+    private readonly Dictionary<string, (int Value, DateTime WrittenAt)> _lastWritten = new();
+    private static readonly TimeSpan WriteSettleTime = TimeSpan.FromMilliseconds(1000);
+
+    /// <summary>
+    /// Read-modify-write that tolerates the SDK's post-write getter lag.
+    /// Serializes concurrent callers so rapid dial ticks accumulate.
+    /// </summary>
+    private int Adjust(string key, int delta, int min, int max, Func<int> get, Action<int> set)
+    {
+        lock (_adjustLock)
+        {
+            var current = _lastWritten.TryGetValue(key, out var last)
+                          && DateTime.UtcNow - last.WrittenAt < WriteSettleTime
+                ? last.Value
+                : get();
+
+            var newValue = Math.Clamp(current + delta, min, max);
+            set(newValue);
+            _lastWritten[key] = (newValue, DateTime.UtcNow);
+            return newValue;
+        }
+    }
+
+    /// <summary>
+    /// Drops the cached write state so the next adjustment reads the device again.
+    /// Call whenever values change outside the adjust path (preset apply, reconnect).
+    /// </summary>
+    public void InvalidateAdjustCache()
+    {
+        lock (_adjustLock) _lastWritten.Clear();
     }
 
     private void EnsureInitialized()
@@ -894,6 +871,7 @@ public class MozaDevice : IDisposable
 
         installMozaSDK();
         _initialized = true;
+        InvalidateAdjustCache();
     }
 
     public void Dispose()
