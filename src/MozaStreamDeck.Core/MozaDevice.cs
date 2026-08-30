@@ -858,6 +858,19 @@ public class MozaDevice : IDisposable
     }
 
     /// <summary>
+    /// Tears down the SDK connection without disposing the object.
+    /// Can be re-initialized later by calling Initialize().
+    /// Use when Pit House is closed to stop the SDK's background reconnection.
+    /// </summary>
+    public void Teardown()
+    {
+        if (!_initialized) return;
+        try { removeMozaSDK(); } catch { }
+        _initialized = false;
+        InvalidateAdjustCache();
+    }
+
+    /// <summary>
     /// Tears down and re-initializes the SDK connection.
     /// Use when the connection to Pit House seems stale or unresponsive.
     /// </summary>
